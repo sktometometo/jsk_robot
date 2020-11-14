@@ -8,6 +8,12 @@ jsk_spot_robot
 
 ## How to run
 
+### Install some python requirements
+
+```
+$ pip3 install -r requirements.txt
+```
+
 ### Setting up a catkin workspace for a new user in the internal pc
 
 ```
