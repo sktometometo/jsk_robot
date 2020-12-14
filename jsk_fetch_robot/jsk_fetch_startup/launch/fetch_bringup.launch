@@ -206,12 +206,6 @@
       <arg name="odom_topic" value="/odom_combined" />
     </include>
 
-    <!-- slam for build a map -->
-    <node pkg="slam_karto" type="slam_karto" name="slam_karto"
-          output="screen" if="$(arg use_build_map)" >
-      <remap from="scan" to="base_scan"/>
-    </node>
-
     <rosparam ns="amcl">
       kld_err: 0.1
       kld_z: 0.5
@@ -316,17 +310,10 @@
     </rosparam>
   </group>
 
-  <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
-  <!-- see https://github.com/fetchrobotics/fetch_ros/issues/70 -->
-  <node name="imu_corrector" pkg="jsk_fetch_startup" type="imu_corrector.py">
-    <remap from="~input" to="/imu" />
-    <remap from="~output" to="/imu_corrected" />
-  </node>
-
-  <!-- /odom has no covariance value. -->
-  <node name="odom_corrector" pkg="jsk_fetch_startup" type="odom_corrector.py">
-    <remap from="~input" to="/odom" />
-    <remap from="~output" to="/odom_corrected" />
+  <!-- slam for build a map -->
+  <node pkg="slam_karto" type="slam_karto" name="slam_karto"
+        output="screen" if="$(arg use_build_map)" >
+    <remap from="scan" to="base_scan"/>
   </node>
 
   <!-- check if room light is on -->
