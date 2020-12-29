@@ -92,3 +92,9 @@
     local-name: GT-RAIL/robot_pose_publisher
     uri: https://github.com/GT-RAIL/robot_pose_publisher.git
     version: 0.2.4
+# realsense-ros should be installed from source until https://github.com/IntelRealSense/realsense-ros/issues/1426 is fixed.
+# To do so, librealsense have to be install from the RealSense official repository, not from ROS repository
+- git:
+    local-name: IntelRealSense/realsense-ros
+    uri: https://github.com/IntelRealSense/realsense-ros.git
+    version: 2.2.20
