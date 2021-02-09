@@ -3,6 +3,7 @@ platform: fetch
 launch: jsk_fetch_startup/go_to_kitchen.xml
 interface: jsk_fetch_startup/go_to_kitchen.interface
 icon: jsk_fetch_startup/go_to_kitchen.png
+timeout: 1200
 plugins:
   - name: head_camera_video_recorder_plugin
     type: app_recorder/audio_video_recorder_plugin
