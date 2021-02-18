@@ -103,6 +103,22 @@
         <param name="sample_format" value="S16LE"/>
   </node>
 
+  <!-- heightmap 2 pointcloud -->
+  <node
+      pkg="jsk_pcl_ros"
+      type="heightmap_to_pointcloud"
+      name="heightmap_cloud_accumulated"
+      >
+    <remap from="~input" to="/heightmap_image" />
+    <remap from="~input/config" to="/heightmap_image/config" />
+    <remap from="~output" to="/heightmap_cloud" />
+    <remap from="~output/config" to="/heightmap_cloud/config" />
+
+    <rosparam subst_value="true">
+        keep_organized: true
+    </rosparam>
+  </node>
+
   <!-- rosbag player -->
   <node pkg="rosbag" type="play" name="rosbag_play"
         args="$(arg rosbag) $(arg loop_flag) --clock --start $(arg start_time) $(arg duration)" output="screen" />

@@ -4,6 +4,7 @@
   <arg name="base_camera_mount" default="true" />
   <arg name="head_box" default="true" />
   <arg name="use_visual_odom" default="true" />
+  <arg name="use_safe_base" default="false" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
@@ -61,6 +62,10 @@
   <include file="$(find jsk_fetch_startup)/launch/fetch_visual_odom.launch" if="$(arg use_visual_odom)">
       <arg name="topic_odom_out" value="/odom_combined" />
       <arg name="odom_frame_id" value="odom" />
+  </include>
+
+  <!-- Use safe base controller -->
+  <include file="$(find jsk_fetch_startup)/launch/safe_base_controller.launch" if="$(arg use_safe_base)">
   </include>
 
   <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->

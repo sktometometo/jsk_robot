@@ -16,6 +16,7 @@
           /odom
           /odom_combined
           /cmd_vel
+          /heightmap_image
           /move_base/NavFnROS/plan
           /move_base/TrajectoryPlannerROS/global_plan
           /move_base/TrajectoryPlannerROS/local_plan

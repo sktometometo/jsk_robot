@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="INPUT_POINT_CLOUD"          default="/d435_front/depth/color/points" />
+  <arg name="OUTPUT_HEIGHTMAP_IMAGE_RAW" default="/heightmap_image_raw" />
+  <arg name="OUTPUT_HEIGHTMAP_IMAGE"     default="/heightmap_image" />
+  <arg name="OUTPUT_HEIGHTMAP_CLOUD_RAW" default="/heightmap_cloud_raw" />
+  <arg name="OUTPUT_HEIGHTMAP_CLOUD"     default="/heightmap_cloud" />
+
+  <arg name="fixed_frame_id"      default="odom" />
+  <arg name="center_frame_id" default="base_link" />
+  <arg name="heightmap_frame_id" default="heightmap_base_link" />
+
+  <node
+      pkg="topic_tools"
+      type="throttle"
+      name="d435_cloud_throttle"
+      args="messages $(arg INPUT_POINT_CLOUD) 1.0"
+      />
+
+  <node
+      pkg="jsk_pcl_ros"
+      type="heightmap_converter"
+      name="heightmap_converter"
+      >
+    <!-- Subscribing Topics -->
+    <remap from="~input" to="$(arg INPUT_POINT_CLOUD)_throttle" />
+    <remap from="~output" to="$(arg OUTPUT_HEIGHTMAP_IMAGE_RAW)"/>
+    <remap from="~output/config" to="$(arg OUTPUT_HEIGHTMAP_IMAGE_RAW)/config"/>
+  </node>
+
+  <group ns="heightmap_converter">
+    <!-- Dynamic Parameters -->
+    <!--
+        x 方向の点は, ( max_x - min_x ) / resolution_x = 0.1 [m] おきに分布
+        y 方向の点は, ( max_y - min_y ) / resolution_y = 0.1 [m] おきに分布
+    -->
+    <rosparam>
+        min_x: -3.0
+        max_x: 3.0
+        min_y: -3.0
+        max_y: 3.0
+        min_z: -0.5
+        max_z: 0.5
+        resolution_x: 60
+        resolution_y: 60
+        initial_probability: 1.0
+    </rosparam>
+
+    <!-- Static Parameters -->
+    <rosparam subst_value="true">
+        use_projected_center: true
+        fixed_frame_id: "$(arg fixed_frame_id)"
+        center_frame_id: "$(arg center_frame_id)"
+        projected_center_frame_id: "$(arg heightmap_frame_id)"
+    </rosparam>
+  </group>
+
+  <node
+      pkg="jsk_pcl_ros"
+      type="heightmap_to_pointcloud"
+      name="heightmap_cloud_raw"
+      >
+    <remap from="~input" to="$(arg OUTPUT_HEIGHTMAP_IMAGE_RAW)" />
+    <remap from="~input/config" to="$(arg OUTPUT_HEIGHTMAP_IMAGE_RAW)/config" />
+    <remap from="~output" to="$(arg OUTPUT_HEIGHTMAP_CLOUD_RAW)" />
+    <remap from="~output/config" to="$(arg OUTPUT_HEIGHTMAP_CLOUD_RAW)/config" />
+
+    <rosparam subst_value="true">
+        keep_organized: true
+    </rosparam>
+  </node>
+
+
+  <node
+      pkg="jsk_pcl_ros"
+      type="heightmap_morphological_filtering"
+      name="heightmap_morphological_filtering"
+      >
+    <!-- Subscribing Topics -->
+    <remap from="~input" to="$(arg OUTPUT_HEIGHTMAP_IMAGE_RAW)" />
+
+    <!-- Dynamic Parameters -->
+    <rosparam subst_value="true">
+        mask_size: 3
+        mask_variance: 0.0002
+        smooth_method: "average_distance"
+        use_bilateral: true
+        bilateral_filter_size: 4
+        bilateral_sigma_color: 0.03
+        bilateral_sigma_space: 3
+    </rosparam>
+
+    <!-- Static Parameters -->
+    <rosparam subst_value="true">
+        max_queue_size: 10
+    </rosparam>
+  </node>
+
+
+  <node
+      pkg="jsk_pcl_ros"
+      type="heightmap_time_accumulation"
+      name="heightmap_time_accumulation"
+      >
+    <!-- Subscribing Topics -->
+    <remap from="~input" to="heightmap_morphological_filtering/output" />
+    <remap from="~input/prev_pointcloud" to="$(arg OUTPUT_HEIGHTMAP_CLOUD)" />
+
+    <!-- Publishing Topics -->
+    <remap from="~output" to="$(arg OUTPUT_HEIGHTMAP_IMAGE)" />
+    <remap from="~output/config" to="$(arg OUTPUT_HEIGHTMAP_IMAGE)/config" />
+
+    <!-- Dynamic Parameters -->
+    <rosparam>
+        use_offset: false
+        use_bilateral: false
+        bilateral_filter_size: 5
+        bilateral_sigma_color: 0.04
+        bilateral_sigma_space: 5
+    </rosparam>
+
+    <!-- Static Parameters -->
+    <rosparam subst_value="true">
+        fixed_frame_id: "$(arg fixed_frame_id)"
+        center_frame_id: "$(arg heightmap_frame_id)"
+        tf_queue_size: 10
+    </rosparam>
+  </node>
+
+
+  <node
+      pkg="jsk_pcl_ros"
+      type="heightmap_to_pointcloud"
+      name="heightmap_cloud_accumulated"
+      >
+    <remap from="~input" to="$(arg OUTPUT_HEIGHTMAP_IMAGE)" />
+    <remap from="~input/config" to="$(arg OUTPUT_HEIGHTMAP_IMAGE)/config" />
+    <remap from="~output" to="$(arg OUTPUT_HEIGHTMAP_CLOUD)" />
+    <remap from="~output/config" to="$(arg OUTPUT_HEIGHTMAP_CLOUD)/config" />
+
+    <rosparam subst_value="true">
+        keep_organized: true
+    </rosparam>
+  </node>
+</launch>
