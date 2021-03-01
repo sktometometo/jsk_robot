@@ -1,8 +1,8 @@
 <launch>
   <!-- add arg launch_teleop: yamaguchi & s-kitagawa (2019/04/19) -->
   <arg name="launch_teleop" default="true" />
-  <arg name="base_camera_mount" default="true" />
-  <arg name="head_box" default="true" />
+  <arg name="use_base_camera_mount" default="true" />
+  <arg name="use_head_box" default="true" />
   <arg name="use_realsense" default="true" />
 
   <!-- GDB Debug Option -->
@@ -114,7 +114,7 @@
   <!-- calibration: s-kitagawa (2019/12/11) -->
   <!-- testing urdf with head box by shinjo (2020/02/13) -->
   <!-- URDF -->
-  <param name="robot_description" command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro ros_distro:=$(env ROS_DISTRO) base_camera_mount:=$(arg base_camera_mount) head_box:=$(arg head_box)" />
+  <param name="robot_description" command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro ros_distro:=$(env ROS_DISTRO) base_camera_mount:=$(arg use_base_camera_mount) head_box:=$(arg use_head_box)" />
 
   <!-- Drivers for Base -->
   <node name="robot_driver" launch-prefix="$(arg launch_prefix)" pkg="fetch_drivers" type="robot_driver" output="screen">
