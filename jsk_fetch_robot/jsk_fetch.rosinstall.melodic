@@ -29,7 +29,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
-    version: master
+    version: knorth55/fetch15
 - git:
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
@@ -81,14 +81,21 @@
 - git:
     local-name: tork-a/visualization_rwt
     uri: https://github.com/tork-a/visualization_rwt.git
-    version: knorth55/fetch15
-# Not needed if we do not use move slow and clear
-# - git:
-#     local-name: ros-planning/navigation
-#     uri: https://github.com/ros-planning/navigation.git
-#     version: 708yamaguchi/fetch15
+    version: kinetic-devel
 # robot_pose_publisher is not released on melodic
 - git:
     local-name: GT-RAIL/robot_pose_publisher
     uri: https://github.com/GT-RAIL/robot_pose_publisher.git
     version: 0.2.4
+- git:
+    local-name: IntelRealSense/realsense-ros
+    uri: https://github.com/IntelRealSense/realsense-ros.git
+    version: 2.2.21
+- git:
+    local-name: fetchrobotics/fetch_open_auto_dock
+    uri: https://github.com/fetchrobotics/fetch_open_auto_dock.git
+    version: melodic-devel
+- git:
+    local-name: ros-planning/navigation
+    uri: https://github.com/ros-planning/navigation.git
+    version: 7f22997e6804d9d7249b8a1d789bf27343b26f75
