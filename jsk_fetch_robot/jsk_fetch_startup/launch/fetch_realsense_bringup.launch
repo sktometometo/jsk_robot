@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="required" default="false" />
+  <arg name="respawn" default="true" />
 
   <!-- t265 -->
   <group ns="t265">
@@ -11,8 +11,7 @@
       /tracking_module/enable_dynamic_calibration: true
       /tracking_module/enable_map_preservation: false
     </rosparam>
-    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
-      <arg name="external_manager"         value="false"/>
+    <include file="$(find jsk_fetch_startup)/launch/devices/realsense_nodelet.launch.xml">
       <arg name="tf_prefix"                value="t265"/>
       <arg name="serial_no"                value=""/>
       <arg name="usb_port_id"              value=""/>
@@ -40,14 +39,13 @@
       <arg name="publish_odom_tf"          value="false"/>
       <arg name="publish_tf"               value="false"/>
 
-      <arg name="required"                 value="$(arg required)"/>
+      <arg name="respawn"                 value="$(arg respawn)"/>
     </include>
   </group>
 
   <!-- d435 -->
   <group ns="d435_front_right">
-    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
-      <arg name="external_manager"      value="false"/>
+    <include file="$(find jsk_fetch_startup)/launch/devices/realsense_nodelet.launch.xml">
       <arg name="device_type"           value="d435"/>
       <arg name="serial_no"             value=""/>
       <arg name="tf_prefix"             value="d435_front_right"/>
@@ -60,12 +58,11 @@
       <arg name="depth_height"          value="480"/>
       <arg name="clip_distance"         value="-2"/>
       <arg name="enable_pointcloud"     value="true"/>
-      <arg name="required"              value="$(arg required)"/>
+      <arg name="respawn"              value="$(arg respawn)"/>
     </include>
   </group>
   <group ns="d435_front_left">
-    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
-      <arg name="external_manager"      value="false"/>
+    <include file="$(find jsk_fetch_startup)/launch/devices/realsense_nodelet.launch.xml">
       <arg name="device_type"           value="d435"/>
       <arg name="serial_no"             value=""/>
       <arg name="tf_prefix"             value="d435_front_left"/>
@@ -78,7 +75,7 @@
       <arg name="depth_height"          value="480"/>
       <arg name="clip_distance"         value="-2"/>
       <arg name="enable_pointcloud"     value="true"/>
-      <arg name="required"              value="$(arg required)"/>
+      <arg name="respawn"              value="$(arg respawn)"/>
     </include>
   </group>
 
