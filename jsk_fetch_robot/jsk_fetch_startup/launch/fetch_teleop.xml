@@ -50,9 +50,6 @@
   <node name="relay_odom"
         pkg="topic_tools" type="relay"
         args="/odom_combined /odom_teleop" />
-  <node name="relay_navigation_cmd_vel"
-        pkg="topic_tools" type="relay"
-        args="/cmd_vel /navigation/cmd_vel" />
   <group ns="safe_teleop_base">
     <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find fetch_navigation)/config/fetch/costmap_common.yaml" command="load" ns="local_costmap" />
@@ -69,6 +66,19 @@
       footprint_padding: 0.05
     </rosparam>
   </group>
+
+  <!-- output twist from move_base (/cmd_vel) is smoothed and published as /navigation/cmd_vel  -->
+  <node pkg="cmd_vel_smoother" type="cmd_vel_smoother.py" name="cmd_vel_smoother">
+      <remap from="input" to="/cmd_vel" />
+      <remap from="output" to="/navigation/cmd_vel" />
+      <rosparam>
+          x_acc_lim: 1.0
+          y_acc_lim: 1.0
+          yaw_acc_lim: 2.0
+          desired_rate: 20
+          interpolate_max_frame: 5
+      </rosparam>
+  </node>
 
   <!-- Do not publish /base_controller/command if fetch is docking -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
