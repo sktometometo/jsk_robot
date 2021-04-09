@@ -26,7 +26,7 @@ plugins:
       video_path: /tmp
       video_title: go_to_kitchen_object_detection.avi
       video_topic_name: /edgetpu_object_detector_visualization/output
-      video_fps: 10.0
+      video_fps: 5.0
   - name: respeaker_audio_recorder_plugin
     type: app_recorder/audio_recorder_plugin
     launch_args:
