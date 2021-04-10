@@ -31,6 +31,7 @@
 
   <!-- for fetch_naviation -->
   <run_depend>amcl</run_depend>
+  <run_depend>cmd_vel_smoother</run_depend>
   <run_depend>global_planner</run_depend>
   <run_depend>map_server</run_depend>
   <run_depend>move_base</run_depend>
