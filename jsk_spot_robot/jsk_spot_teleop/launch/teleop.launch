@@ -2,13 +2,15 @@
   <arg name="joy_dev" default="/dev/input/js0" />
   <arg name="joy_topic" default="spot_teleop/joy" />
   <arg name="cmd_vel_topic" default="bluetooth_teleop/cmd_vel" />
-  
-  <node pkg="joy" type="joy_node" name="joy_node">
-    <param name="dev" value="$(arg joy_dev)" />
-    <param name="deadzone" value="0.3" />
-    <param name="autorepeat_rate" value="20" />
 
+  <node pkg="joy" type="joy_node" name="joy_node">
     <remap from="joy" to="$(arg joy_topic)" />
+
+    <rosparam subst_value="True">
+        dev: $(arg joy_dev)
+        deadzone: 0.5
+        autorepeat_rate: 20
+    </rosparam>
   </node>
 
   <node pkg="teleop_twist_joy" name="teleop_twist_joy" type="teleop_node">
@@ -21,10 +23,10 @@
           y: 0
         scale_linear:
           x: 0.5
-          y: 0.4
+          y: 0.3
         scale_linear_turbo:
           x: 1.2
-          y: 0.5
+          y: 0.3
         axis_angular:
           yaw: 3
         scale_angular:
@@ -39,19 +41,21 @@
   <node pkg="jsk_spot_teleop" name="joystick_teleop" type="joystick_teleop" output="screen">
       <remap from="joy" to="$(arg joy_topic)" />
 
-      <param name="~button_estop_hard" value="-1" />
-      <param name="~button_estop_gentle" value="5" />
-      <param name="~button_power_off" value="14" />
-      <param name="~button_power_on" value="13" />
-      <param name="~button_self_right" value="3" />
-      <param name="~button_sit" value="1" />
-      <param name="~button_stand" value="0" />
-      <param name="~button_release" value="8" />
-      <param name="~button_claim" value="9" />
-      <param name="~button_stair_mode" value="-1" />
-      <param name="~button_locomotion_mode" value="2" />
+      <rosparam subst_value="True" >
+          button_estop_hard: -1
+          button_estop_gentle: 5
+          button_power_off: 14
+          button_power_on: 13
+          button_self_right: 3
+          button_sit: 1
+          button_stand: 0
+          button_release: 8
+          button_claim: 9
+          button_stair_mode: 15
+          button_locomotion_mode: 2
 
-      <param name="~num_buttons" value="18" />
+          num_buttons: 18
+      </rosparam>
   </node>
 
   <!--
@@ -67,6 +71,7 @@
 
     down : power_off
     up : power_on
+    left : toggle stair mode
 
     L1 : Unlock movement
     R1 : Estop (gentle)
