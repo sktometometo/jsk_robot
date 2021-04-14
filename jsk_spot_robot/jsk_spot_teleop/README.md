@@ -6,14 +6,21 @@ This package is for teleoperation of Spot with a dualshock 3 controller.
 ## Prerequities
 
 - Ubuntu 18.04 + ROS Melodic
-- dualshock 3 controller
+- dualshock 3 controller or Magicsee R1 controller
+
+and please install udev rules to the computer.
+
+```bash
+roscd jsk_spot_teleop
+sudo cp ./config/udev/* /etc/udev/rules.d/
+```
 
 ## How to run
 
-Before using this pacakge, please connect a dualshock 3 controller with a computer
+Before using this pacakge, please connect a controller to a computer
 
 ```bash
-roslaunch jsk_spot_teleop teleop.launch
+roslaunch jsk_spot_teleop teleop.launch pad_type:=<your pad type (dualshock3 or R1)>
 ```
 
 ## Key Mapping
