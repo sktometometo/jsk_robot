@@ -20,7 +20,7 @@ roslaunch jsk_spot_teleop teleop.launch
 
 ### Dualshock 3
 
-![Key Mapping For DualShock 3](https://user-images.githubusercontent.com/9410362/111890520-68b84400-8a2d-11eb-8f54-dcc6ac7ccbbb.png)
+![SpotTeleopDualshock3](https://user-images.githubusercontent.com/9410362/114705406-ac6b4880-9d62-11eb-874b-bcec85f5c9f7.png)
 
 |Button   |Function                        |
 |:--------|:-------------------------------|
@@ -41,7 +41,7 @@ roslaunch jsk_spot_teleop teleop.launch
 
 ### Magicsee R1
 
-![Key Mapping For Magicsee R1](https://user-images.githubusercontent.com/9410362/111890520-68b84400-8a2d-11eb-8f54-dcc6ac7ccbbb.png)
+![SpotTeleopR1](https://user-images.githubusercontent.com/9410362/114705443-b55c1a00-9d62-11eb-82a5-a32a1ca61eb0.png)
 
 |Button   |Function                        |
 |:--------|:-------------------------------|
