@@ -18,7 +18,9 @@ roslaunch jsk_spot_teleop teleop.launch
 
 ## Key Mapping
 
-![SpotDocumentation](https://user-images.githubusercontent.com/9410362/111890520-68b84400-8a2d-11eb-8f54-dcc6ac7ccbbb.png)
+### Dualshock 3
+
+![Key Mapping For DualShock 3](https://user-images.githubusercontent.com/9410362/111890520-68b84400-8a2d-11eb-8f54-dcc6ac7ccbbb.png)
 
 |Button   |Function                        |
 |:--------|:-------------------------------|
@@ -34,5 +36,18 @@ roslaunch jsk_spot_teleop teleop.launch
 |left     | toggle stair mode              |
 |L1       | Unlock movement                |
 |L2       | (Not assigned)                 |
-|R1       |**EStop (gentle)**              |
+|R1       | **EStop (gentle)**             |
 |R2       | Unlock movement with fast mode |
+
+### Magicsee R1
+
+![Key Mapping For Magicsee R1](https://user-images.githubusercontent.com/9410362/111890520-68b84400-8a2d-11eb-8f54-dcc6ac7ccbbb.png)
+
+|Button   |Function                        |
+|:--------|:-------------------------------|
+| Enter   | Unlock movement                |
+| Back    | **EStop (gentle)**             |
+| A       | Sit                            |
+| B       | Stand                          |
+| C       | claim                          |
+| D       | power on                       |
