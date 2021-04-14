@@ -24,11 +24,15 @@ roslaunch jsk_spot_teleop teleop.launch
 |:--------|:-------------------------------|
 |cross    | Stand                          |
 |circle   | Sit                            |
+|triangle | Switch locomomotion mode       |
 |rectangle| Self Right                     |
 |start    | Claim                          |
 |select   | release                        |
 |up       | power on                       |
 |down     | power off                      |
+|right    | (Not assigned)                 |
+|left     | toggle stair mode              |
 |L1       | Unlock movement                |
-|R2       | Unlock movement with fast mode |
+|L2       | (Not assigned)                 |
 |R1       |**EStop (gentle)**              |
+|R2       | Unlock movement with fast mode |
