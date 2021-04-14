@@ -1,9 +1,9 @@
 <launch>
-  <arg name="joy_dev" default="/dev/input/js0" />
+  <arg name="pad_type" default="dualshock3" />
+
+  <arg name="joy_dev" default="/dev/input/js_$(arg pad_type)" />
   <arg name="joy_topic" default="spot_teleop/joy" />
   <arg name="cmd_vel_topic" default="bluetooth_teleop/cmd_vel" />
-
-  <arg name-"pad_type" default="dualshock3" />
 
   <node pkg="joy" type="joy_node" name="joy_node">
     <remap from="joy" to="$(arg joy_topic)" />
