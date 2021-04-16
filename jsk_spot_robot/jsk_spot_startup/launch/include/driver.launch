@@ -22,7 +22,7 @@
       respawn="true"
       >
     <rosparam file="$(find spot_driver)/config/spot_ros.yaml" command="load" />
-    <rosparam file="$(arg credential_config)/config/spot_credential.yaml" command="load" />
+    <rosparam file="$(arg credential_config)" command="load" />
     <remap from="joint_states" to="/joint_states"/>
     <remap from="tf" to="/tf"/>
   </node>
