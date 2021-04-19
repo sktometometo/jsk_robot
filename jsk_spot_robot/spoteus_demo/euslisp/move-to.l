@@ -1,3 +1,5 @@
+#!/usr/bin/env roseus
+
 (load "package://spoteus/spot-interface.l")
 
 (spot-init nil) ;; do not create-viewer

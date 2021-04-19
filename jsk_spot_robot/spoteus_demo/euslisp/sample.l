@@ -1,3 +1,5 @@
+#!/usr/bin/env roseus
+
 (load "spot-interface.l")
 (spot-init t) ;; create-viewer
 (send *irtviewer* :draw-floor t)
