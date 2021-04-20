@@ -1,6 +1,11 @@
 #!/usr/bin/env roseus
 
-(load "spot-interface.l")
+;;
+;; This script is for demonstration of visualization of spot's angle vector and global pose with irtviewer
+;;
+
+(load "package://spoteus/spot-interface.l")
+
 (spot-init t) ;; create-viewer
 (send *irtviewer* :draw-floor t)
 
