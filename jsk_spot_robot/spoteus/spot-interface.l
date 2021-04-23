@@ -382,6 +382,7 @@
                    (+ (* cos-roll sin-pitch cos-yaw) (* sin-roll cos-pitch sin-yaw))
                    (- (* sin-roll cos-pitch sin-yaw) (* sin-roll sin-pitch cos-yaw)))))
   (:create-quaternion-msg-from-rpy
+   (roll pitch yaw)
    (let* ((q (send self :create-quaternion-from-rpy roll pitch yaw))
           (qx (elt q 1)) (qy (elt q 2)) (qz (elt q 3)) (qw (elt q 0)))
      (instance geometry_msgs::quaternion :init :x qx :y qy :z qz :w qw)))
