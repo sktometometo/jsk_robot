@@ -275,6 +275,19 @@
     (x y &optional (d 0) (timeout 10)) ;; [m] [m] [degree]
     (send self :go-pos x y d :timeout timeout :wait nil)
     )
+  (:body-pose
+    (r p y
+       &key (topic-name "/spot/body_pose"))
+    (when (send self :simulation-modep)
+      (return-from :body-pose t))
+    (unless (ros::get-topic-publisher topic-name)
+      (ros::advertise topic-name geometry_msgs::Pose 1)
+      (unix:sleep 1))
+    (let ((pose-msg (instance geometry_msgs::Pose :init))
+          (quaternion-msg (ros::create-quaternion-msg-from-rpy r p y)))
+      (send pose-msg :orientation quaternion-msg)
+      (ros::publish topic-name pose-msg))
+    (send self :stand))
   (:find-waypoint-position-from-id
    (id ids)
    (let (ret)
