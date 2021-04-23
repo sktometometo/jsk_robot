@@ -284,7 +284,7 @@
       (ros::advertise topic-name geometry_msgs::Pose 1)
       (unix:sleep 1))
     (let ((pose-msg (instance geometry_msgs::Pose :init))
-          (quaternion-msg (ros::create-quaternion-msg-from-rpy r p y)))
+          (quaternion-msg (send self :create-quaternion-msg-from-rpy r p y)))
       (send pose-msg :orientation quaternion-msg)
       (ros::publish topic-name pose-msg))
     (send self :stand))
@@ -382,7 +382,7 @@
                    (+ (* cos-roll sin-pitch cos-yaw) (* sin-roll cos-pitch sin-yaw))
                    (- (* sin-roll cos-pitch sin-yaw) (* sin-roll sin-pitch cos-yaw)))))
   (:create-quaternion-msg-from-rpy
-   (let* ((q (ros::create-quaternion-from-rpy roll pitch yaw))
+   (let* ((q (send self :create-quaternion-from-rpy roll pitch yaw))
           (qx (elt q 1)) (qy (elt q 2)) (qz (elt q 3)) (qw (elt q 0)))
      (instance geometry_msgs::quaternion :init :x qx :y qy :z qz :w qw)))
   )
