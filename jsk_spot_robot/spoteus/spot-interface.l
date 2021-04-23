@@ -367,6 +367,24 @@
      (setq ret (send c :wait-for-result))
      (ros::ros-info "~A ~A" ret (send (send c :get-result) :message))
      ret))
+  ;; These are the methods to calculate rpy -> quaternion.
+  ;; You can use ros::create-quaternion-from-rpy after https://github.com/jsk-ros-pkg/jsk_roseus/pull/662 was merged and released.
+  (:create-quaternion-from-rpy
+   (roll pitch yaw)                     ;; return [w x y z]
+   (let ((sin-roll  (sin (* roll  0.5))) (cos-roll  (cos (* roll  0.5)))
+         (sin-pitch (sin (* pitch 0.5))) (cos-pitch (cos (* pitch 0.5)))
+         (sin-yaw   (sin (* yaw   0.5))) (cos-yaw   (cos (* yaw   0.5))))
+     (print (list sin-roll cos-roll
+                  sin-pitch cos-pitch
+                  sin-yaw cos-yaw))
+     (float-vector (+ (* cos-roll cos-pitch cos-yaw) (* sin-roll sin-pitch sin-yaw))
+                   (- (* sin-roll cos-pitch cos-yaw) (* cos-roll sin-pitch sin-yaw))
+                   (+ (* cos-roll sin-pitch cos-yaw) (* sin-roll cos-pitch sin-yaw))
+                   (- (* sin-roll cos-pitch sin-yaw) (* sin-roll sin-pitch cos-yaw)))))
+  (:create-quaternion-msg-from-rpy
+   (let* ((q (ros::create-quaternion-from-rpy roll pitch yaw))
+          (qx (elt q 1)) (qy (elt q 2)) (qz (elt q 3)) (qw (elt q 0)))
+     (instance geometry_msgs::quaternion :init :x qx :y qy :z qz :w qw)))
   )
 
 (defun spot-init (&optional (create-viewer))
