@@ -27,8 +27,9 @@ cd $HOME/catkin_ws/src
 wstool init .
 wstool merge -t . https://github.com/sktometometo/jsk_robot/raw/develop/spot/jsk_spot_robot/jsk_spot.rosinstall
 wstool update
+rosdep update
 rosdep install -y -r --from-paths . --ignore-src
-pip3 install -r requirements.txt
+pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
 cd $HOME/catkin_ws
 catkin init
 catkin build
@@ -111,7 +112,7 @@ For development, `record.launch` and `play.launch` are useful for rosbag recordi
 ```bash
 source $HOME/catkin_ws/devel/setup.bash
 # Record a rosbag file
-roslaunch jsk_spot_startup record.launch rosbag:=<absolute file path to rosbag file>
+roslaunch jsk_spot_startup rosbag_record.launch rosbag:=<absolute file path to rosbag file>
 # Play a rosbag file
-roslaunch jsk_spot_startup play.launch rosbag:=<absolute file path to rosbag file>
+roslaunch jsk_spot_startup rosbag_play.launch rosbag:=<absolute file path to rosbag file>
 ```
