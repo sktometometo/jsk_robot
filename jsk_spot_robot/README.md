@@ -107,7 +107,7 @@ roslaunch jsk_spot_startup rviz.launch
 
 You can control spot with DualShock3 controller. Please see [jsk_spot_teleop](./jsk_spot_teleop/README.md) for more details.
 
-For development, `record.launch` and `play.launch` are useful for rosbag recording and playing.
+For development, `rosbag_record.launch` and `rosbag_play.launch` are useful for rosbag recording and playing.
 
 ```bash
 source $HOME/catkin_ws/devel/setup.bash
