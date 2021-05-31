@@ -179,7 +179,11 @@
   (let* ((room-light-msg (one-shot-subscribe "/check_room_light/output" jsk_robot_startup::RoomLight))
          (initial-light-on (if room-light-msg (send room-light-msg :light_on)))
          (success-go-to-kitchen nil)
-         (success-auto-dock nil))
+         (success-auto-dock nil)
+         (orig-global-inflation-radius
+           (ros::get-param "/move_base/global_costmap/inflater/inflation_radius"))
+         (orig-local-inflation-radius
+           (ros::get-param "/move_base/local_costmap/inflater/inflation_radius")))
     (if initial-light-on
       (send *ri* :speak-jp "すでに電気がついています。" :wait t)
       (progn
@@ -189,6 +193,11 @@
         (send *ri* :speak "OK, Google" :wait t)
         (send *ri* :speak "Turn on the light." :wait t)))
     (unix::sleep 1)
+    ;; change the inflation_radius
+    (ros::set-dynamic-reconfigure-param
+      "/move_base/global_costmap/inflater" "inflation_radius" :double 0.7)
+    (ros::set-dynamic-reconfigure-param
+      "/move_base/local_costmap/inflater" "inflation_radius" :double 0.7)
     ;; stove
     (dotimes (i n-kitchen-trial)
       (setq success-go-to-kitchen
@@ -242,4 +251,11 @@
       (send *ri* :speak "OK, Google" :wait t)
       (send *ri* :speak "Turn off the light." :wait t))
     (unix::sleep 5)
+    ;; change the inflation_radius
+    (ros::set-dynamic-reconfigure-param
+      "/move_base/global_costmap/inflater" "inflation_radius"
+      :double orig-global-inflation-radius)
+    (ros::set-dynamic-reconfigure-param
+      "/move_base/local_costmap/inflater" "inflation_radius"
+      :double orig-local-inflation-radius)
     (and success-go-to-kitchen success-auto-dock)))
