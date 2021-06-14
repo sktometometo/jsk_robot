@@ -35,7 +35,7 @@
 # This is a develop branch for jsk version.
 # We need to use it until it is merged to master
 - git:
-    local-name: spot-ros
+    local-name: spot_ros
     uri: https://github.com/sktometometo/spot_ros.git
     version: develop/spot
 # geometry2 with python3 version is required for spot_ros
