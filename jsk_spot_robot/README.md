@@ -27,9 +27,6 @@ cd $HOME/catkin_ws/src
 wstool init .
 wstool merge -t . https://github.com/sktometometo/jsk_robot/raw/develop/spot/jsk_spot_robot/jsk_spot.rosinstall
 wstool update
-wstool merge -t . coral_usb_ros/fc.rosinstall
-wstool merge -t . coral_usb_ros/fc.rosinstall.melodic
-wstool update
 cd $HOME/catkin_ws
 catkin init
 catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so

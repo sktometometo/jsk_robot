@@ -48,3 +48,13 @@
 - git:
     local-name: coral_usb_ros
     uri: https://github.com/knorth55/coral_usb_ros.git
+# cv_bridge must be recompliled for python3
+- git:
+    local-name: vision_opencv
+    uri: https://github.com/ros-perception/vision_opencv.git
+    version: melodic
+# dynamic_reconfigure must be recompliled for python3
+- git:
+    local-name: dynamic_reconfigure
+    uri: https://github.com/ros/dynamic_reconfigure.git
+    version: 1.6.3
