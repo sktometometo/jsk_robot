@@ -135,6 +135,22 @@
         <param name="camera_frame" type="str" value="back_fisheye" />
     </node>
 
+    <!-- tf relay for elevator frame -->
+    <node
+        pkg="tf_relay"
+        type="tf_relay"
+        name="elevator_door_tf_relay"
+        >
+        <rosparam>
+            max_duration: 5.0
+            timeout_duration: 0.05
+            timer_duration: 0.1
+            reference_frame_id: elevator_door_frame_raw
+            output_frame_id: elevator_door_frame
+            fixed_frame_id: odom
+        </rosparam>
+    </node>
+
     <!-- Concatenate pointclouds -->
     <node
         pkg="nodelet"
@@ -155,11 +171,11 @@
         </rosparam>
     </node>
 
-    <!-- elevator door detector from outside -->
+    <!-- elevator door detector -->
     <node
         pkg="nodelet"
         type="nodelet"
-        name="elevator_detection_door_detector_outside_attention_clipper"
+        name="elevator_detection_door_detector_attention_clipper"
         args="standalone jsk_pcl/AttentionClipper"
         >
         <remap from="~input/points" to="/spot/depth/points"/>
@@ -175,38 +191,11 @@
     <node
         pkg="jsk_pcl_ros"
         type="extract_indices"
-        name="elevator_detection_door_detector_outside_extract_indices"
+        name="elevator_detection_door_detector_extract_indices"
         >
         <remap from="~input" to="/spot/depth/points"/>
-        <remap from="~indices" to="elevator_detection_door_detector_outside_attention_clipper/output/point_indices"/>
-        <remap from="~output" to="/spot_recognition/elevator_door_outside_points"/>
-    </node>
-
-    <!-- elevator door detector from inside -->
-    <node
-        pkg="nodelet"
-        type="nodelet"
-        name="elevator_detection_door_detector_inside_attention_clipper"
-        args="standalone jsk_pcl/AttentionClipper"
-        >
-        <remap from="~input/points" to="/spot/depth/points"/>
-        <rosparam subst_value="true">
-            initial_pos: [1.5, 0, 0]
-            initial_rot: [0, 0, 0]
-            dimension_x: 1.0
-            dimension_y: 1.0
-            dimension_z: 0.5
-            frame_id: body
-        </rosparam>
-    </node>
-    <node
-        pkg="jsk_pcl_ros"
-        type="extract_indices"
-        name="elevator_detection_door_detector_inside_extract_indices"
-        >
-        <remap from="~input" to="/spot/depth/points"/>
-        <remap from="~indices" to="elevator_detection_door_detector_inside_attention_clipper/output/point_indices"/>
-        <remap from="~output" to="/spot_recognition/elevator_door_inside_points"/>
+        <remap from="~indices" to="elevator_detection_door_detector_attention_clipper/output/point_indices"/>
+        <remap from="~output" to="/spot_recognition/elevator_door_points"/>
     </node>
 
     <!-- switchbot_ros -->

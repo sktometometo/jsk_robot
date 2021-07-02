@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from spot_behavior_manager.base_behavior import BaseBehavior
 
 import actionlib
@@ -28,7 +30,7 @@ class ElevatorBehavior(BaseBehavior):
         roslaunch_file = roslaunch.rlutil.resolve_launch_arguments(roslaunch_cli_args)
         self.roslaunch_parent = roslaunch.parent.ROSLaunchParent(
                                         uuid,
-                                        detection_roslaunch_file
+                                        roslaunch_file
                                         )
         self.roslaunch_parent.start()
 
@@ -63,7 +65,7 @@ class ElevatorBehavior(BaseBehavior):
 
         # graph uploading and localization
         if pre_edge is not None and \
-            graph_name == pre_edge['args']['graph']:
+            graph_name == pre_edge.properties['graph']:
             rospy.loginfo('graph upload and localization skipped.')
         else:
             # Upload
@@ -88,13 +90,14 @@ class ElevatorBehavior(BaseBehavior):
 
         # start door opening check from outside
         self.subscriber_door_check = rospy.Subscriber(
-                                    '/spot_recognition/elevator_door_outside_points',
+                                    '/spot_recognition/elevator_door_points',
                                     PointCloud2,
                                     self.door_point_cloud_callback)
 
         # push button with switchbot
+        rospy.loginfo('calling elevator when riding...')
         if not self.action_client_switchbot.wait_for_server(rospy.Duration(10)):
-            rospy.logerr('switchbot client failed.')
+            rospy.logerr('switchbot server seems to fail.')
             return False
         else:
             switchbot_goal = SwitchBotCommandGoal()
@@ -107,7 +110,7 @@ class ElevatorBehavior(BaseBehavior):
             if not result.done:
                 rospy.logerr('switchbot calling failed.')
                 return False
-        rospy.loginfo('switchbot has succeeded')
+        rospy.loginfo('elevator calling when riding on has succeeded')
 
         # wait for elevator
         rate = rospy.Rate(2)
@@ -128,25 +131,12 @@ class ElevatorBehavior(BaseBehavior):
             rospy.logwarn('Navigation failed when riding on')
             self.spot_client.navigate_to( start_id, blocking=True)
             self.spot_client.wait_for_navigate_to_result()
-            return result.success
-
-        # start door openning check from inside
-        self.subscriber_door_check = rospy.Subscriber(
-                                        '/spot_recognition/elevator_door_inside_points',
-                                        PointCloud2,
-                                        self.door_point_cloud_callback)
-
-        # check if the door is closed
-        rate = rospy.Rate(2)
-        while not rospy.is_shutdown():
-            rate.sleep()
-            if not self.door_is_open:
-                break
-        rospy.loginfo('elevator door closed')
+            return result.success             
 
         # call elevator from destination floor
+        rospy.loginfo('calling elevator when getting off...')
         if not self.action_client_switchbot.wait_for_server(rospy.Duration(10)):
-            rospy.logerr('switchbot client failed.')
+            rospy.logerr('switchbot server seems to fail.')
             return False
         else:
             switchbot_goal = SwitchBotCommandGoal()
@@ -159,7 +149,21 @@ class ElevatorBehavior(BaseBehavior):
             if not result.done:
                 rospy.logerr('switchbot calling failed.')
                 return False
-        rospy.loginfo('switchbot has succeeded')
+        rospy.loginfo('elevator calling when getting off has succeeded')
+
+        # start door openning check from inside
+        self.subscriber_door_check = rospy.Subscriber(
+                                        '/spot_recognition/elevator_door_points',
+                                        PointCloud2,
+                                        self.door_point_cloud_callback)
+
+        # check if the door is closed
+        rate = rospy.Rate(2)
+        while not rospy.is_shutdown():
+            rate.sleep()
+            if not self.door_is_open:
+                break
+        rospy.loginfo('elevator door closed')
 
         # check if the door is open
         rate = rospy.Rate(2)
