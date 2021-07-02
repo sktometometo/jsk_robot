@@ -184,7 +184,7 @@
             initial_rot: [0, 0, 0]
             dimension_x: 0.5
             dimension_y: 0.5
-            dimension_z: 0.5
+            dimension_z: 0.8
             frame_id: elevator_door_frame
         </rosparam>
     </node>
