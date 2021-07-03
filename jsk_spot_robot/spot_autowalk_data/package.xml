@@ -5,8 +5,8 @@
   <description>The spot_autowalk_data package</description>
 
   <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</maintainer>
   <author email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</author>
-  <license>BSD</license>
 
   <license>BSD</license>
 
