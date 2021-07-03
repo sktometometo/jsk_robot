@@ -10,7 +10,7 @@ Each node represents specified positions and each edge represents a behavior to 
 
 ![example_graph](https://user-images.githubusercontent.com/9410362/124147589-cc8ce700-dac9-11eb-930f-1c00c2a4777e.png)
 
-A graph is defined by a yaml file ( e.g. [map.yaml in spot_behavior_manager_demo](https://github.com/sktometometo/jsk_robot/blob/feature/spot/add-spot-behaviors/jsk_spot_robot/jsk_spot_behaviors/spot_behavior_manager_demo/config/map.yaml) )
+A graph is defined by a yaml file ( e.g. [map.yaml in spot_behavior_manager_demo](./spot_behavior_manager_demo/config/map.yaml) )
 Please see nodes and edges format section below.
 
 Knowledge representation and execution process of behaviors are separated from actual behavior implementation.
@@ -39,11 +39,11 @@ goal_id:
     nsecs: 0
   id: ''
 goal:
-  target_node_id: 'eng8_Piloti_Center'" 
+  target_node_id: 'eng2_2FElevator'" 
 ```
 
-Then Spot will go to the Piloti of building 8 by walk behavior and elevator behavior implemented in spot_basic_behaviors packages.
+Then Spot will go to 2FElevator of eng2 by walk behavior and elevator behavior implemented in spot_basic_behaviors packages.
 
-## map yaml file
+https://user-images.githubusercontent.com/9410362/124338016-aad25380-dbe0-11eb-962f-b9a27e1e08cb.mp4
 
-TODO
+For more details, please see [spot_behavior_manager](./spot_behavior_manager), [spot_behavior_manager_demo](./spot_behavior_manager_demo) and each behavior documentation. (e.g. [spot_basic_behaviors](./spot_basic_behaviors) )
