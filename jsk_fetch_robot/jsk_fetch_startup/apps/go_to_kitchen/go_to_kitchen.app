@@ -86,6 +86,9 @@ plugins:
         - /head_camera/depth_registered/throttled/camera_info
         - /head_camera/rgb/throttled/image_rect_color/compressed
         - /head_camera/depth_registered/throttled/image_rect/compressedDepth
+        - /server_name/smach/container_init
+        - /server_name/smach/container_status
+        - /server_name/smach/container_structure
         - /audio
   - name: result_recorder_plugin
     type: app_recorder/result_recorder_plugin
