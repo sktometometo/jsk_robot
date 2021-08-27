@@ -1,0 +1,56 @@
+<launch>
+    <arg name="INPUT_IMAGE" default="/kinova_wrist_camera/color/image_raw"/>
+    <arg name="INPUT_CAMERA_INFO" default="/kinova_wrist_camera/color/camera_info"/>
+
+    <node
+        pkg="imagesift"
+        type="imagesift"
+        name="door_detection_imagesift"
+        output="screen"
+        >
+        <remap from="/image" to="$(arg INPUT_IMAGE)"/>
+        <remap from="/camera_info" to="$(arg INPUT_CAMERA_INFO)"/>
+        <remap from="/Feature0D" to="/door_detection/Feature0D" />
+        <remap from="/ImageFeature0D" to="/door_detection/ImageFeature0D" />
+
+        <param name="~image_transport" value="raw" />
+    </node>
+
+    <!--
+    <node
+        pkg="jsk_perception"
+        type="image_publisher.py"
+        name="door_detection_image_publisher_reference"
+        >
+        <rosparam subst_value="true">
+            file_name: $(find spot_basic_behaviors)/resources/stop.jpg
+            publish_info: false
+            rate: 30
+        </rosparam>
+    </node>
+    -->
+
+    <node
+        pkg="jsk_perception"
+        type="point_pose_extractor"
+        name="door_detection_point_pose_extractor"
+        output="screen"
+        >
+        <remap from="/ImageFeature0D" to="/door_detection/ImageFeature0D" />
+        <remap from="/ObjectDetection" to="/door_detection/ObjectDetection" />
+        <remap from="/ObjectDetection_agg" to="/door_detection/ObjectDetection_agg" />
+        <remap from="/object_pose" to="/door_detection/object_pose" />
+        <rosparam subst_value="true">
+            template_filename: $(find spot_basic_behaviors)/resources/stop.jpg
+            child_frame_id: door_knob_marker_frame
+            object_width: 0.159
+            object_height: 0.159
+            reprojection_threshold: 1.0
+            distanceratio_threshold: 0.8
+            error_threshold: 1000.0
+            viewer_window: false
+            window_name: door_knob_marker
+        </rosparam>
+    </node>
+
+</launch>
