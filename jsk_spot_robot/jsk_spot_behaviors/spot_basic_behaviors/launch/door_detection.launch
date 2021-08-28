@@ -16,20 +16,6 @@
         <param name="~image_transport" value="raw" />
     </node>
 
-    <!--
-    <node
-        pkg="jsk_perception"
-        type="image_publisher.py"
-        name="door_detection_image_publisher_reference"
-        >
-        <rosparam subst_value="true">
-            file_name: $(find spot_basic_behaviors)/resources/stop.jpg
-            publish_info: false
-            rate: 30
-        </rosparam>
-    </node>
-    -->
-
     <node
         pkg="jsk_perception"
         type="point_pose_extractor"
@@ -42,7 +28,6 @@
         <remap from="/object_pose" to="/door_detection/object_pose" />
         <rosparam subst_value="true">
             template_filename: $(find spot_basic_behaviors)/resources/stop.jpg
-            child_frame_id: door_knob_marker_frame
             object_width: 0.159
             object_height: 0.159
             reprojection_threshold: 1.0
@@ -50,6 +35,40 @@
             error_threshold: 1000.0
             viewer_window: false
             window_name: door_knob_marker
+            broadcast_tf: true
+            child_frame_id: door_knob_marker_frame
+        </rosparam>
+    </node>
+
+    <node
+        pkg="rostopic"
+        type="rostopic"
+        name="door_detection_dummy_subscriber"
+        output="log"
+        args="echo /door_detection/ObjectDetection"
+        >
+    </node>
+
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="door_detection_handle_frame_publisher"
+        args="-0.1 0.05 0.06 0 3.141592 0 door_knob_marker_frame door_knob_frame_raw"
+        >
+    </node>
+
+    <node
+        pkg="tf_relay"
+        type="tf_relay"
+        name="door_detection_door_knob_tf_relay"
+        >
+        <rosparam>
+            max_duration: 5.0
+            timeout_duration: 0.05
+            timer_duration: 0.1
+            reference_frame_id: door_knob_frame_raw
+            output_frame_id: door_knob_frame
+            fixed_frame_id: odom
         </rosparam>
     </node>
 
