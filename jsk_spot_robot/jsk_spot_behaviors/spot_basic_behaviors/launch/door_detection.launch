@@ -53,7 +53,7 @@
         pkg="tf2_ros"
         type="static_transform_publisher"
         name="door_detection_handle_frame_publisher"
-        args="-0.1 0.05 0.06 0 3.141592 0 door_knob_marker_frame door_knob_frame_raw"
+        args="-0.1 0.0 0.06 0 3.141592 0 door_knob_marker_frame door_knob_frame_raw"
         >
     </node>
 
