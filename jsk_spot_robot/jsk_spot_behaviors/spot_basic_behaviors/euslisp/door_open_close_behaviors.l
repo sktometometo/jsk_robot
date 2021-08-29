@@ -72,15 +72,26 @@
 (defun open-automatic-door ()
   (let ()
     ;; first look at the object
-    ;;; TODO
+    (send *spotkinova* :angle-vector
+          #f(0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0 0.0 0.0 90.0 100.0 0))
+    ;;; TODO: this should use look at
+    (send *ri* :angle-vector (send *spotkinova* :angle-vector) 5000)
+    (send *ri* :wait-interpolation)
 
     ;; then approach to the object
-    ;;; TODO
+    (setq door-approach-frame (send *tfl* :lookup-transform "base_link" "door_approach_frame" (ros::time 0)))
+    (send *spotkinova* :kinova-rest-pose)
+    (send *ri* :angle-vector (send *spotkinova* :angle-vector) 3000)
+    (send *ri* :wait-interpolation)
+    (send *ri* :go-pos
+          (/ (elt (send door-approach-frame :pos) 0) 1000.0)
+          (/ (elt (send door-approach-frame :pos) 1) 1000.0)
+          (deg2rad (elt (elt (rpy-angle (send door-approach-frame :rot)) 1) 2)))
 
     ;; relocate the object precisely
     ;;; look at object again
     (send *spotkinova* :angle-vector
-          #f(0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0 0.0 0.0 90.0 100.0 0))
+          #f(0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0 0.0 0.0 90.0 120.0 0))
     ;;; TODO: this should use look at
     (send *ri* :angle-vector (send *spotkinova* :angle-vector) 5000)
     (send *ri* :wait-interpolation)
@@ -94,10 +105,9 @@
         (send *ri* :angle-vector (send *spotkinova* :angle-vector) 3000)
         (send *ri* :wait-interpolation)
         (return-from open-automatic-door nil))
-       )
       nil)
     ;; close hand
-    (send *ri* :wait-interpolation)
+    (send *ri* :start-grasp)
     ;; move hand to approach position
     (setq ret (send *spotkinova* :head :inverse-kinematics door-button-approach-frame))
     (if ret
@@ -126,10 +136,9 @@
           (send *ri* :wait-interpolation)
           (return-from open-automatic-door nil))
         )
+    ;;; move forward
+    (send *ri* :go-pos 1 0)
     ;;; move to kinova-rest-pose
-    (send *spotkinova* :head :inverse-kinematics door-button-approach-frame)
-    (send *ri* :angle-vector (send *spotkinova* :angle-vector) 1000)
-    (send *ri* :wait-interpolation)
     (send *spotkinova* :kinova-rest-pose)
     (send *ri* :angle-vector (send *spotkinova* :angle-vector) 3000)
     (send *ri* :wait-interpolation)
