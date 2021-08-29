@@ -76,8 +76,8 @@
     <node
         pkg="tf2_ros"
         type="static_transform_publisher"
-        name="door_detection_handle_frame_publisher"
-        args="0 0.0 0.0 0 0 0 door_button_marker_frame door_button_frame_raw"
+        name="door_detection_door_button_frame_publisher"
+        args="0.10 -0.02 0.015 0 0 0 door_button_marker_frame door_button_frame_raw"
         >
     </node>
 
@@ -94,6 +94,30 @@
             output_frame_id: door_button_frame
             fixed_frame_id: odom
         </rosparam>
+    </node>
+
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="door_detection_door_approach_frame_publisher"
+        args="0.535, -0.027, 1.010 -0.714, -0.072, 0.695, 0.044 door_button_frame door_approach_frame"
+        >
+    </node>
+
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="door_detection_door_button_approach_frame_publisher"
+        args="0.0 0.0 0.1 0 3.141592 0 door_button_frame door_button_approach_frame"
+        >
+    </node>
+
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="door_detection_door_button_touch_frame_publisher"
+        args="0.0 0.0 -0.01 0 3.141592 0 door_button_frame door_button_touch_frame"
+        >
     </node>
 
 </launch>
