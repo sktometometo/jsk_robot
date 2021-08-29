@@ -1,0 +1,99 @@
+<launch>
+    <arg name="INPUT_IMAGE" default="/kinova_wrist_camera/color/image_raw"/>
+    <arg name="INPUT_CAMERA_INFO" default="/kinova_wrist_camera/color/camera_info"/>
+
+    <node
+        pkg="imagesift"
+        type="imagesift"
+        name="door_detection_imagesift"
+        output="screen"
+        >
+        <remap from="/image" to="$(arg INPUT_IMAGE)"/>
+        <remap from="/camera_info" to="$(arg INPUT_CAMERA_INFO)"/>
+        <remap from="/Feature0D" to="/door_detection/Feature0D" />
+        <remap from="/ImageFeature0D" to="/door_detection/ImageFeature0D" />
+
+        <param name="~image_transport" value="raw" />
+    </node>
+
+    <!--
+            template_filename: $(find spot_basic_behaviors)/resources/door_button.png
+            object_width: 0.040
+            object_height: 0.190
+    -->
+
+    <!--
+            template_filename: $(find spot_basic_behaviors)/resources/door_marker.png
+            object_width: 0.086
+            object_height: 0.092
+    -->
+
+    <!--
+            template_filename: $(find spot_basic_behaviors)/resources/door_button_double.png
+            object_width: 0.150
+            object_height: 0.092
+    -->
+
+    <!--
+            template_filename: $(find spot_basic_behaviors)/resources/noetic.png
+            object_width: 0.1165
+            object_height: 0.150
+    -->
+
+    <node
+        pkg="jsk_perception"
+        type="point_pose_extractor"
+        name="door_detection_point_pose_extractor"
+        output="screen"
+        >
+        <remap from="/ImageFeature0D" to="/door_detection/ImageFeature0D" />
+        <remap from="/ObjectDetection" to="/door_detection/ObjectDetection" />
+        <remap from="/ObjectDetection_agg" to="/door_detection/ObjectDetection_agg" />
+        <remap from="/object_pose" to="/door_detection/object_pose" />
+        <rosparam subst_value="true">
+            template_filename: $(find spot_basic_behaviors)/resources/noetic.png
+            object_width: 0.1165
+            object_height: 0.150
+            reprojection_threshold: 1.0
+            distanceratio_threshold: 0.8
+            error_threshold: 1000.0
+            viewer_window: false
+            window_name: door_button_marker
+            broadcast_tf: true
+            child_frame_id: door_button_marker_frame
+        </rosparam>
+    </node>
+
+    <node
+        pkg="rostopic"
+        type="rostopic"
+        name="door_detection_dummy_subscriber"
+        output="log"
+        args="echo /door_detection/ObjectDetection"
+        >
+    </node>
+
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="door_detection_handle_frame_publisher"
+        args="0 0.0 0.0 0 0 0 door_button_marker_frame door_button_frame_raw"
+        >
+    </node>
+
+    <node
+        pkg="tf_relay"
+        type="tf_relay"
+        name="door_detection_door_knob_tf_relay"
+        >
+        <rosparam>
+            max_duration: 5.0
+            timeout_duration: 0.05
+            timer_duration: 0.1
+            reference_frame_id: door_button_frame_raw
+            output_frame_id: door_button_frame
+            fixed_frame_id: odom
+        </rosparam>
+    </node>
+
+</launch>
