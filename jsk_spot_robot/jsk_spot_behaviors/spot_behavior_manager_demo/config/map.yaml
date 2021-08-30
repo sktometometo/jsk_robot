@@ -50,13 +50,62 @@ edges:
       rest_waypoint_id: 'unsaid-collie-jvatvS.7KX9jpzQz61GL4A=='
       goal_waypoint_id: 'sly-chetah-IZ4pVY7vrqO36OoKCYk9Zg=='
   - from: 'eng2_2FElevator'
+    to: 'eng2_2FEntranceInside'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng2_2FEntranceInside'
+    to: 'eng2_2FElevator'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng2_2FEntranceInside'
+    to: 'eng2_2FEntranceOutside'
+    behavior_type: 'spot_basic_behaviors.automatic_door_behavior.AutomaticDoorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+      door_id: 'sunk-okapi-Ff0TamXPUsVqEdKJQEtsgA=='
+  - from: 'eng2_2FEntranceOutside'
+    to: 'eng2_2FEntranceInside'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng2_2FEntranceOutside'
+    to: 'eng2_eng6_crossroad_eng2'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng2_eng6_crossroad_eng2'
+    to: 'eng2_2FEntranceOutside'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng2_eng6_crossroad_eng2'
+    to: 'eng2_eng6_crossroad_eng6'
+    behavior_type: 'spot_basic_behaviors.crosswalk_behavior.CrosswalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng2_eng6_crossroad_eng6'
+    to: 'eng2_eng6_crossroad_eng2'
+    behavior_type: 'spot_basic_behaviors.crosswalk_behavior.CrosswalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng2_eng6_crossroad_eng6'
     to: 'eng_TelephoneBox'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
   - from: 'eng_TelephoneBox'
-    to: 'eng2_2FElevator'
+    to: 'eng2_eng6_crossroad_eng6'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
@@ -322,6 +371,26 @@ nodes:
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
         id: 'plane-marlin-gaEqSGH8WX35X1619X0NwQ=='
+        localization_method: 'waypoint'
+  'eng2_2FEntranceInside'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+        id: 'sunk-okapi-Ff0TamXPUsVqEdKJQEtsgA=='
+        localization_method: 'fiducial'
+  'eng2_2FEntranceOutside'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+        id: 'milky-otus-WzBLeFXMwBwi1916P9XALw=='
+        localization_method: 'fiducial'
+  'eng2_eng6_crossroad_eng2'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+        id: 'above-puffin-100RMl4r9V.ujhdP8gYa3w=='
+        localization_method: 'waypoint'
+  'eng2_eng6_crossroad_eng6'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+        id: 'custom-ibis-DmTluXUaNVPzSR7g2UlzIA=='
         localization_method: 'waypoint'
   'eng_TelephoneBox':
     name_en: 'telephone box'
