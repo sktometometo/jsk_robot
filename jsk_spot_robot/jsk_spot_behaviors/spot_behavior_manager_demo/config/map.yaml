@@ -372,22 +372,22 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
         id: 'plane-marlin-gaEqSGH8WX35X1619X0NwQ=='
         localization_method: 'waypoint'
-  'eng2_2FEntranceInside'
+  'eng2_2FEntranceInside':
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
         id: 'sunk-okapi-Ff0TamXPUsVqEdKJQEtsgA=='
         localization_method: 'fiducial'
-  'eng2_2FEntranceOutside'
+  'eng2_2FEntranceOutside':
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
         id: 'milky-otus-WzBLeFXMwBwi1916P9XALw=='
         localization_method: 'fiducial'
-  'eng2_eng6_crossroad_eng2'
+  'eng2_eng6_crossroad_eng2':
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
         id: 'above-puffin-100RMl4r9V.ujhdP8gYa3w=='
         localization_method: 'waypoint'
-  'eng2_eng6_crossroad_eng6'
+  'eng2_eng6_crossroad_eng6':
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
         id: 'custom-ibis-DmTluXUaNVPzSR7g2UlzIA=='
