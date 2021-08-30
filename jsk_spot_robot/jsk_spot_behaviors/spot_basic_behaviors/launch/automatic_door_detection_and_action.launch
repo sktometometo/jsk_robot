@@ -1,0 +1,114 @@
+<launch>
+    <arg name="INPUT_IMAGE" default="/kinova_wrist_camera/color/image_raw"/>
+    <arg name="INPUT_CAMERA_INFO" default="/kinova_wrist_camera/color/camera_info"/>
+
+    <arg name="door_marker_image" default="$(find spot_basic_behaviors)/resources/noetic.png" />
+    <arg name="door_marker_image_width" default="0.1165" />
+    <arg name="door_marker_image_height" default="0.150" />
+    <arg name="door_marker_to_door_button_frame" default="0.10 -0.02 0.015 0 0 0" />
+    <arg name="door_button_to_door_approach_frame" default="0.535 -0.027 1.010 -0.714 -0.072 0.695 0.044" />
+    <arg name="door_button_to_door_button_approach_frame" default="0.0 0.0 0.1 0 3.141592 0" />
+    <arg name="door_button_to_door_button_touch_frame" default="0.0 0.0 -0.01 0 3.141592 0" />
+
+    <node
+        pkg="spot_basic_behaviors"
+        type="open_automatic_door_server.l"
+        name="open_automatic_door_server"
+        >
+    </node>
+
+    <node
+        pkg="imagesift"
+        type="imagesift"
+        name="automatic_door_detection_imagesift"
+        output="screen"
+        >
+        <remap from="/image" to="$(arg INPUT_IMAGE)"/>
+        <remap from="/camera_info" to="$(arg INPUT_CAMERA_INFO)"/>
+        <remap from="/Feature0D" to="/automatic_door_detection/Feature0D" />
+        <remap from="/ImageFeature0D" to="/automatic_door_detection/ImageFeature0D" />
+
+        <param name="~image_transport" value="raw" />
+    </node>
+
+    <node
+        pkg="jsk_perception"
+        type="point_pose_extractor"
+        name="automatic_door_detection_point_pose_extractor"
+        output="screen"
+        >
+        <remap from="/ImageFeature0D" to="/automatic_door_detection/ImageFeature0D" />
+        <remap from="/ObjectDetection" to="/automatic_door_detection/ObjectDetection" />
+        <remap from="/ObjectDetection_agg" to="/automatic_door_detection/ObjectDetection_agg" />
+        <remap from="/object_pose" to="/automatic_door_detection/object_pose" />
+        <rosparam subst_value="true">
+            template_filename: $(arg door_marker_image)
+            object_width: $(arg door_marker_image_width)
+            object_height: $(arg door_marker_image_height)
+            reprojection_threshold: 1.0
+            distanceratio_threshold: 0.8
+            error_threshold: 1000.0
+            viewer_window: false
+            window_name: door_button_marker
+            broadcast_tf: true
+            child_frame_id: door_button_marker_frame
+        </rosparam>
+    </node>
+
+    <node
+        pkg="rostopic"
+        type="rostopic"
+        name="automatic_door_detection_dummy_subscriber"
+        output="log"
+        args="echo /automatic_door_detection/ObjectDetection"
+        >
+    </node>
+
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="automatic_door_detection_door_button_frame_publisher"
+        args="$(arg door_marker_to_door_button_frame) door_button_marker_frame door_button_frame_raw"
+        >
+    </node>
+
+    <node
+        pkg="tf_relay"
+        type="tf_relay"
+        name="automatic_door_detection_door_knob_tf_relay"
+        >
+        <rosparam>
+            max_duration: 5.0
+            timeout_duration: 0.05
+            timer_duration: 0.1
+            reference_frame_id: door_button_frame_raw
+            output_frame_id: door_button_frame
+            fixed_frame_id: odom
+        </rosparam>
+    </node>
+
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="automatic_door_detection_door_approach_frame_publisher"
+        args="$(arg door_button_to_door_approach_frame) door_button_frame door_approach_frame"
+        >
+    </node>
+
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="automatic_door_detection_door_button_approach_frame_publisher"
+        args="$(arg door_button_to_door_button_approach_frame) door_button_frame door_button_approach_frame"
+        >
+    </node>
+
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="automatic_door_detection_door_button_touch_frame_publisher"
+        args="$(arg door_button_to_door_button_touch_frame) door_button_frame door_button_touch_frame"
+        >
+    </node>
+
+</launch>
