@@ -10,12 +10,14 @@
     <arg name="door_button_to_door_button_approach_frame" default="0.0 0.0 0.1 0 3.141592 0" />
     <arg name="door_button_to_door_button_touch_frame" default="0.0 0.0 -0.01 0 3.141592 0" />
 
+    <!--
     <node
         pkg="spot_basic_behaviors"
         type="open_automatic_door_server.l"
         name="open_automatic_door_server"
         >
     </node>
+    -->
 
     <node
         pkg="imagesift"
