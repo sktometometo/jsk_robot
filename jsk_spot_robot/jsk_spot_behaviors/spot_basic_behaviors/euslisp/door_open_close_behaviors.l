@@ -74,12 +74,31 @@
     ;; first look at the object
     (send *spotkinova* :angle-vector
           #f(0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0 0.0 0.0 90.0 100.0 0))
-    ;;; TODO: this should use look at
     (send *ri* :angle-vector (send *spotkinova* :angle-vector) 5000)
     (send *ri* :wait-interpolation)
+    (setq loop-continue t)
+    (while loop-continue
+      (setq joint-angle (+ -90 (* (- 90 -90) (/ (random 100) 100.0))))
+      (send *spotkinova* :head-elbow-y :joint-angle joint-angle)
+      (send *ri* :angle-vector (send *spotkinova* :angle-vector) 3000)
+      (send *ri* :wait-interpolation)
+      (if (send *tfl* :lookup-transform "base_link" "door_approach_frame" (ros::time 0))
+        (setq loop-continue nil)
+        (ros::ros-info "door marker not found keep searching....")
+        )
+      )
+    ;;; TODO: this should use look at
 
     ;; then approach to the object
     (setq door-approach-frame (send *tfl* :lookup-transform "base_link" "door_approach_frame" (ros::time 0)))
+    (if (not door-approach-frame)
+      (progn
+        (ros::ros-error "Transform Failed")
+        (send *spotkinova* :kinova-rest-pose)
+        (send *ri* :angle-vector (send *spotkinova* :angle-vector) 3000)
+        (send *ri* :wait-interpolation)
+        (return-from open-automatic-door nil))
+      nil)
     (send *spotkinova* :kinova-rest-pose)
     (send *ri* :angle-vector (send *spotkinova* :angle-vector) 3000)
     (send *ri* :wait-interpolation)
