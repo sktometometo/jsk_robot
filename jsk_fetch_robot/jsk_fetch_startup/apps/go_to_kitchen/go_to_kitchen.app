@@ -137,6 +137,13 @@ plugins:
       mail_title: Fetch kitchen patrol demo
       use_timestamp_title: true
     plugin_arg_yaml: /var/lib/robot/fetch_mail_notifier_plugin.yaml
+  - name: move_base_cancel_plugin
+    type: app_publisher/rostopic_publisher_plugin
+    plugin_args:
+      stop_topics:
+        - name: "/move_base/cancel"
+          pkg: actionlib_msgs
+          type: GoalID
 plugin_order:
   start_plugin_order:
     - service_notification_saver_plugin
@@ -152,6 +159,7 @@ plugin_order:
     - tweet_notifier_plugin
     - speech_notifier_plugin
     - mail_notifier_plugin
+    - move_base_cancel_plugin
   stop_plugin_order:
     - service_notification_saver_plugin
     - smach_notification_saver_plugin
@@ -166,3 +174,4 @@ plugin_order:
     - tweet_notifier_plugin
     - speech_notifier_plugin
     - mail_notifier_plugin
+    - move_base_cancel_plugin
