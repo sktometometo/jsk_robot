@@ -13,11 +13,16 @@ from sound_play.libsoundplay import SoundClient
 from spot_ros_client.libspotros import SpotRosClient
 
 from spot_behavior_manager.support_behavior_graph import SupportBehaviorGraph
-from spot_behavior_manager.base_behavior import BaseBehavior, load_behavior_class
+from spot_behavior_manager.base_behavior import BaseBehavior
+from spot_behavior_manager.base_behavior import load_behavior_class
 
 from std_msgs.msg import String
-from spot_behavior_manager_msgs.msg import LeadPersonAction, LeadPersonFeedback, LeadPersonResult, LeadPersonActionFeedback
-from spot_behavior_manager_msgs.srv import ResetCurrentNode, ResetCurrentNodeResponse
+from spot_behavior_manager_msgs.msg import LeadPersonAction
+from spot_behavior_manager_msgs.msg import LeadPersonFeedback
+from spot_behavior_manager_msgs.msg import LeadPersonResult
+from spot_behavior_manager_msgs.msg import LeadPersonActionFeedback
+from spot_behavior_manager_msgs.srv import ResetCurrentNode
+from spot_behavior_manager_msgs.srv import ResetCurrentNodeResponse
 
 
 class BehaviorManagerNode(object):
@@ -72,8 +77,9 @@ class BehaviorManagerNode(object):
         self.list_behaviors_execution_actions = []
         for action_name in self.list_action_name_synchronizer:
             self.list_behaviors_execution_actions.append(
-                    rospy.Subscriber('{}/feedback'.format(action_name), LeadPersonActionFeedback, self.callback_synchronizer)
-                    )
+                rospy.Subscriber('{}/feedback'.format(action_name),
+                                 LeadPersonActionFeedback, self.callback_synchronizer)
+            )
 
         # action server
         self.server_execute_behaviors = actionlib.SimpleActionServer(
@@ -90,12 +96,12 @@ class BehaviorManagerNode(object):
 
         try:
             frame_odom_to_base = tf2_geometry_msgs.transform_to_kdl(
-                    self.tf_buffer.lookup_transform(
-                        'odom',
-                        'base_link',
-                        rospy.Time()
-                        )
-                    )
+                self.tf_buffer.lookup_transform(
+                    'odom',
+                    'base_link',
+                    rospy.Time()
+                )
+            )
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
             return None
         return frame_odom_to_base
@@ -111,16 +117,17 @@ class BehaviorManagerNode(object):
             return False
         frame_current_to_anchor = current_pose.Inverse() * self.anchor_pose
         self.spot_client.trajectory(
-                frame_current_to_anchor.p[0],
-                frame_current_to_anchor.p[1],
-                frame_current_to_anchor.M.GetRPY()[2],
-                10,
-                blocking=True
-                )
+            frame_current_to_anchor.p[0],
+            frame_current_to_anchor.p[1],
+            frame_current_to_anchor.M.GetRPY()[2],
+            10,
+            blocking=True
+        )
 
     def callback_synchronizer(self, msg):
 
-        rospy.loginfo('Current node is updated to {}'.format(msg.feedback.current_node_id))
+        rospy.loginfo('Current node is updated to {}'.format(
+            msg.feedback.current_node_id))
         self.current_node_id = msg.feedback.current_node_id
         self.pre_edge = None
 
@@ -170,7 +177,8 @@ class BehaviorManagerNode(object):
                         if self.navigate_edge(edge):
                             rospy.loginfo('Edge {} succeeded.'.format(edge))
                             self.current_node_id = edge.node_id_to
-                            self.server_execute_behaviors.publish_feedback(LeadPersonFeedback(current_node_id=self.current_node_id))
+                            self.server_execute_behaviors.publish_feedback(
+                                LeadPersonFeedback(current_node_id=self.current_node_id))
                             self.pre_edge = edge
                             self.set_anchor_pose()
                         else:
@@ -178,7 +186,8 @@ class BehaviorManagerNode(object):
                             if not self.silent_mode:
                                 self.sound_client.say(
                                     '移動に失敗しました。経路を探索し直します。', blocking=True)
-                            self.server_execute_behaviors.publish_feedback(LeadPersonFeedback(current_node_id=self.current_node_id))
+                            self.server_execute_behaviors.publish_feedback(
+                                LeadPersonFeedback(current_node_id=self.current_node_id))
                             current_graph.remove_edge(
                                 edge.node_id_from, edge.node_id_to)
                             success_navigation = False

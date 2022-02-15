@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import rospy
-import roslaunch
 
 
 def load_behavior_class(class_string):
