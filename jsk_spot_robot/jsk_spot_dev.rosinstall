@@ -73,3 +73,7 @@
     local-name: aerial_robot
     uri: https://github.com/sktometometo/aerial_robot.git
     version: develop/spot
+- git:
+    local-name: sktometometo/ros_lock
+    uri: https://github.com/sktometometo/ros_lock.git
+    version: main
