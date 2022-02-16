@@ -12,6 +12,8 @@ import PyKDL
 from sound_play.libsoundplay import SoundClient
 from spot_ros_client.libspotros import SpotRosClient
 
+from ros_lock import ROSLock
+
 from spot_behavior_manager.support_behavior_graph import SupportBehaviorGraph
 from spot_behavior_manager.base_behavior import BaseBehavior
 from spot_behavior_manager.base_behavior import load_behavior_class
@@ -55,6 +57,9 @@ class BehaviorManagerNode(object):
             sound_action='/robotsound_jp',
             sound_topic='/robotsound_jp'
         )
+
+        # ros_lock
+        self.ros_lock = ROSLock('locomotion')
 
         # publisher
         self.pub_current_node_id = rospy.Publisher(
@@ -169,41 +174,42 @@ class BehaviorManagerNode(object):
                 # navigation of edges in the path
                 if not self.silent_mode:
                     self.sound_client.say('目的地に向かいます', blocking=True)
-                self.go_back_to_anchor_pose()
                 success_navigation = True
                 for edge in path:
                     rospy.loginfo('Navigating Edge {}...'.format(edge))
-                    try:
-                        if self.navigate_edge(edge):
-                            rospy.loginfo('Edge {} succeeded.'.format(edge))
-                            self.current_node_id = edge.node_id_to
-                            self.server_execute_behaviors.publish_feedback(
-                                LeadPersonFeedback(current_node_id=self.current_node_id))
-                            self.pre_edge = edge
-                            self.set_anchor_pose()
-                        else:
-                            rospy.logwarn('Edge {} failed'.format(edge))
+                    with self.ros_lock:
+                        try:
+                            self.go_back_to_anchor_pose()
+                            if self.navigate_edge(edge):
+                                rospy.loginfo('Edge {} succeeded.'.format(edge))
+                                self.current_node_id = edge.node_id_to
+                                self.server_execute_behaviors.publish_feedback(
+                                    LeadPersonFeedback(current_node_id=self.current_node_id))
+                                self.pre_edge = edge
+                                self.set_anchor_pose()
+                            else:
+                                rospy.logwarn('Edge {} failed'.format(edge))
+                                if not self.silent_mode:
+                                    self.sound_client.say(
+                                        '移動に失敗しました。経路を探索し直します。', blocking=True)
+                                self.server_execute_behaviors.publish_feedback(
+                                    LeadPersonFeedback(current_node_id=self.current_node_id))
+                                current_graph.remove_edge(
+                                    edge.node_id_from, edge.node_id_to)
+                                success_navigation = False
+                                break
+                        except Exception as e:
+                            rospy.logerr(
+                                'Got an error while navigating edge {}: {}'.format(edge, e))
                             if not self.silent_mode:
-                                self.sound_client.say(
-                                    '移動に失敗しました。経路を探索し直します。', blocking=True)
-                            self.server_execute_behaviors.publish_feedback(
-                                LeadPersonFeedback(current_node_id=self.current_node_id))
-                            current_graph.remove_edge(
-                                edge.node_id_from, edge.node_id_to)
-                            success_navigation = False
-                            break
-                    except Exception as e:
-                        rospy.logerr(
-                            'Got an error while navigating edge {}: {}'.format(edge, e))
-                        if not self.silent_mode:
-                            self.sound_client.say('エラーが発生しました', blocking=True)
-                        self.pre_edge = None
-                        result = LeadPersonResult(
-                            success=False,
-                            message='Got an error while navigating edge {}: {}'.format(edge, e))
-                        self.server_execute_behaviors.set_aborted(result)
-                        self.anchor_pose = None
-                        return
+                                self.sound_client.say('エラーが発生しました', blocking=True)
+                            self.pre_edge = None
+                            result = LeadPersonResult(
+                                success=False,
+                                message='Got an error while navigating edge {}: {}'.format(edge, e))
+                            self.server_execute_behaviors.set_aborted(result)
+                            self.anchor_pose = None
+                            return
 
                 if success_navigation:
                     break
@@ -213,7 +219,6 @@ class BehaviorManagerNode(object):
             self.sound_client.say('目的地に到着しました.', blocking=True)
         result = LeadPersonResult(success=True, message='Goal Reached.')
         self.server_execute_behaviors.set_succeeded(result)
-        self.set_anchor_pose()
         return
 
     def navigate_edge(self, edge):
