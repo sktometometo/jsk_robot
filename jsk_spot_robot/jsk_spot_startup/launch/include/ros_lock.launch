@@ -1,0 +1,9 @@
+<launch>
+    <node
+        pkg="ros_lock"
+        type="lock_manager_node.py"
+        name="lock_manager"
+        required="true"
+        output="screen"
+        />
+</launch>
