@@ -472,10 +472,7 @@
   (ros::spin-once)
   (send *ri* :spin-once)
   (send *ri* :claim)
-  (while (member (send *ri* :state :power-state-motor-power-state) (list 'off nil))
-    (unix::sleep 1)
-    (ros::ros-info "powering on...")
-    (send *ri* :power-on))
+  (send *ri* :power-on)
   ;;
   (unless (every #'(lambda (x) (eq x 'made)) (mapcar #'(lambda (x) (cdr (assoc :contact x))) (send *ri* :state :feet)))
       (ros::ros-info "run (send *ri* :stand) to stand the robot"))
