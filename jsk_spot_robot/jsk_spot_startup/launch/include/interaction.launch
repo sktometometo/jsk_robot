@@ -84,7 +84,7 @@
         <arg name="launch_sound_play" value="false"/>
         <arg name="speech_to_text_topic" value="/speech_to_text_jp"/>
     </include>
-    <!-- speech_recognition (english, online) -->
+    <!-- speech_recognition (japanese, online) -->
     <node
         pkg="respeaker_ros"
         type="speech_to_text.py"
