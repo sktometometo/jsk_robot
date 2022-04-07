@@ -1,0 +1,28 @@
+<launch>
+  <!-- copied from https://github.com/jsk-ros-pkg/jsk_robot/blob/9282d6b2903223d3880507be34aa646e1e048506/jsk_spot_robot/jsk_spot_head_joy/launch/head_teleop.launch -->
+  <!-- PXN-2113 Pro 11ff:0837 -->
+  <arg name="joy_dev" default="/dev/input/js0" />
+  <arg name="cmd_vel_topic" default="/go1/cmd_vel" />
+  <arg name="pass_through" default="false" />
+  <arg name="deadzone" default="0.2" />
+
+  <include file="$(find jsk_robot_startup)/launch/head_teleop.launch">
+    <arg name="cmd_vel_topic" value="$(arg cmd_vel_topic)"/>
+
+    <arg name="pass_through" value="$(arg pass_through)" />
+    <arg name="deadzone" value="$(arg deadzone)" />
+
+    <arg name="use_axis_linear_map" value="true" />
+    <arg name="axis_linear_x" value="1" />
+    <arg name="axis_linear_y" value="0" />
+    <arg name="scale_linear_x" value="0.5" />
+    <arg name="scale_linear_y" value="0.5" />
+
+    <arg name="axis_angular" value="3" />
+    <arg name="scale_angular" value="0.6" />
+
+    <arg name="enable_button" value="0" />
+    <arg name="enable_turbo_button" value="-1" />
+  </include>
+
+</launch>
