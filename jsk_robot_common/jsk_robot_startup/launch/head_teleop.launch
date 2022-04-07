@@ -1,0 +1,70 @@
+<launch>
+  <arg name="joy_dev" default="/dev/input/js0" />
+  <arg name="joy_topic_raw" default="joy_head/joy_raw" />
+  <arg name="joy_topic_complemented" default="joy_head/joy_complemented" />
+  <arg name="cmd_vel_topic" default="joy_head/cmd_vel" />
+  <arg name="deadzone" default="0.3" />
+  <arg name="autorepeat_rate" default="20" />
+  <arg name="axis_linear" default="1" />
+  <arg name="scale_linear" default="-0.5" />
+  <arg name="use_axis_linear_map" default="false" />
+  <arg name="axis_linear_x" default="1" />
+  <arg name="axis_linear_y" default="2" />
+  <arg name="scale_linear_x" default="-0.5" />
+  <arg name="scale_linear_y" default="-0.5" />
+  <arg name="axis_angular" default="0" />
+  <arg name="scale_angular" default="-0.4" />
+  <arg name="enable_button" default="0" />
+  <arg name="enable_turbo_button" default="-1" />
+
+  <arg name="pass_through" default="false"
+       doc="pass through joy data, set true to enable dog-like interface" />
+
+  <node pkg="joy" type="joy_node" name="joy_node">
+    <param name="dev" value="$(arg joy_dev)" />
+    <param name="deadzone" value="$(arg deadzone)" />
+    <param name="autorepeat_rate" value="20" />
+
+    <remap from="joy" to="$(arg joy_topic_raw)" />
+  </node>
+
+  <!-- node to set enable button -->
+  <!-- <node pkg="topic_tools" name="enabele_button" type="transform" -->
+  <!--       args="$(arg joy_topic_raw) $(arg joy_topic_complemented) -->
+  <!--             sensor_msgs/Joy -->
+  <!--             'sensor_msgs.msg.Joy(header=m.header,axes=m.axes,buttons=[1])' -->
+  <!--             -\-import sensor_msgs" /> -->
+  <node pkg="jsk_robot_startup" type="head_teleop_joy_completion.py" name="head_teleop_joy_completion">
+    <remap from="~joy_input" to="$(arg joy_topic_raw)" />
+    <remap from="~joy_output" to="$(arg joy_topic_complemented)" />
+
+    <param name="~pass_through" value="$(arg pass_through)" />
+    <param name="~axis_linear_x" value="$(arg axis_linear_x)" />
+    <param name="~axis_linear_y" value="$(arg axis_linear_y)" />
+    <param name="~axis_angular" value="$(arg axis_angular)" />
+
+    <param name="~enable_button" value="$(arg enable_button)" />
+  </node>
+
+  <node pkg="teleop_twist_joy" name="teleop_twist_joy" type="teleop_node">
+    <param name="axis_linear" value="$(arg axis_linear)" unless="$(arg use_axis_linear_map)" />
+    <param name="scale_linear" value="$(arg scale_linear)" unless="$(arg use_axis_linear_map)" />
+    <rosparam subst_value="true" if="$(arg use_axis_linear_map)">
+      axis_linear:
+        x: $(arg axis_linear_x)
+        y: $(arg axis_linear_y)
+      scale_linear:
+        x: $(arg scale_linear_x)
+        y: $(arg scale_linear_y)
+    </rosparam>
+
+    <param name="axis_angular" value="$(arg axis_angular)" />
+    <param name="scale_angular" value="$(arg scale_angular)" />
+
+    <param name="enable_button" value="$(arg enable_button)" />
+    <param name="enable_turbo_button" value="$(arg enable_turbo_button)" />
+
+    <remap from="joy" to="$(arg joy_topic_complemented)" />
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)" />
+  </node>
+</launch>
