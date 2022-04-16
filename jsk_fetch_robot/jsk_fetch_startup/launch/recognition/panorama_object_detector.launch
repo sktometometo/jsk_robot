@@ -1,0 +1,25 @@
+<launch>
+    <arg name="INPUT_IMAGE" default="/dual_fisheye_to_panorama/quater/output"/>
+    <arg name="device_id" default="0" />
+    <include file="$(find coral_usb_ros)/launch/edgetpu_panorama_object_detector.launch">
+        <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)" />
+        <arg name="device_id" value="$(arg device_id)" />
+    </include>
+
+    <pkg
+        pkg="jsk_perception"
+        type="rect_array_in_panorama_to_bounding_box_array.py"
+        name="rect_array_in_panorama_to_bounding_box_array"
+        >
+        <remap from="~panorama_image" to="/dual_fisheye_to_panorama/quater/output" />
+        <remap from="~panorama_info" to="/dual_fisheye_to_panorama/panorama_info" />
+        <remap from="~input_class" to="/edgetpu_human_pose_estimator/output/class" />
+        <remap from="~input_rects" to="/edgetpu_human_pose_estimator/output/class" />
+
+        <rosparam subst_value="true">
+            frame_fixed: odom
+            dimensions_labels:
+                human: [0.5, 0.5, 1.5]
+        </rosparam>
+    </pkg>
+</launch>
