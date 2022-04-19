@@ -1,0 +1,43 @@
+<launch>
+    <arg name="INPUT_PANORAMA_IMAGE" default="/dual_fisheye_to_panorama/quater/output"/>
+    <arg name="INPUT_PANORAMA_INFO" default="/dual_fisheye_to_panorama/panorama_info"/>
+    <arg name="device_id" default="1" />
+
+    <include file="$(find coral_usb)/launch/edgetpu_panorama_human_pose_estimator.launch">
+        <arg name="INPUT_IMAGE" value="$(arg INPUT_PANORAMA_IMAGE)" />
+        <arg name="device_id" value="$(arg device_id)" />
+    </include>
+
+    <node
+        pkg="jsk_perception"
+        type="draw_rects.py"
+        name="panorama_human_pose_detector_draw_rects"
+        output="screen"
+        >
+        <remap from="~input/class" to="/edgetpu_panorama_human_pose_estimator/output/class" />
+        <remap from="~input/rects" to="/edgetpu_panorama_human_pose_estimator/output/rects" />
+        <remap from="~input" to="$(arg INPUT_PANORAMA_IMAGE)" />
+
+        <rosparam subst_value="true">
+            approximate_sync: True
+        </rosparam>
+    </node>
+
+    <node
+        pkg="jsk_perception"
+        type="rect_array_in_panorama_to_bounding_box_array.py"
+        name="panorama_human_pose_detector_rect_array_in_panorama_to_bounding_box_array"
+        output="screen"
+        >
+        <remap from="~panorama_image" to="$(arg INPUT_PANORAMA_IMAGE)" />
+        <remap from="~panorama_info" to="$(arg INPUT_PANORAMA_INFO)" />
+        <remap from="~input_class" to="/edgetpu_panorama_human_pose_estimator/output/class" />
+        <remap from="~input_rects" to="/edgetpu_panorama_human_pose_estimator/output/rects" />
+
+        <rosparam subst_value="true">
+            frame_fixed: odom
+            dimensions_labels:
+                human: [0.5, 0.5, 1.5]
+        </rosparam>
+    </node>
+</launch>
