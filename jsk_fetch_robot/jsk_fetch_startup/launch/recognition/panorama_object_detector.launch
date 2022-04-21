@@ -26,7 +26,12 @@
     </node>
 
     <!-- motpy_bbox_tracker -->
-    <node pkg="jsk_perception" type="motpy_bbox_tracker_node.py" name="motpy_bbox_tracker_node" output="screen">
+    <node
+        pkg="jsk_perception"
+        type="motpy_bbox_tracker_node.py"
+        name="panorama_object_detector_motpy_bbox_tracker_node"
+        output="screen"
+        >
         <remap from="~input" to="/panorama_object_detector_rect_array_in_panorama_to_bounding_box_array/bbox_array" />
         <rosparam subst_value="true">
             dt: 0.2
@@ -37,6 +42,21 @@
             label_names: $(find jsk_perception)/config/coco_labelnames.yaml
             approximate_sync: True
             slop: 0.1
+        </rosparam>
+    </node>
+
+    <node
+        pkg="jsk_fetch_startup"
+        type="track_single_person_node.py"
+        name="panorama_object_detector_track_single_person_node"
+        output="screen"
+        >
+        <remap from="~bbox_array" to="/panorama_object_detector_motpy_bbox_tracker_node/output/bbox_array" />
+        <remap from="~obj_array" to="/panorama_object_detector_motpy_bbox_tracker_node/output/obj_array" />
+        <remap from="~clicked_point" to="/clicked_point" />
+
+        <rosparam subst_value="true">
+            target_track_duration: 3.0
         </rosparam>
     </node>
 </launch>

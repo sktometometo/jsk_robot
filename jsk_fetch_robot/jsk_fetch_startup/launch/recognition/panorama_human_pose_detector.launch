@@ -11,7 +11,7 @@
     <node
         pkg="jsk_perception"
         type="draw_rects.py"
-        name="panorama_human_pose_detector_draw_rects"
+        name="panorama_human_pose_estimator_draw_rects"
         output="screen"
         >
         <remap from="~input/class" to="/edgetpu_panorama_human_pose_estimator/output/class" />
@@ -26,7 +26,7 @@
     <node
         pkg="jsk_perception"
         type="rect_array_in_panorama_to_bounding_box_array.py"
-        name="panorama_human_pose_detector_rect_array_in_panorama_to_bounding_box_array"
+        name="panorama_human_pose_estimator_rect_array_in_panorama_to_bounding_box_array"
         output="screen"
         >
         <remap from="~panorama_image" to="$(arg INPUT_PANORAMA_IMAGE)" />
@@ -40,4 +40,23 @@
                 human: [0.5, 0.5, 1.5]
         </rosparam>
     </node>
+
+    <!-- motpy_bbox_tracker -->
+    <!--
+    <node
+        pkg="jsk_perception"
+        type="motpy_bbox_tracker_node.py"
+        name="panorama_human_pose_estimator_motpy_bbox_tracker_node"
+        output="screen"
+        >
+        <remap from="~input" to="/panorama_human_pose_estimator_rect_array_in_panorama_to_bounding_box_array/bbox_array" />
+        <rosparam subst_value="true">
+            dt: 0.2
+            target_labels:
+              - human
+            label_names: $(find jsk_perception)/config/coco_labelnames.yaml
+            approximate_sync: True
+            slop: 0.1
+        </rosparam>
+    -->
 </launch>
