@@ -8,6 +8,10 @@
         <arg name="device_id" value="$(arg device_id)" />
     </include>
 
+    <rosparam ns="edgetpu_panorama_object_detector">
+        score_thresh: 0.5
+    </rosparam>
+
     <node
         pkg="jsk_perception"
         type="rect_array_in_panorama_to_bounding_box_array.py"
