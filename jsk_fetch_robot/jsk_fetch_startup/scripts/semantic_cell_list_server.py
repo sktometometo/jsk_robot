@@ -7,8 +7,9 @@ import tf2_geometry_msgs
 
 import PyKDL
 
-from nav_msgs.msg import OccupancyGrid
-from nav_msgs.msg import MapMetaData
+from semanticmap.msg import SemanticMapGrid
+from semanticmap.msg import SemanticMapMetaData
+
 from nav_msgs.msg import Path
 
 from geometry_msgs.msg import PoseArray
@@ -26,8 +27,8 @@ class SemanticCelListServer(object):
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
         self.tf_broadcaster = tf2_ros.TransformBroadcaster()
 
-        self.msg_grid = rospy.wait_for_message('/map', OccupancyGrid)
-        self.msg_meta = rospy.wait_for_message('/map_metadata', MapMetaData)
+        self.msg_grid = rospy.wait_for_message('/semantic_map', SemanticMapGrid)
+        self.msg_meta = rospy.wait_for_message('/semantic_map_metadata', SemanticMapMetaData)
 
         self.pub_pose_array = rospy.Publisher(
             '~debug_pose_array', PoseArray, queue_size=1)
@@ -153,10 +154,10 @@ class SemanticCelListServer(object):
 
         for kdlframe in kdlframe_list_on_grid_pose:
 
-            index_x = int(kdlframe.p[0] / msg_meta.resolution)
-            index_y = int(kdlframe.p[1] / msg_meta.resolution)
+            index_x = int(kdlframe.p[0] / msg_grid.info.resolution)
+            index_y = int(kdlframe.p[1] / msg_grid.info.resolution)
             semantics_cell = msg_grid.data[index_x + msg_grid.info.width * index_y]
-            semantics_cell_list.append(semantics_cell)
+            semantics_cell_list.append(semantics_cell.semantics_name)
 
         return kdlframe_list_on_grid_frame, semantics_cell_list
 
