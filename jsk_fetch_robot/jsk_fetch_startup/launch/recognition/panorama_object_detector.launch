@@ -9,7 +9,7 @@
     </include>
 
     <rosparam ns="edgetpu_panorama_object_detector">
-        score_thresh: 0.5
+        score_thresh: 0.7
     </rosparam>
 
     <node
