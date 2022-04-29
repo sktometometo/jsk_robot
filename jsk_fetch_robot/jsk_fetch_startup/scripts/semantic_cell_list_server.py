@@ -7,6 +7,7 @@ import tf2_geometry_msgs
 
 import PyKDL
 
+from semanticmap.msg import GridCellArray
 from semanticmap.msg import SemanticMapGrid
 from semanticmap.msg import SemanticMapMetaData
 
@@ -32,11 +33,13 @@ class SemanticCelListServer(object):
 
         self.pub_pose_array = rospy.Publisher(
             '~debug_pose_array', PoseArray, queue_size=1)
+        self.pub_grid_cell_array = rospy.Publisher(
+                '~semantic_cell_array', GridCellArray, queue_size=1)
 
         self.sub = rospy.Subscriber(
             '/move_base/TrajectoryPlannerROS/local_plan', Path, self.callback)
 
-    def publish(self, kdlframe_list, frame_id):
+    def publish_pose_array(self, kdlframe_list, frame_id):
 
         msg = PoseArray()
         msg.header.stamp = rospy.Time.now()
@@ -59,6 +62,11 @@ class SemanticCelListServer(object):
             )
         self.pub_pose_array.publish(msg)
 
+    def publish_cell_array(self, grid_cell_array):
+        msg = GridCellArray()
+        msg.array = grid_cell_array
+        self.pub_pose_array.publish(msg)
+
     def broadcast(self, kdlframe, parent_frame_id, child_frame_id):
 
         msg = TransformStamped()
@@ -78,8 +86,8 @@ class SemanticCelListServer(object):
 
         kdlframe_list_on_grid, semantics_cell_list = self.get_pose_list_on_grid_from_path(
             msg_path, self.msg_grid, self.msg_meta)
-        self.publish(kdlframe_list_on_grid, self.msg_grid.header.frame_id)
-        rospy.loginfo('semantics_cell_list: {}'.format(semantics_cell_list))
+        self.publish_pose_array(kdlframe_list_on_grid, self.msg_grid.header.frame_id)
+        self.publish_cell_array(semantics_cell_list)
 
     def get_pose_list_on_grid_from_path(self, msg_path, msg_grid, msg_meta):
 
@@ -157,7 +165,7 @@ class SemanticCelListServer(object):
             index_x = int(kdlframe.p[0] / msg_grid.info.resolution)
             index_y = int(kdlframe.p[1] / msg_grid.info.resolution)
             semantics_cell = msg_grid.data[index_x + msg_grid.info.width * index_y]
-            semantics_cell_list.append(semantics_cell.semantics_name)
+            semantics_cell_list.append(semantics_cell)
 
         return kdlframe_list_on_grid_frame, semantics_cell_list
 
