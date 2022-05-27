@@ -1,6 +1,10 @@
-# jsk_magnistartup
+# jsk_magni_startup
 
 ## SetUp (Running following commands in the first time within the robot)
+
+### Install Official Raspberry Pi image
+
+TODO
 
 ### fix ROS_HOSTNAME within the robot
 
@@ -12,10 +16,27 @@ Edit /etc/ubiquity/env.sh
   export ROS_MASTER_URI=http://$ROS_HOSTNAME:11311
 ```
 
+### Update workspace
+
+use [jsk_magni.rosinstall](./jsk_magni.rosinstall)
+
+### Build driver for USB WiFi
+
+[tp-link Archer T2U Nano](https://www.tp-link.com/jp/home-networking/adapter/archer-t2u-nano/) is added for `sanshiro` connection.
+
+```bash
+sudo apt install raspberrypi-kernel-headers
+git clone https://github.com/aircrack-ng/rtl8812au.git
+cd rtl8812au
+make
+sudo make install
+```
+
 ### Setup pigpid.services
 
 see https://github.com/UbiquityRobotics/pi_sonar,
-```
+
+```bash
 wget https://raw.githubusercontent.com/joan2937/pigpio/master/util/pigpiod.service
 sudo cp pigpiod.service /etc/systemd/system
 sudo systemctl enable pigpiod.service
@@ -24,23 +45,13 @@ sudo systemctl start pigpiod.service
 
 ### add jsk_magni.service
 
-Add `/etc/systemd/system/jsk-magni-startup.service` file
-```
-[Unit]
-Requires=roscore.service
-PartOf=roscore.service
-After=magni-base.service
-[Service]
-Type=simple
-User=ubuntu
-ExecStart=/usr/sbin/jsk-magni-startup
-[Install]
-WantedBy=multi-user.target
-```
-
-Add `/usr/sbin/jsk-magni-startup`
-```
+Copy [`jsk-magni-startup`](./system/scripts/jsk-magni-startup) to `/usr/sbin/jsk-magni-startup`.
+```bash
+$ roscd jsk_magni_startup/
+$ cat system/scripts/jsk-magni-startup
 #!/bin/bash
+
+# Please put this script to /usr/sbin/jsk-magni-startup
 
 function log() {
   logger -s -p user.$1 ${@:2}
@@ -55,7 +66,7 @@ source /etc/ubiquity/env.sh
 log info "magni-base: Launching ROS_HOSTNAME=$ROS_HOSTNAME, ROS_IP=$ROS_IP, ROS_MASTER_URI=$ROS_MASTER_URI, ROS_LOG_DIR=$log_path"
 
 # Punch it.
-export ROS_HOME=$(echo ~ubuntu)/.ros
+export ROS_HOME=/home/ubuntu/.ros
 export ROS_LOG_DIR=$log_path
 roslaunch jsk_magni_startup magni_bringup.launch &
 PID=$!
@@ -63,28 +74,29 @@ PID=$!
 log info "jsk-magni-startup: Started roslaunch as background process, PID $PID, ROS_LOG_DIR=$ROS_LOG_DIR"
 echo "$PID" > $log_path/jsk-magni-startup.pid
 wait "$PID"
+$ sudo cp system/scripts/jsk-magni-startup /usr/sbin/
+```
+
+Copy [`jsk-magni-startup.service`](./system/systemd/jsk-magni-startup.service) to `/etc/systemd/system/jsk-magni-startup.service`.
+```bash
+$ roscd jsk_magni_startup/
+$ cat system/systemd/jsk-magni-startup.service
+[Unit]
+Requires=roscore.service
+PartOf=roscore.service
+After=magni-base.service
+[Service]
+Type=simple
+User=ubuntu
+ExecStart=/usr/sbin/jsk-magni-startup
+[Install]
+WantedBy=multi-user.target
+$ sudo cp system/systemd/jsk-magni-startup.service /etc/systemd/system/
 ```
 
 Enable service
-```
+```bash
 $ sudo systemctl enable jsk-magni-startup.service
 $ sudo systemctl start jsk-magni-startup.service
 ```
 
-### Add latest codes within catkin_ws
-
-# Update catkin_ws/src
-```
-- git:
-    local-name: demos
-    uri: https://github.com/UbiquityRobotics/demos.git
-    version: 52136f04c0f39fe6a1001a17e208e5ce5b4cda61
-- git:
-    local-name: magni_robot
-    uri: https://github.com/UbiquityRobotics/magni_robot
-    version: 603cae184bcc59b96d59f2fee6029b22725c3c5c
-- git:
-    local-name: pi_sonar
-    uri: https://github.com/UbiquityRobotics/pi_sonar
-    version: b84458f909d5febd410b8cd68d552e9aecad685c
-```
