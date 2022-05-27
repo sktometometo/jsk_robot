@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Please put this script to /usr/sbin/jsk-magni-startup
+
+function log() {
+  logger -s -p user.$1 ${@:2}
+  }
+
+log info "magni-base: Using workspace setup file /home/ubuntu/catkin_ws/devel/setup.bash"
+source /home/ubuntu/catkin_ws/devel/setup.bash
+
+log_path="/tmp"
+
+source /etc/ubiquity/env.sh
+log info "magni-base: Launching ROS_HOSTNAME=$ROS_HOSTNAME, ROS_IP=$ROS_IP, ROS_MASTER_URI=$ROS_MASTER_URI, ROS_LOG_DIR=$log_path"
+
+# Punch it.
+export ROS_HOME=/home/ubuntu/.ros
+export ROS_LOG_DIR=$log_path
+roslaunch jsk_magni_startup magni_bringup.launch &
+PID=$!
+
+log info "jsk-magni-startup: Started roslaunch as background process, PID $PID, ROS_LOG_DIR=$ROS_LOG_DIR"
+echo "$PID" > $log_path/jsk-magni-startup.pid
+wait "$PID"
