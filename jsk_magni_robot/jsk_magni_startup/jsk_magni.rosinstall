@@ -1,0 +1,16 @@
+- git:
+    local-name: UbiquityRobotics/demos
+    uri: https://github.com/UbiquityRobotics/demos.git
+    version: 52136f04c0f39fe6a1001a17e208e5ce5b4cda61
+- git:
+    local-name: UbiquityRobotics/magni_robot
+    uri: https://github.com/UbiquityRobotics/magni_robot
+    version: 603cae184bcc59b96d59f2fee6029b22725c3c5c
+- git:
+    local-name: UbiquityRobotics/pi_sonar
+    uri: https://github.com/UbiquityRobotics/pi_sonar
+    version: b84458f909d5febd410b8cd68d552e9aecad685c
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot
+    version: master
