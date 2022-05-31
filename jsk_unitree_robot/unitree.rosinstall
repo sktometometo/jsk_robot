@@ -8,7 +8,6 @@
     uri: https://github.com/unitreerobotics/unitree_ros.git
     version: master
 - git:
-    # waiting for https://github.com/unitreerobotics/unitree_ros_to_real/pull/22 - 25
     local-name: unitree_ros_to_real
-    uri: https://github.com/k-okada/unitree_ros_to_real.git
+    uri: https://github.com/sktometometo/unitree_ros_to_real.git
     version: develop
