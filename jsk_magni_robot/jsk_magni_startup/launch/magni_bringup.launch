@@ -1,6 +1,6 @@
 <launch>
   <arg name="start_camera" default="false" />
-  <arg name="navigation_mode" default="move_basic" />
+  <arg name="use_move_base" default="true" />
 
   <!-- start sound_play -->
   <include file="$(find sound_play)/soundplay_node.launch">
@@ -12,7 +12,17 @@
   </node>
 
   <!-- start move_basic -->
-  <include file="$(find magni_nav)/launch/$(arg navigation_mode).launch" />
+  <group unless="$(arg use_move_base)">
+      <include file="$(find magni_nav)/launch/move_basic.launch" />
+  </group>
+  <group if="$(arg use_move_base)">
+      <node
+          pkg="tf2_ros"
+          type="static_transform_publisher"
+          name="map_to_odom_transform_publisher"
+          args="0 0 0 0 0 0 map odom"/>
+      <include file="$(find magni_nav)/launch/move_base.launch" />
+  </group>
 
   <!-- realsense -->
   <include file="$(find realsense2_camera)/launch/rs_camera.launch">
