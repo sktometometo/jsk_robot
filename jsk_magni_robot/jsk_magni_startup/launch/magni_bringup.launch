@@ -13,16 +13,25 @@
   <!-- start move_basic -->
   <include file="$(find magni_nav)/launch/move_basic.launch" />
 
+  <!-- realsense -->
+  <include file="$(find realsense_camera)/launch/rs_camera.launch" />
+
+  <node
+      pkg="tf2_ros"
+      type="static_transform_publisher"
+      name="realsense_transform_publisher"
+      args="base_link camera_link 0 0 300 0 0 0"/>
+
   <!-- publish CPU status to diagnostics -->
   <node name="cpu_monitor" pkg="pr2_computer_monitor" type="cpu_monitor.py"
-  	args="--diag-hostname=my_machine" >
+    args="--diag-hostname=my_machine" >
     <param name="check_ipmi_tool" value="false" type="bool" />
     <param name="enforce_clock_speed" value="false" type="bool" />
     <param name="num_cores" value="-1" type="int" />
     <param name="load1_threshold" value="2.0"/>
     <param name="load5_threshold" value="1.0"/>
   </node>
-  
+
   <!-- start camera -->
   <include file="$(find raspicam_node)/launch/camerav2_410x308_30fps.launch"
            if="$(arg start_camera)"/>
