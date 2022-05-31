@@ -187,15 +187,6 @@ Visualization Manager:
         odom:
           base_footprint:
             base_link:
-              camera_link:
-                camera_aligned_depth_to_color_frame:
-                  camera_color_optical_frame:
-                    {}
-                camera_color_frame:
-                  {}
-                camera_depth_frame:
-                  camera_depth_optical_frame:
-                    {}
               left_caster_wheel:
                 {}
               left_wheel:
@@ -217,6 +208,15 @@ Visualization Manager:
                 {}
               sonar_4:
                 {}
+            camera_link:
+              camera_aligned_depth_to_color_frame:
+                camera_color_optical_frame:
+                  {}
+              camera_color_frame:
+                {}
+              camera_depth_frame:
+                camera_depth_optical_frame:
+                  {}
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
@@ -275,6 +275,39 @@ Visualization Manager:
       Transport Hint: raw
       Unreliable: false
       Value: true
+    - Alpha: 0.5
+      Buffer Length: 1
+      Class: rviz/Range
+      Color: 255; 255; 255
+      Enabled: true
+      Name: Sonar
+      Queue Size: 100
+      Topic: /sonars
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 25; 255; 0
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /plan
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -303,7 +336,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.871562957763672
+      Distance: 3.108973503112793
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -318,10 +351,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4203982353210449
+      Pitch: 0.7903976440429688
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 2.855402946472168
+      Yaw: 1.2835811376571655
     Saved: ~
 Window Geometry:
   Displays:
