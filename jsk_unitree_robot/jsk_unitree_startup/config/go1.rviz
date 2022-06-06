@@ -5,9 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /TF1/Frames1
-        - /PointClouds1
         - /PointClouds1/PointCloudFace1
-        - /PointClouds1/PointCloudFace1/Status1
       Splitter Ratio: 0.5
     Tree Height: 728
   - Class: rviz/Selection
@@ -28,7 +26,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: D435TopPointCloud2
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -93,10 +91,6 @@ Visualization Manager:
           Value: true
         base:
           Value: true
-        base_link:
-          Value: false
-        base_link_rpy:
-          Value: false
         camera_chin:
           Value: true
         camera_face:
@@ -121,6 +115,16 @@ Visualization Manager:
           Value: true
         camera_right:
           Value: true
+        d435_top_color_frame:
+          Value: true
+        d435_top_color_optical_frame:
+          Value: true
+        d435_top_depth_frame:
+          Value: true
+        d435_top_depth_optical_frame:
+          Value: true
+        d435_top_link:
+          Value: true
         imu_link:
           Value: true
         odom:
@@ -133,8 +137,6 @@ Visualization Manager:
           Value: true
         ultraSound_right:
           Value: true
-        uodom:
-          Value: false
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -163,6 +165,13 @@ Visualization Manager:
                   {}
                 camera_optical_right:
                   {}
+              d435_top_link:
+                d435_top_color_frame:
+                  d435_top_color_optical_frame:
+                    {}
+                d435_top_depth_frame:
+                  d435_top_depth_optical_frame:
+                    {}
               imu_link:
                 {}
               ultraSound_face:
@@ -176,18 +185,205 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: false
+      Enabled: true
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
+        FL_calf:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        FL_foot:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        FL_hip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        FL_thigh:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        FL_thigh_shoulder:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        FR_calf:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        FR_foot:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        FR_hip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        FR_thigh:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        FR_thigh_shoulder:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         Link Tree Style: Links in Alphabetic Order
+        RL_calf:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RL_foot:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RL_hip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RL_thigh:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RL_thigh_shoulder:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RR_calf:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RR_foot:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RR_hip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RR_thigh:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RR_thigh_shoulder:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera_chin:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera_face:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera_laserscan_link_left:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_laserscan_link_right:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_left:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera_optical_chin:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_optical_face:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_optical_left:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_optical_rearDown:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_optical_right:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_rearDown:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera_right:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        d435_top_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        imu_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        trunk:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ultraSound_face:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ultraSound_left:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ultraSound_right:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: false
+      Value: true
       Visual Enabled: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
@@ -331,8 +527,64 @@ Visualization Manager:
           Use Fixed Frame: true
           Use rainbow: true
           Value: true
-      Enabled: true
+      Enabled: false
       Name: PointClouds
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: D435TopPointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /d435_top/depth/color/points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/LaserScan
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: D435TopLaserScan
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /scan_d435_top
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -361,7 +613,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.872891426086426
+      Distance: 4.842160701751709
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -376,10 +628,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.529796302318573
+      Pitch: 0.5397965908050537
       Target Frame: trunk
       Value: Orbit (rviz)
-      Yaw: 4.833587646484375
+      Yaw: 4.733592987060547
     Saved: ~
 Window Geometry:
   Displays:
