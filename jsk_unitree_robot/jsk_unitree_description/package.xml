@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>jsk_unitree_description</name>
+  <version>0.0.0</version>
+  <description>The jsk_unitree_description package</description>
+
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+
+  <license>BSD</license>
+  <author email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>xacro</exec_depend>
+
+  <export>
+  </export>
+</package>
