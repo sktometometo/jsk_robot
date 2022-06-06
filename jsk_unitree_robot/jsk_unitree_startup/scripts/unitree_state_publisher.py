@@ -4,7 +4,18 @@ import rospy
 import tf2_ros
 from unitree_legged_msgs.msg import HighState
 from nav_msgs.msg import Odometry
+import math
 from geometry_msgs.msg import TransformStamped
+
+
+def check_valid_quaternion(quaternion):
+
+    norm = math.sqrt(quaternion[0] ** 2 + quaternion[1] ** 2 + quaternion[2] ** 2 + quaternion[3] ** 2)
+    rospy.logwarn('norm: {}'.format(norm))
+    if norm < 0.5:
+        return False
+    else:
+        return True
 
 
 class UnitreeStatePublisher(object):
@@ -16,42 +27,42 @@ class UnitreeStatePublisher(object):
 
         self.tf_broadcaster = tf2_ros.TransformBroadcaster()
         self.pub = rospy.Publisher('/odom', Odometry, queue_size=1)
-
         self.sub = rospy.Subscriber('/high_state', HighState, self.callback)
 
     def callback(self, msg):
 
-        msg_odom = Odometry()
-        msg_odom.header.stamp = rospy.Time.now()
-        msg_odom.header.frame_id = self.odom_frame_id
-        msg_odom.child_frame_id = self.base_frame_id
-        msg_odom.pose.pose.position.x = msg.position[0]
-        msg_odom.pose.pose.position.y = msg.position[1]
-        msg_odom.pose.pose.position.z = msg.position[2]
-        msg_odom.pose.pose.orientation.x = msg.imu.quaternion[0]
-        msg_odom.pose.pose.orientation.y = msg.imu.quaternion[1]
-        msg_odom.pose.pose.orientation.z = msg.imu.quaternion[2]
-        msg_odom.pose.pose.orientation.w = msg.imu.quaternion[3]
-        msg_odom.twist.twist.linear.x = msg.velocity[0]
-        msg_odom.twist.twist.linear.y = msg.velocity[1]
-        msg_odom.twist.twist.linear.z = msg.velocity[2]
-        msg_odom.twist.twist.angular.x = msg.imu.gyroscope[0]
-        msg_odom.twist.twist.angular.y = msg.imu.gyroscope[1]
-        msg_odom.twist.twist.angular.z = msg.imu.gyroscope[2]
-        self.pub.publish(msg_odom)
+        if check_valid_quaternion(msg.imu.quaternion):
+            msg_odom = Odometry()
+            msg_odom.header.stamp = rospy.Time.now()
+            msg_odom.header.frame_id = self.odom_frame_id
+            msg_odom.child_frame_id = self.base_frame_id
+            msg_odom.pose.pose.position.x = msg.position[0]
+            msg_odom.pose.pose.position.y = msg.position[1]
+            msg_odom.pose.pose.position.z = msg.position[2]
+            msg_odom.pose.pose.orientation.x = msg.imu.quaternion[0]
+            msg_odom.pose.pose.orientation.y = msg.imu.quaternion[1]
+            msg_odom.pose.pose.orientation.z = msg.imu.quaternion[2]
+            msg_odom.pose.pose.orientation.w = msg.imu.quaternion[3]
+            msg_odom.twist.twist.linear.x = msg.velocity[0]
+            msg_odom.twist.twist.linear.y = msg.velocity[1]
+            msg_odom.twist.twist.linear.z = msg.velocity[2]
+            msg_odom.twist.twist.angular.x = msg.imu.gyroscope[0]
+            msg_odom.twist.twist.angular.y = msg.imu.gyroscope[1]
+            msg_odom.twist.twist.angular.z = msg.imu.gyroscope[2]
+            self.pub.publish(msg_odom)
 
-        msg_transform = TransformStamped()
-        msg_transform.header.stamp = rospy.Time.now()
-        msg_transform.header.frame_id = self.odom_frame_id
-        msg_transform.child_frame_id = self.base_frame_id
-        msg_transform.transform.translation.x = msg.position[0]
-        msg_transform.transform.translation.y = msg.position[1]
-        msg_transform.transform.translation.z = msg.position[2]
-        msg_transform.transform.rotation.x = msg.imu.quaternion[0]
-        msg_transform.transform.rotation.y = msg.imu.quaternion[1]
-        msg_transform.transform.rotation.z = msg.imu.quaternion[2]
-        msg_transform.transform.rotation.w = msg.imu.quaternion[3]
-        self.tf_broadcaster.sendTransform(msg_transform)
+            msg_transform = TransformStamped()
+            msg_transform.header.stamp = rospy.Time.now()
+            msg_transform.header.frame_id = self.odom_frame_id
+            msg_transform.child_frame_id = self.base_frame_id
+            msg_transform.transform.translation.x = msg.position[0]
+            msg_transform.transform.translation.y = msg.position[1]
+            msg_transform.transform.translation.z = msg.position[2]
+            msg_transform.transform.rotation.x = msg.imu.quaternion[0]
+            msg_transform.transform.rotation.y = msg.imu.quaternion[1]
+            msg_transform.transform.rotation.z = msg.imu.quaternion[2]
+            msg_transform.transform.rotation.w = msg.imu.quaternion[3]
+            self.tf_broadcaster.sendTransform(msg_transform)
 
 
 if __name__ == '__main__':

@@ -6,10 +6,11 @@
   <arg name="network" default="wifi" /> <!-- wifi or ethernet -->
 
   <arg name="use_d435_top" default="false" />
+  <arg name="launch_app_manager" default="true" />
 
   <!-- node to convert ROS to Unitree's internal udp services -->
   <node pkg="unitree_legged_real" type="ros_server" name="node_ros_server"
-        respawn="false" output="log" >
+        respawn="false" output="screen" >
     <remap from="/cmd_vel" to="$(arg joy_name_space)/cmd_vel" />
     <rosparam subst_value="true" if="$(eval arg('network') == 'wifi')">
         target_ip: 192.168.12.1
@@ -46,13 +47,14 @@
   <arg name="robot_cmd_vel_topic"   default="robot_cmd_vel"/>
   <arg name="odom_topic"            default="odom"/>
 
+  <!--
   <node pkg="nodelet" type="nodelet" name="yocs_velocity_smoother"
         args="standalone yocs_velocity_smoother/VelocitySmootherNodelet">
     <rosparam>
-        speed_lim_v: 1.0
-        speed_lim_w: 5.4
-        accel_lim_v: 0.5
-        accel_lim_w: 3.5
+        speed_lim_v: 2.0
+        speed_lim_w: 5.0
+        accel_lim_v: 1.0
+        accel_lim_w: 2.5
         frequency: 20.0
         decel_factor: 1.0
         robot_feedback: 1
@@ -62,6 +64,7 @@
     <remap from="~robot_cmd_vel"  to="/go1/cmd_vel"/>
     <remap from="~odometry"       to="/odom"/>
   </node>
+  -->
 
   <!-- d435_top -->
   <group if="$(arg use_d435_top)">
@@ -91,11 +94,14 @@
     </node>
   </group>
 
-  <!-- <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" > -->
-  <!--   <arg name="joy_name_space" default="$(arg joy_name_space)" /> -->
-  <!-- </include> -->
+  <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" >
+      <arg name="pad_type" value="dualsense" />
+      <arg name="cmd_vel_topic" value="/go1/cmd_vel" />
+  </include>
 
-  <include file="$(find app_manager)/launch/app_manager.launch" />
+  <include
+      file="$(find app_manager)/launch/app_manager.launch"
+      if="$(arg launch_app_manager)"/>
 
   <!-- let people to know unitree is bringup -->
   <node pkg="jsk_unitree_startup" type="wakeup.l"
