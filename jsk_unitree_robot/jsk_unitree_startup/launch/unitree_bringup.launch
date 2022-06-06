@@ -37,6 +37,32 @@
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find jsk_unitree_description)/xacro/jsk_go1.xacro'"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
 
+  <!-- smooth cmd vel interface -->
+  <arg name="node_name"             default="velocity_smoother"/>
+  <arg name="nodelet_manager_name"  default="nodelet_manager"/>
+  <arg name="config_file"           default=""/>
+  <arg name="raw_cmd_vel_topic"     default="raw_cmd_vel"/>
+  <arg name="smooth_cmd_vel_topic"  default="smooth_cmd_vel"/>
+  <arg name="robot_cmd_vel_topic"   default="robot_cmd_vel"/>
+  <arg name="odom_topic"            default="odom"/>
+
+  <node pkg="nodelet" type="nodelet" name="yocs_velocity_smoother"
+        args="standalone yocs_velocity_smoother/VelocitySmootherNodelet">
+    <rosparam>
+        speed_lim_v: 1.0
+        speed_lim_w: 5.4
+        accel_lim_v: 0.5
+        accel_lim_w: 3.5
+        frequency: 20.0
+        decel_factor: 1.0
+        robot_feedback: 1
+    </rosparam>
+    <remap from="~raw_cmd_vel"    to="/cmd_vel"/>
+    <remap from="~smooth_cmd_vel" to="/go1/cmd_vel"/>
+    <remap from="~robot_cmd_vel"  to="/go1/cmd_vel"/>
+    <remap from="~odometry"       to="/odom"/>
+  </node>
+
   <!-- d435_top -->
   <group if="$(arg use_d435_top)">
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
