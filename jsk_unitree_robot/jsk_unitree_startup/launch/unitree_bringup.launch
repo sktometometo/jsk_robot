@@ -32,7 +32,7 @@
   </node>
 
   <!-- Robot State -->
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find go1_description)/xacro/robot.xacro' DEBUG:=false"/>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find jsk_unitree_description)/xacro/jsk_go1.xacro'"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
 
   <!-- <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" > -->
