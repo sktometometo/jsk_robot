@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /PointClouds1/PointCloudFace1
+        - /LaserScan1
         - /TFTrajectory1
       Splitter Ratio: 0.5
     Tree Height: 488
@@ -26,7 +27,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: D435TopLaserScan
+    SyncSource: LaserScan
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -129,7 +130,23 @@ Visualization Manager:
           Value: true
         imu_link:
           Value: false
+        laser:
+          Value: true
         odom:
+          Value: true
+        t265_accel_frame:
+          Value: true
+        t265_accel_optical_frame:
+          Value: true
+        t265_gyro_frame:
+          Value: true
+        t265_gyro_optical_frame:
+          Value: true
+        t265_link:
+          Value: true
+        t265_odom_frame:
+          Value: true
+        t265_pose_frame:
           Value: true
         trunk:
           Value: false
@@ -146,44 +163,55 @@ Visualization Manager:
       Show Names: true
       Tree:
         odom:
-          base:
-            trunk:
-              base_footprint:
-                {}
-              camera_chin:
-                camera_optical_chin:
-                  {}
-              camera_face:
-                camera_optical_face:
-                  {}
-              camera_left:
-                camera_laserscan_link_left:
-                  {}
-                camera_optical_left:
-                  {}
-              camera_rearDown:
-                camera_optical_rearDown:
-                  {}
-              camera_right:
-                camera_laserscan_link_right:
-                  {}
-                camera_optical_right:
-                  {}
-              d435_top_link:
-                d435_top_color_frame:
-                  d435_top_color_optical_frame:
+          t265_odom_frame:
+            t265_pose_frame:
+              t265_link:
+                base:
+                  trunk:
+                    base_footprint:
+                      {}
+                    camera_chin:
+                      camera_optical_chin:
+                        {}
+                    camera_face:
+                      camera_optical_face:
+                        {}
+                    camera_left:
+                      camera_laserscan_link_left:
+                        {}
+                      camera_optical_left:
+                        {}
+                    camera_rearDown:
+                      camera_optical_rearDown:
+                        {}
+                    camera_right:
+                      camera_laserscan_link_right:
+                        {}
+                      camera_optical_right:
+                        {}
+                    d435_top_link:
+                      d435_top_color_frame:
+                        d435_top_color_optical_frame:
+                          {}
+                      d435_top_depth_frame:
+                        d435_top_depth_optical_frame:
+                          {}
+                      laser:
+                        {}
+                    imu_link:
+                      {}
+                    ultraSound_face:
+                      {}
+                    ultraSound_left:
+                      {}
+                    ultraSound_right:
+                      {}
+                t265_accel_frame:
+                  t265_accel_optical_frame:
                     {}
-                d435_top_depth_frame:
-                  d435_top_depth_optical_frame:
+                t265_gyro_frame:
+                  t265_gyro_optical_frame:
                     {}
-              imu_link:
-                {}
-              ultraSound_face:
-                {}
-              ultraSound_left:
-                {}
-              ultraSound_right:
-                {}
       Update Interval: 0.10000000149011612
       Value: true
     - Alpha: 1
@@ -367,6 +395,14 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        laser:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        t265_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         trunk:
           Alpha: 1
           Show Axes: false
@@ -581,14 +617,14 @@ Visualization Manager:
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
-      Name: D435TopLaserScan
+      Name: LaserScan
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
       Size (Pixels): 3
       Size (m): 0.009999999776482582
       Style: Flat Squares
-      Topic: /scan_d435_top
+      Topic: /scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -640,21 +676,26 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0
-      Class: rviz/TopDownOrtho
+      Class: rviz/Orbit
+      Distance: 6.471424579620361
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
+      Focal Point:
+        X: -0.20331577956676483
+        Y: 0.05073557049036026
+        Z: -6.103515625e-5
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 19.284040451049805
+      Pitch: 0.5347970724105835
       Target Frame: trunk
-      Value: TopDownOrtho (rviz)
-      X: -0.20331577956676483
-      Y: 0.05073557049036026
+      Value: Orbit (rviz)
+      Yaw: 4.778173446655273
     Saved: ~
 Window Geometry:
   Displays:
