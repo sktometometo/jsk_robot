@@ -26,6 +26,7 @@
         ns="$(arg joy_name_space)" />
   <node pkg="jsk_unitree_startup" type="human_pose_publisher.py"
         name="human_pose_publisher" output="log" />
+  <!--
   <node pkg="jsk_unitree_startup" type="unitree_state_publisher.py"
         name="unitree_state_publisher" output="screen"
         ns="$(arg joy_name_space)">
@@ -33,20 +34,13 @@
           base_frame_id: base
       </rosparam>
   </node>
+  -->
 
   <!-- Robot State -->
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find jsk_unitree_description)/xacro/jsk_go1.xacro'"/>
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
 
   <!-- smooth cmd vel interface -->
-  <arg name="node_name"             default="velocity_smoother"/>
-  <arg name="nodelet_manager_name"  default="nodelet_manager"/>
-  <arg name="config_file"           default=""/>
-  <arg name="raw_cmd_vel_topic"     default="raw_cmd_vel"/>
-  <arg name="smooth_cmd_vel_topic"  default="smooth_cmd_vel"/>
-  <arg name="robot_cmd_vel_topic"   default="robot_cmd_vel"/>
-  <arg name="odom_topic"            default="odom"/>
-
   <!--
   <node pkg="nodelet" type="nodelet" name="yocs_velocity_smoother"
         args="standalone yocs_velocity_smoother/VelocitySmootherNodelet">
@@ -68,6 +62,8 @@
 
   <!-- d435_top -->
   <group if="$(arg use_d435_top)">
+
+    <!-- realsense d435 -->
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
         <arg name="camera" value="d435_top" />
         <arg name="depth_width" value="1280" />
@@ -91,6 +87,17 @@
       <remap from="image" to="/d435_top/depth/image_rect_raw"/>
       <remap from="camera_info" to="/d435_top/depth/camera_info"/>
       <remap from="scan" to="/scan_d435_top"/>
+    </node>
+
+    <!-- realsense t265 -->
+    <include file="$(find realsense2_camera)/launch/rs_t265.launch">
+        <arg name="camera" value="t265" />
+    </include>
+
+    <!-- laser -->
+    <node pkg="hls_lfcd_lds_driver" type="hlds_laser_publisher" name="hlds_laser_publisher" output="screen">
+      <param name="port" value="/dev/ttyUSB0"/>
+      <param name="frame_id" value="laser"/>
     </node>
   </group>
 
