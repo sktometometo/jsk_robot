@@ -60,9 +60,12 @@
 
 (defmethod spot-interface
   (:init
-   (&rest args &key (trajectory-cmd-action-name "/spot/trajectory") (execute-behavior-action-name "/spot_behavior_manager_server/execute_behaviors"))
+   (&rest args
+    &key (trajectory-cmd-action-name "/spot/trajectory")
+         (execute-behavior-action-name "/spot_behavior_manager_server/execute_behaviors")
+         (simulation-mode nil))
    (prog1
-       (send-super* :init :robot spot-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
+       (send-super* :init :robot spot-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil :joint-action-enable (not simulation-mode) args)
      ;; check if spot_ros/driver.launch started
      (unless (ros::wait-for-service "/spot/claim" 5)
        (ros::ros-error "could not communicate with robot, may be forget to roslaunch spot_driver driver.launch, or did not power on the robot"))
@@ -84,6 +87,10 @@
      (setq execute-behavior-action (instance ros::simple-action-client :init
                                              execute-behavior-action-name spot_behavior_manager_msgs::LeadPersonAction
                                              :groupname groupname))
+     ;; This process supports that the return value of (send self :simulation-modep) is wrong because Spot does not use follow_joint_trajectory.
+     ;; See https://github.com/jsk-ros-pkg/jsk_pr2eus/blob/27066da325b7224bb35e3c4ded05b751c96fd907/pr2eus/robot-interface.l#L240-L251
+     (if simulation-mode
+       (send self :joint-action-enable nil))
      ))
   (:default-controller () ) ;; spot does not provide any JTA controllers
   (:spot-status-metrics-callback
@@ -464,21 +471,23 @@
      (instance geometry_msgs::quaternion :init :x qx :y qy :z qz :w qw)))
   )
 
-(defun spot-init (&optional (create-viewer))
+(defun spot-init (&optional (create-viewer) (simulation-mode))
   (unless (boundp '*spot*) (spot) (send *spot* :reset-pose))
   (unless (ros::ok) (ros::roseus "spot_eus_interface"))
-  (unless (boundp '*ri*) (setq *ri* (instance spot-interface :init)))
+  (unless (boundp '*ri*)
+    (setq *ri* (instance spot-interface :init :simulation-mode simulation-mode)))
 
   (ros::spin-once)
   (send *ri* :spin-once)
-  (send *ri* :claim)
-  (while (member (send *ri* :state :power-state-motor-power-state) (list 'off nil))
-    (unix::sleep 1)
-    (ros::ros-info "powering on...")
-    (send *ri* :power-on))
-  ;;
-  (unless (every #'(lambda (x) (eq x 'made)) (mapcar #'(lambda (x) (cdr (assoc :contact x))) (send *ri* :state :feet)))
-      (ros::ros-info "run (send *ri* :stand) to stand the robot"))
+  (unless (send *ri* :simulation-modep)
+    (send *ri* :claim)
+    (while (member (send *ri* :state :power-state-motor-power-state) (list 'off nil))
+      (unix::sleep 1)
+      (ros::ros-info "powering on...")
+      (send *ri* :power-on))
+    ;;
+    (unless (every #'(lambda (x) (eq x 'made)) (mapcar #'(lambda (x) (cdr (assoc :contact x))) (send *ri* :state :feet)))
+      (ros::ros-info "run (send *ri* :stand) to stand the robot")))
 
   (when create-viewer (objects (list *spot*)))
   )
