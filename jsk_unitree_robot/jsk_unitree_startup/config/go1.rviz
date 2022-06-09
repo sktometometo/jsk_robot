@@ -134,20 +134,6 @@ Visualization Manager:
           Value: true
         odom:
           Value: true
-        t265_accel_frame:
-          Value: true
-        t265_accel_optical_frame:
-          Value: true
-        t265_gyro_frame:
-          Value: true
-        t265_gyro_optical_frame:
-          Value: true
-        t265_link:
-          Value: true
-        t265_odom_frame:
-          Value: true
-        t265_pose_frame:
-          Value: true
         trunk:
           Value: false
         ultraSound_face:
@@ -163,55 +149,45 @@ Visualization Manager:
       Show Names: true
       Tree:
         odom:
-          t265_odom_frame:
-            t265_pose_frame:
-              t265_link:
-                base:
-                  trunk:
-                    base_footprint:
-                      {}
-                    camera_chin:
-                      camera_optical_chin:
-                        {}
-                    camera_face:
-                      camera_optical_face:
-                        {}
-                    camera_left:
-                      camera_laserscan_link_left:
-                        {}
-                      camera_optical_left:
-                        {}
-                    camera_rearDown:
-                      camera_optical_rearDown:
-                        {}
-                    camera_right:
-                      camera_laserscan_link_right:
-                        {}
-                      camera_optical_right:
-                        {}
-                    d435_top_link:
-                      d435_top_color_frame:
-                        d435_top_color_optical_frame:
-                          {}
-                      d435_top_depth_frame:
-                        d435_top_depth_optical_frame:
-                          {}
-                      laser:
-                        {}
-                    imu_link:
-                      {}
-                    ultraSound_face:
-                      {}
-                    ultraSound_left:
-                      {}
-                    ultraSound_right:
-                      {}
-                t265_accel_frame:
-                  t265_accel_optical_frame:
+          base_footprint:
+            base:
+              trunk:
+                camera_chin:
+                  camera_optical_chin:
                     {}
-                t265_gyro_frame:
-                  t265_gyro_optical_frame:
+                camera_face:
+                  camera_optical_face:
                     {}
+                camera_left:
+                  camera_laserscan_link_left:
+                    {}
+                  camera_optical_left:
+                    {}
+                camera_rearDown:
+                  camera_optical_rearDown:
+                    {}
+                camera_right:
+                  camera_laserscan_link_right:
+                    {}
+                  camera_optical_right:
+                    {}
+                d435_top_link:
+                  d435_top_color_frame:
+                    d435_top_color_optical_frame:
+                      {}
+                  d435_top_depth_frame:
+                    d435_top_depth_optical_frame:
+                      {}
+                  laser:
+                    {}
+                imu_link:
+                  {}
+                ultraSound_face:
+                  {}
+                ultraSound_left:
+                  {}
+                ultraSound_right:
+                  {}
       Update Interval: 0.10000000149011612
       Value: true
     - Alpha: 1
@@ -396,10 +372,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         laser:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        t265_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -692,10 +664,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5347970724105835
+      Pitch: 0.8747969269752502
       Target Frame: trunk
       Value: Orbit (rviz)
-      Yaw: 4.778173446655273
+      Yaw: 3.658167600631714
     Saved: ~
 Window Geometry:
   Displays:

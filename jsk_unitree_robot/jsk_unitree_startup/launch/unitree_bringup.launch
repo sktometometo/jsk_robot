@@ -5,12 +5,12 @@
   <arg name="joy_name_space" default="/go1/" />
   <arg name="network" default="wifi" /> <!-- wifi or ethernet -->
 
-  <arg name="use_d435_top" default="false" />
+  <arg name="use_navigation_unit" default="false" />
   <arg name="launch_app_manager" default="true" />
 
   <!-- node to convert ROS to Unitree's internal udp services -->
   <node pkg="unitree_legged_real" type="ros_server" name="node_ros_server"
-        respawn="false" output="log" >
+        respawn="false" output="screen" >
     <remap from="/cmd_vel" to="$(arg joy_name_space)/cmd_vel" />
     <rosparam subst_value="true" if="$(eval arg('network') == 'wifi')">
         target_ip: 192.168.12.1
@@ -61,7 +61,7 @@
   -->
 
   <!-- d435_top -->
-  <group if="$(arg use_d435_top)">
+  <group if="$(arg use_navigation_unit)">
 
     <!-- realsense d435 -->
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
@@ -78,10 +78,20 @@
     </include>
 
     <!-- realsense t265 -->
-    <include file="$(find realsense2_camera)/launch/rs_t265.launch">
-        <arg name="camera" value="t265" />
+    <include file="$(find jsk_robot_startup)/launch/t265_odometry_transformer.launch">
+        <arg name="topic_odom_out" value="odom"/>
+        <arg name="base_frame_id" value="base_footprint"/>
+        <arg name="odom_frame_id" value="odom"/>
+        <arg name="2d_mode" value="true"/>
+        <arg name="translation_base_link_to_pose_frame_x" value="0.120"/>
+        <arg name="translation_base_link_to_pose_frame_y" value="0.0"/>
+        <arg name="translation_base_link_to_pose_frame_z" value="0.145"/>
+        <arg name="rotation_base_link_to_pose_frame_x" value="0.0"/>
+        <arg name="rotation_base_link_to_pose_frame_y" value="0.0"/>
+        <arg name="rotation_base_link_to_pose_frame_z" value="0.0"/>
+        <arg name="rotation_base_link_to_pose_frame_w" value="1.0"/>
+        <arg name="launch_rviz" value="false"/>
     </include>
-    <node pkg="tf2_ros" type="static_transform_publisher" name="odom_static_transform_publisher" args="0 0 0.6 0 0 0 odom t265_odom_frame" />
 
     <!-- laser -->
     <node pkg="hls_lfcd_lds_driver" type="hlds_laser_publisher" name="hlds_laser_publisher" output="screen">
