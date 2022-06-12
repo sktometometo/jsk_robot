@@ -41,14 +41,13 @@
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
 
   <!-- smooth cmd vel interface -->
-  <!--
   <node pkg="nodelet" type="nodelet" name="yocs_velocity_smoother"
         args="standalone yocs_velocity_smoother/VelocitySmootherNodelet">
     <rosparam>
-        speed_lim_v: 2.0
-        speed_lim_w: 5.0
+        speed_lim_v: 1.0
+        speed_lim_w: 2.0
         accel_lim_v: 1.0
-        accel_lim_w: 2.5
+        accel_lim_w: 1.0
         frequency: 20.0
         decel_factor: 1.0
         robot_feedback: 1
@@ -58,7 +57,6 @@
     <remap from="~robot_cmd_vel"  to="/go1/cmd_vel"/>
     <remap from="~odometry"       to="/odom"/>
   </node>
-  -->
 
   <!-- d435_top -->
   <group if="$(arg use_navigation_unit)">
