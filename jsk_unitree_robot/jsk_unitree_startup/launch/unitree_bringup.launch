@@ -41,6 +41,7 @@
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
 
   <!-- smooth cmd vel interface -->
+  <!--
   <node pkg="nodelet" type="nodelet" name="yocs_velocity_smoother"
         args="standalone yocs_velocity_smoother/VelocitySmootherNodelet">
     <rosparam>
@@ -50,13 +51,15 @@
         accel_lim_w: 1.0
         frequency: 20.0
         decel_factor: 1.0
-        robot_feedback: 1
+        robot_feedback: 2
     </rosparam>
     <remap from="~raw_cmd_vel"    to="/cmd_vel"/>
     <remap from="~smooth_cmd_vel" to="/go1/cmd_vel"/>
     <remap from="~robot_cmd_vel"  to="/go1/cmd_vel"/>
     <remap from="~odometry"       to="/odom"/>
   </node>
+  -->
+  <node pkg="topic_tools" type="relay" name="cmd_vel_relay" args="/cmd_vel /go1/cmd_vel" />
 
   <!-- d435_top -->
   <group if="$(arg use_navigation_unit)">
@@ -100,7 +103,7 @@
 
   <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" >
       <arg name="pad_type" value="dualsense" />
-      <arg name="cmd_vel_topic" value="/go1/cmd_vel" />
+      <arg name="cmd_vel_topic" value="/cmd_vel" />
   </include>
 
   <include
