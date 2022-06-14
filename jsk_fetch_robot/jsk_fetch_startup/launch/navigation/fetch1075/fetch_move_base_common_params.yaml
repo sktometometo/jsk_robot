@@ -5,30 +5,24 @@ move_base:
       type: "clear_costmap_recovery/ClearCostmapRecovery"
     - name: "rotate_recovery0"
       type: "rotate_recovery/RotateRecovery"
-    - name: "speak_and_wait0"
-      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
+    - name: "beg_to_person0"
+      type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
     - name: "aggressive_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
     - name: "rotate_recovery1"
       type: "rotate_recovery/RotateRecovery"
-    - name: "speak_and_wait1"
-      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
+    - name: "beg_to_person1"
+      type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
     - name: "all_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
     - name: "rotate_recovery2"
       type: "rotate_recovery/RotateRecovery"
     - name: "move_slow_and_clear"
       type: "move_slow_and_clear/MoveSlowAndClear"
-  speak_and_wait0:
-    speak_text: "とおれません、みちをあけてください"
-    duration_wait: 5.0
-    duration_timeout: 1.0
-    sound_action: /robotsound_jp
-  speak_and_wait1:
-    speak_text: "とおれません、みちをあけてください"
-    duration_wait: 5.0
-    duration_timeout: 1.0
-    sound_action: /robotsound_jp
+  beg_to_person0:
+    trigger_action: /beg_to_person_behavior/behavior
+  beg_to_person1:
+    trigger_action: /beg_to_person_behavior/behavior
   move_slow_and_clear:
     planner_namespace: TrajectoryPlannerROS
     max_trans_param_name: max_vel_x
