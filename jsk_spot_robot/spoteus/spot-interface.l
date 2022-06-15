@@ -243,7 +243,13 @@
   (:set-locomotion-mode (locomotion-hint) "Set locomotion mode" (call-set-locomotion-service "/spot/locomotion_mode" locomotion-hint))
   (:set-stair-mode (is-stair-mode) "Set stair mode" (call-set-bool-service "/spot/stair_mode" is-stair-mode))
   ;;
-  (:dock (dock-id) "Dock the robot" (call-dock-service "/spot/dock" dock-id))
+  (:dock (dock-id)
+    "
+    Dock the robot
+    Args:
+      dock-id: dock fiducial id
+    "
+    (call-dock-service "/spot/dock" dock-id))
   (:undock
    ()
    "Undock the robot"
@@ -325,6 +331,7 @@
         nil)
       ))
   (:get-current-spot ()
+    "get current node id "
     (let (msg)
       (setq msg (one-shot-subscribe "/spot_behavior_manager_server/current_node_id" std_msgs::String :timeout 5000))
       (if (not msg)
@@ -350,6 +357,18 @@
   (:body-pose
    ;; pose expected to get 3 elements float-vector (r p y), or eus coords.
     (pose &key (topic-name "/spot/body_pose"))
+    "
+    Set spot body pose
+    Args:
+      pose: (float-vector r p y) or (list rpy) or eus coords
+      - key
+        topic-name: Set the topic name to publish (default \"/spot/body_pose\")
+    Examples:
+      (send self :body-pose #f(0 0.2 0))
+      (send self :body-pose (list 0 0.2 0))
+      (send self :body-pose (send *robot* :copy-worldcoords))
+      (send self :body-pose (make-coords)) ;; return to default pose
+    "
     (when (send self :simulation-modep)
       (return-from :body-pose t))
     (unless (ros::get-topic-publisher topic-name)
