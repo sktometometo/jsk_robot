@@ -289,6 +289,8 @@
     <node name="relay_teb_planner_local_plan"
           pkg="topic_tools" type="relay"
           args="/move_base/TebLocalPlannerROS/local_plan /move_base/local_plan_viz" />
+    <!-- trigger behavior servers -->
+    <include file="$(find trigger_behavior_recovery)/launch/beg_to_person.launch" />
 
     <!-- load amcl params -->
     <rosparam command="load"
