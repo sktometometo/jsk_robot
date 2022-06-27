@@ -3,26 +3,20 @@ move_base:
   recovery_behaviors:
     - name: "conservative_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
-    - name: "rotate_recovery0"
-      type: "rotate_recovery/RotateRecovery"
     - name: "beg_to_person0"
       type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
     - name: "aggressive_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
-    - name: "rotate_recovery1"
-      type: "rotate_recovery/RotateRecovery"
     - name: "beg_to_person1"
       type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
     - name: "all_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
-    - name: "rotate_recovery2"
-      type: "rotate_recovery/RotateRecovery"
     - name: "move_slow_and_clear"
       type: "move_slow_and_clear/MoveSlowAndClear"
   beg_to_person0:
-    trigger_action: /beg_to_person_behavior/behavior
+    trigger_action: /beg_to_person/behavior
   beg_to_person1:
-    trigger_action: /beg_to_person_behavior/behavior
+    trigger_action: /beg_to_person/behavior
   move_slow_and_clear:
     planner_namespace: TrajectoryPlannerROS
     max_trans_param_name: max_vel_x
