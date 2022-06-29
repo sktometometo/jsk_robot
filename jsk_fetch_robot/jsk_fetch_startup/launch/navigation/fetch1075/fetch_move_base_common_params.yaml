@@ -3,24 +3,28 @@ move_base:
   recovery_behaviors:
     - name: "conservative_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "trigger_beg_to_person0"
+      type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
     - name: "rotate_recovery0"
       type: "rotate_recovery/RotateRecovery"
-    - name: "beg_to_person0"
-      type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
     - name: "aggressive_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "trigger_speak_and_wait0"
+      type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
     - name: "rotate_recovery1"
       type: "rotate_recovery/RotateRecovery"
-    - name: "speak_and_wait0"
-      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
     - name: "all_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "speak_and_wait0"
+      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
     - name: "rotate_recovery2"
       type: "rotate_recovery/RotateRecovery"
     - name: "move_slow_and_clear"
       type: "move_slow_and_clear/MoveSlowAndClear"
-  beg_to_person0:
-    trigger_action: /beg_to_person/behavior
+  trigger_beg_to_person0:
+    trigger_action: /beg_to_person_behavior/behavior
+  trigger_speak_and_wait0:
+    trigger_action: /speak_and_wait_behavior/behavior
   speak_and_wait0:
     speak_text: "とおれません、みちをあけてください"
     duration_wait: 5.0
