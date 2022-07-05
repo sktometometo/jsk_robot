@@ -75,12 +75,12 @@ if [[ "${FORCE_ROSINSTALL_REPLACE}" == "true" ]]; then
         rm $WORKSPACE/src/.rosinstall
     fi
     touch $WORKSPACE/src/.rosinstall
-    wstool merge $BASE_ROSINSTALL -t $WORKSPACE/src ---merge-replace --confirm-all
+    wstool merge $BASE_ROSINSTALL -t $WORKSPACE/src --merge-replace --confirm-all
 else
     if [[ ! -e $WORKSPACE/src/.rosinstall ]]; then
         touch $WORKSPACE/src/.rosinstall
     fi
-    wstool merge $BASE_ROSINSTALL -t $WORKSPACE/src ---merge-replace --confirm-all
+    wstool merge $BASE_ROSINSTALL -t $WORKSPACE/src --merge-replace --confirm-all
 fi
 wstool update -t $WORKSPACE/src --delete-changed-uris
 # Forcefully checkout specified branch
