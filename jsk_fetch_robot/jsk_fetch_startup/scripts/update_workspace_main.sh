@@ -5,9 +5,10 @@ function usage()
     echo "Usage: $0 [-w workspace_directory] [-h] [-l]
 
 optional arguments:
-    -h                  show this help
-    -w WORKSPACE_PATH   specify target workspace
-    -l                  do not send a mail
+    -h                     show this help
+    -w WORKSPACE_PATH      specify target workspace
+    -d DESTINATION_ADDRESS destination address
+    -l                     do not send a mail
 "
 }
 
@@ -18,6 +19,7 @@ function get_full_path()
 
 SEND_MAIL=true
 WORKSPACE=$(get_full_path $HOME/ros/melodic)
+MAIL_DESTINATION="fetch@jsk.imi.i.u-tokyo.ac.jp"
 
 while getopts hlw: OPT
 do
@@ -27,6 +29,9 @@ do
             ;;
         l)
             SEND_MAIL=false
+            ;;
+        d)
+            MAIL_DESTINATION=$OPTARG
             ;;
         h)
             usage
@@ -106,7 +111,7 @@ if [ -n "$MAIL_BODY" ] && [ "${SEND_MAIL}" == "true" ]; then
 subject: 'Daily workspace update fails'
 body: '$MAIL_BODY'
 sender_address: '$(hostname)@jsk.imi.i.u-tokyo.ac.jp'
-receiver_address: 'fetch@jsk.imi.i.u-tokyo.ac.jp'
+receiver_address: '$MAIL_DESTINATION'
 smtp_server: ''
 smtp_port: ''
 attached_files: ['$LOGFILE']"
