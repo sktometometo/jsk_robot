@@ -6,8 +6,10 @@ function usage()
 
 optional arguments:
     -h                     show this help
+    -f                     remove current rosinstall in workspace and use new one
     -w WORKSPACE_PATH      specify target workspace
     -d DESTINATION_ADDRESS destination address
+    -r ROSINSTALL_PATH     specify base rosinstall file
     -l                     do not send a mail
 "
 }
@@ -18,8 +20,10 @@ function get_full_path()
 }
 
 SEND_MAIL=true
+FORCE_ROSINSTALL_REPLACE=false
 WORKSPACE=$(get_full_path $HOME/ros/melodic)
 MAIL_DESTINATION="fetch@jsk.imi.i.u-tokyo.ac.jp"
+BASE_ROSINSTALL=$(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO
 
 while getopts hlw: OPT
 do
@@ -32,6 +36,12 @@ do
             ;;
         d)
             MAIL_DESTINATION=$OPTARG
+            ;;
+        f)
+            FORCE_ROSINSTALL_REPLACE=true
+            ;;
+        r)
+            BASE_ROSINSTALL=$OPTARG
             ;;
         h)
             usage
@@ -60,7 +70,18 @@ set -x
 wstool foreach -t $WORKSPACE/src --git 'git stash'
 wstool foreach -t $WORKSPACE/src --git 'git fetch origin --prune'
 wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot
-ln -sf $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $WORKSPACE/src/.rosinstall
+if [[ "${FORCE_ROSINSTALL_REPLACE}" == "true" ]]; then
+    if [[ -e $WORKSPACE/src/.rosinstall ]]; then
+        rm $WORKSPACE/src/.rosinstall
+    fi
+    touch $WORKSPACE/src/.rosinstall
+    wstool merge -t $WORKSPACE/src $BASE_ROSINSTALL ---merge-replace --confirm-all
+else
+    if [[ ! -e $WORKSPACE/src/.rosinstall ]]; then
+        touch $WORKSPACE/src/.rosinstall
+    fi
+    wstool merge -t $WORKSPACE/src $BASE_ROSINSTALL ---merge-replace --confirm-all
+fi
 wstool update -t $WORKSPACE/src --delete-changed-uris
 # Forcefully checkout specified branch
 wstool foreach -t $WORKSPACE/src --git --shell 'branchname=$(git rev-parse --abbrev-ref HEAD); if [ $branchname != "HEAD" ]; then git reset --hard HEAD; git checkout origin/$branchname; git branch -D $branchname; git checkout -b $branchname --track origin/$branchname; fi'
