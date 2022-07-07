@@ -181,4 +181,8 @@
 - git:
     local-name: BehaviorTree.ROS
     uri: https://github.com/BehaviorTree/BehaviorTree.ROS
+# To use euslime with eus10, it is necessary to install euslime from source
+- git:
+    local-name: euslime
+    uri: https://github.com/jsk-ros-pkg/euslime.git
     version: master
