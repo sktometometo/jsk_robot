@@ -69,7 +69,7 @@ set -x
 
 wstool foreach -t $WORKSPACE/src --git 'git stash'
 wstool foreach -t $WORKSPACE/src --git 'git fetch origin --prune'
-wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot
+wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot --delete-changed-uris
 if [[ "${FORCE_ROSINSTALL_REPLACE}" == "true" ]]; then
     if [[ -e $WORKSPACE/src/.rosinstall ]]; then
         rm $WORKSPACE/src/.rosinstall
