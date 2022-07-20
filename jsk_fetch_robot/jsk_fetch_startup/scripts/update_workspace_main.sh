@@ -25,7 +25,7 @@ WORKSPACE=$(get_full_path $HOME/ros/melodic)
 MAIL_DESTINATION="fetch@jsk.imi.i.u-tokyo.ac.jp"
 BASE_ROSINSTALL=$(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO
 
-while getopts hlw: OPT
+while getopts wldfrh: OPT
 do
     case $OPT in
         w)
