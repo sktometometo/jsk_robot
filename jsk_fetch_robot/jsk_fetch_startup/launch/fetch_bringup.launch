@@ -247,6 +247,22 @@
     </node>
   </group>
 
+  <!-- elevator_operation -->
+  <group>
+      <include
+          file="$(find elevator_operation)/launch/elevator_state_publisher.launch">
+          <arg name="device_type" value="fetch1075_enviii" />
+          <arg name="robot_type" value="fetch" />
+      </include>
+
+      <include
+          file="$(find elevator_operation)/launch/elevator_operation.launch">
+          <arg name="input_topic_points" value="/head_camera/depth_registered/points" />
+          <arg name="robot_type" value="fetch" />
+      </include>
+  </group>
+
+  <!-- navigation -->
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->
     <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
