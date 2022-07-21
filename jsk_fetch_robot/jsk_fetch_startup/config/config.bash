@@ -1,6 +1,12 @@
 # This file is bash configuration for robot.conf
 # This file must be at /var/lib/robot/config.bash
 
+# Common settings
+export FETCH_CALIBRATED_URDF=/etc/ros/melodic/calibrated_2020_12_04_02_08_34.urdf
+export FETCH_CALIBRATED_RGB=/etc/ros/melodic/rgb_2020_12_04_02_08_34.yaml
+export FETCH_CALIBRATED_DEPTH=/etc/ros/melodic/depth_2020_12_04_02_08_34.yaml
+export AUDIO_DEVICE="alsa_output.usb-1130_USB_AUDIO-00.analog-stereo"
+
 if [ $(hostname) = 'fetch15' ]; then
   export DEFAULT_SPEAKER=13;
   export DEFAULT_ENGLISH_SPEAKER=cmu_us_bdl.flitevox;
