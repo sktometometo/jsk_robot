@@ -72,6 +72,30 @@ catkin build
 source devel/setup.bash
 ```
 
+### Run launch files (for advanced users)
+
+Run base launch
+
+```bash
+source ~/catkin_ws/devel/setup.bash
+source /var/lib/robot/config.bash
+rossetmaster localhost
+rossetclient $NETWORK_DEFAULT_ROS_INTERFACE
+rosrun jsk_fetch_startup link_calibration_files.bash
+roslaunch jsk_fetch_startup fetch.launch launch_teleop:=false
+```
+
+And run jsk extension launch
+
+```bash
+source ~/catkin_ws/devel/setup.bash
+source /var/lib/robot/config.bash
+rossetmaster localhost
+rossetclient $NETWORK_DEFAULT_ROS_INTERFACE
+rosrun jsk_fetch_startup setup_audio.bash
+roslaunch jsk_fetch_startup fetch_bringup.launch hostname:=$(hostname)
+```
+
 ### Connecting to Fetch
 
 You need to install `ros-indigo-jsk-tools` to use `rosset*` tools, otherwise use setenv command
