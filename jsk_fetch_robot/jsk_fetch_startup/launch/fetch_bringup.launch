@@ -25,6 +25,7 @@
   <arg name="use_keepout" default="true" />
   <arg name="fetch_switchbot" default="true" />
   <arg name="network_interface" default="$(optenv NETWORK_DEFAULT_WIFI_INTERFACE wlan0)" />
+  <arg name="sound_device" default="default" />
 
   <arg name="battery_warning" default="true" />
   <arg name="nav_speak" default="true" />
@@ -83,6 +84,7 @@
     <rosparam subst_value="true" >
       default_voice: $(arg default_english_speaker)
       plugin: sound_play/flite_plugin
+      device: $(arg sound_device)
     </rosparam>
   </node>
 
@@ -90,6 +92,7 @@
   <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
     <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
     <arg name="sound_play_respawn" value="true" />
+    <arg name="device" value="$(arg sound_device)" />
   </include>
   <include unless="$(arg use_voice_text)" file="$(find voicevox)/launch/voicevox_texttospeech.launch">
     <arg name="default_speaker" value="$(arg default_speaker)" />
