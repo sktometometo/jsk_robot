@@ -1,4 +1,4 @@
-;(load "package://jsk_robot_startup/lifelog/tweet_client.l")
+(load "package://jsk_robot_startup/lifelog/tweet_client.l")
 (load "package://jsk_fetch_startup/euslisp/notify-app.l")
 (load "package://switchbot_ros/scripts/switchbot.l")
 (require :state-machine "package://roseus_smach/src/state-machine.l")
