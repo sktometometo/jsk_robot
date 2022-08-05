@@ -49,10 +49,16 @@ from control_msgs.msg import PointHeadAction, PointHeadGoal
 from geometry_msgs.msg import PointStamped, Twist
 from nav_msgs.msg import Path
 
+from ros_lock import ROSLock
+from ros_lock import roslock_acquire
+
 class NavHeadController:
 
     def __init__(self):
         self.last_vel_time = rospy.Time(0)
+
+        self.lock_for_head = ROSLock('head')
+        self.lock_for_head.wait_for_server()
 
         # pose and lock
         self.x = 1.0
@@ -109,32 +115,33 @@ class NavHeadController:
 
     def loop(self):
         while not rospy.is_shutdown():
-            if abs((rospy.Time.now() - self.last_vel_time).to_sec()) < 1.0:
-                goal = PointHeadGoal()
-                goal.target.header.stamp = rospy.Time.now()
-                goal.target.header.frame_id = "base_link"
-                with self.mutex:
-                    goal.target.point.x = self.x
-                    goal.target.point.y = self.y
-                    self.x = 1
-                    self.y = 0
-                goal.target.point.z = 0.0
-                goal.min_duration = rospy.Duration(1.0)
+            with roslock_acquire(self.lock_for_head):
+                if abs((rospy.Time.now() - self.last_vel_time).to_sec()) < 1.0:
+                    goal = PointHeadGoal()
+                    goal.target.header.stamp = rospy.Time.now()
+                    goal.target.header.frame_id = "base_link"
+                    with self.mutex:
+                        goal.target.point.x = self.x
+                        goal.target.point.y = self.y
+                        self.x = 1
+                        self.y = 0
+                    goal.target.point.z = 0.0
+                    goal.min_duration = rospy.Duration(1.0)
 
-                self.client.send_goal(goal)
-                self.client.wait_for_result()
+                    self.client.send_goal(goal)
+                    self.client.wait_for_result()
 
-                with self.mutex:
-                    goal.target.point.x = self.x
-                    goal.target.point.y = self.y
-                    self.x = 1
-                    self.y = 0
-                goal.target.point.z = 0.75
+                    with self.mutex:
+                        goal.target.point.x = self.x
+                        goal.target.point.y = self.y
+                        self.x = 1
+                        self.y = 0
+                    goal.target.point.z = 0.75
 
-                self.client.send_goal(goal)
-                self.client.wait_for_result()
-            else:
-                rospy.sleep(1.0)
+                    self.client.send_goal(goal)
+                    self.client.wait_for_result()
+                else:
+                    rospy.sleep(1.0)
 
 if __name__=="__main__":
     rospy.init_node("safe_tilt_head_node")
