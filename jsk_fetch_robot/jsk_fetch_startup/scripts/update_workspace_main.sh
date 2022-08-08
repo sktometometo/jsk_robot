@@ -10,6 +10,7 @@ optional arguments:
     -w WORKSPACE_PATH      specify target workspace
     -d DESTINATION_ADDRESS destination address
     -r ROSINSTALL_PATH     specify base rosinstall file
+    -j NUM_JOBS            number of jobs (default: 10)
     -l                     do not send a mail
 "
 }
@@ -19,13 +20,14 @@ function get_full_path()
     echo "$(cd $(dirname $1) && pwd)/$(basename $1)"
 }
 
+NUM_JOBS=10
 SEND_MAIL=true
 FORCE_ROSINSTALL_REPLACE=false
 WORKSPACE=$(get_full_path $HOME/ros/melodic)
 MAIL_DESTINATION="fetch@jsk.imi.i.u-tokyo.ac.jp"
 BASE_ROSINSTALL=$(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO
 
-while getopts w:ld:fr:h OPT
+while getopts w:ld:fr:j:h OPT
 do
     case $OPT in
         w)
@@ -42,6 +44,9 @@ do
             ;;
         r)
             BASE_ROSINSTALL=$OPTARG
+            ;;
+        j)
+            NUM_JOBS=$OPTARG
             ;;
         h)
             usage
@@ -108,7 +113,7 @@ cd $WORKSPACE
 catkin clean aques_talk collada_urdf_jsk_patch libcmt -y
 catkin init
 catkin config -DCMAKE_BUILD_TYPE=Release
-catkin build --continue-on-failure
+catkin build --continue-on-failure -j $NUM_JOBS
 CATKIN_BUILD_RESULT=$?
 # Send mail
 MAIL_BODY=""
