@@ -49,6 +49,7 @@
 
 (load "package://fetcheus/fetch-interface.l")
 (load "package://trigger_behavior_recovery/euslisp/utils.l")
+(load "package://ros_lock/euslisp/ros_lock.l")
 
 (ros::roseus "beg_to_person")
 (fetch-init)
