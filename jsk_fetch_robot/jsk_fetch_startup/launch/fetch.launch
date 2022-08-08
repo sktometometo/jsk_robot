@@ -45,6 +45,15 @@
       <arg name="enable_pointcloud" value="true" />
   </include>
 
+  <!-- ros_lock manager -->
+  <node
+      pkg="ros_lock"
+      type="lock_manager_node.py"
+      name="lock_manager"
+      required="true"
+      output="screen"
+      />
+
   <!-- Odometry -->
   <param name="base_controller/publish_tf" value="false"/>
   <!-- stop using graft: s-kitagawa (2019/10/17) -->
