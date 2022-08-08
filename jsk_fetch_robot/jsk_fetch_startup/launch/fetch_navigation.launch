@@ -6,6 +6,8 @@
     <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
     <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
 
+    <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
+
     <!-- jsk_maps -->
     <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
       <arg name="launch_map_server" value="true" />
