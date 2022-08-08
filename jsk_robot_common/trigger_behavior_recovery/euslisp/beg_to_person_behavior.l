@@ -144,7 +144,8 @@
 
 (defun execute-cb (server goal)
   (ros::ros-warn "Action server called")
-  (let (result-lock-edgetpu (send *ros-lock-for-edgetpu* :acquire :timeout 10))
+  (let ((result-lock-edgetpu (send *ros-lock-for-edgetpu* :acquire :timeout 10))
+        (result (send server :result)))
     (if (not result-lock-edgetpu)
       (progn
         (send result :result :success nil)
@@ -154,7 +155,7 @@
         (return-from execute-cb)
         ))
     (if *use-panorama-coral-detector*
-      (let (ret res result (req (instance coral_usb::StartNodeRequest :init)))
+      (let (ret res (req (instance coral_usb::StartNodeRequest :init)))
         (send req :name *panorama-edgetpu-node-name*)
         (setq ret (ros::wait-for-service "~start_edgetpu_node" 5.0))
         (if (not ret)
@@ -163,7 +164,7 @@
             (send result :result :message "Failed to find edgetpu manager interface.")
             (ros::ros-error "Failed to find edgetpu manager interface.")
             (send server :set-aborted result)
-            (send result-lock-edgetpu :release)
+            (send *ros-lock-for-edgetpu* :release)
             (return-from execute-cb)
             )
           )
@@ -174,7 +175,7 @@
             (send result :result :message "Failed to start edgetpu node.")
             (ros::ros-error "Failed to start edgetpu node.")
             (send server :set-aborted result)
-            (send result-lock-edgetpu :release)
+            (send *ros-lock-for-edgetpu* :release)
             (return-from execute-cb)
             )
           )
@@ -183,7 +184,6 @@
     (let (nearest-person-coords
           target-person-coords
           (result-lock-head (send *ros-lock-for-head* :acquire :timeout 10))
-          (result (send server :result))
           )
       (if (not result-lock-head)
         (progn
@@ -199,8 +199,8 @@
           (send result :result :message "No message cached yet.")
           (ros::ros-error "No message cached yet.")
           (send server :set-aborted result)
-          (send result-lock-edgetpu :release)
-          (send result-lock-head :release)
+          (send *ros-lock-for-edgetpu* :release)
+          (send *ros-lock-for-head* :release)
           (return-from execute-cb)
           ))
       (setq nearest-person-coords (get-nearest-object-to-path *people-coords-list* *path-coords-list*))
@@ -222,16 +222,13 @@
           )
         )
       (send server :set-succeeded result)
-      (send result-lock-edgetpu :release)
-      (send result-lock-head :release)
+      (send *ros-lock-for-edgetpu* :release)
+      (send *ros-lock-for-head* :release)
       )))
 
 (ros::subscribe "~path" nav_msgs::Path #'callback-path)
 (ros::subscribe "~person_bbox_array" jsk_recognition_msgs::BoundingBoxArray #'callback-bbox-array)
 (ros::advertise "~debug" geometry_msgs::Posestamped 1)
-(if *use-panorama-coral-detector*
-  (progn
-    ))
 (setq *as*
       (instance ros::simple-action-server :init
                   "~behavior"
