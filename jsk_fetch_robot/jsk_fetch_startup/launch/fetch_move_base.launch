@@ -2,6 +2,7 @@
 
   <!-- fetch or freight? -->
   <arg name="name" />
+  <arg name="hostname" default="fetch1075" />
 
   <!-- set topics -->
   <arg name="map_topic" default="map" />
