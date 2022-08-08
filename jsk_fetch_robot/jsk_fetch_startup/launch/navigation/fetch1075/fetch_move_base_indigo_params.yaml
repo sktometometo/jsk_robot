@@ -1,3 +1,2 @@
-move_base:
-  global_costmap:
-    update_frequency: 2.0
+global_costmap:
+  update_frequency: 2.0
