@@ -1,0 +1,64 @@
+<launch>
+    <arg name="hostname" default="fetch15" />
+    <arg name="map_frame" default="eng2" />
+    <arg name="use_keepout" default="true" />
+    <arg name="use_build_map" default="false" />
+    <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
+    <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
+
+    <!-- jsk_maps -->
+    <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
+      <arg name="launch_map_server" value="true" />
+      <arg name="keepout" value="$(arg use_keepout)" />
+    </include>
+
+    <!-- dock localization -->
+    <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true">
+      <rosparam>
+        vital_rate: 0.1
+      </rosparam>
+    </node>
+
+    <!-- include fetch_navigation -->
+    <include file="$(find fetch_navigation)/launch/fetch_nav.launch" unless="$(arg use_build_map)" >
+      <arg name="map_file" value="$(arg map_file)" />
+      <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
+      <arg name="use_keepout" value="$(arg use_keepout)" />
+      <arg name="use_map_topic" value="true" />
+      <arg name="launch_map_server" value="false" />
+      <arg name="odom_topic" value="/odom_combined" />
+    </include>
+    <!-- relay plan path topic for visualization -->
+    <node name="relay_navfn_planner_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/NavfnROS/plan /move_base/navigation_plan_viz" />
+    <node name="relay_global_planner_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/GlobalPlanner/plan /move_base/navigation_plan_viz" />
+    <node name="relay_trajectory_planner_global_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TrajectoryPlannerROS/global_plan /move_base/global_plan_viz" />
+    <node name="relay_trajectory_planner_local_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TrajectoryPlannerROS/local_plan /move_base/local_plan_viz" />
+    <node name="relay_teb_planner_global_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TebLocalPlannerROS/global_plan /move_base/global_plan_viz" />
+    <node name="relay_teb_planner_local_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TebLocalPlannerROS/local_plan /move_base/local_plan_viz" />
+    <!-- trigger behavior servers -->
+    <include file="$(find trigger_behavior_recovery)/launch/behavior_server_beg_to_person.launch" />
+    <include file="$(find trigger_behavior_recovery)/launch/behavior_server_speak_and_wait.launch" />
+
+    <!-- load amcl params -->
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_amcl_common_params.yaml" />
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_amcl_$(env ROS_DISTRO)_params.yaml" />
+    <!-- load move_base params -->
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_common_params.yaml" />
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_$(env ROS_DISTRO)_params.yaml" />
+</launch>
