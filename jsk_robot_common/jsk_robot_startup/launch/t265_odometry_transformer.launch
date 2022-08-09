@@ -19,6 +19,9 @@
   <arg name="launch_t265" default="true" />
   <arg name="camera" default="t265" />
 
+  <arg name="external_manager" default="false" />
+  <arg name="manager_name" default="t265_realsense_manager" />
+
   <arg name="launch_rviz" default="false" />
 
   <node
@@ -55,6 +58,9 @@
       /tracking_module/enable_map_preservation: false
     </rosparam>
     <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="external_manager"         value="$(arg external_manager)" />
+      <arg name="manager"                  value="$(arg manager_name)" />
+
       <arg name="tf_prefix"                value="$(arg camera)"/>
       <arg name="serial_no"                value=""/>
       <arg name="usb_port_id"              value=""/>
