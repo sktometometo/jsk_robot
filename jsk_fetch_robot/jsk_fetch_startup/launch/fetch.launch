@@ -24,6 +24,8 @@
   <arg unless="$(arg debug)" name="launch_prefix" value=""/>
   <arg if="$(arg debug)" name="launch_prefix" value="gdb -x $(find fetch_bringup)/launch/gdb_settings.gdb --ex run --args"/>
 
+  <arg name="use_ros_lock" default="true" />
+
   <!-- calibration: s-kitagawa (2019/12/11) -->
   <!-- Calibration -->
   <param name="calibration_date" value="2020-12-04 02:08:50"/>
@@ -52,6 +54,7 @@
       name="lock_manager"
       required="true"
       output="screen"
+      if="$(arg use_ros_lock)"
       />
 
   <!-- Odometry -->
