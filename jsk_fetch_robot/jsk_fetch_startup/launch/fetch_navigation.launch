@@ -25,16 +25,24 @@
     <include file="$(find trigger_behavior_recovery)/launch/behavior_server_beg_to_person.launch" />
     <include file="$(find trigger_behavior_recovery)/launch/behavior_server_speak_and_wait.launch" />
 
-    <!-- include fetch_navigation -->
-    <include file="$(find fetch_navigation)/launch/fetch_nav.launch" unless="$(arg use_build_map)" >
-      <arg name="map_file" value="$(arg map_file)" />
-      <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
-      <arg name="use_keepout" value="$(arg use_keepout)" />
+    <!-- localize the robot -->
+    <include file="$(find fetch_navigation)/launch/include/amcl.launch.xml" >
+      <arg name="scan_topic" value="base_scan" />
+      <arg name="map_topic" value="map" />
       <arg name="use_map_topic" value="true" />
-      <arg name="launch_map_server" value="false" />
-      <arg name="odom_topic" value="/odom_combined" />
-      <arg name="move_base_include" value="$(find jsk_fetch_startup)/launch/fetch_move_base.launch" />
     </include>
+
+    <!-- move the robot -->
+    <include file="$(find jsk_fetch_startup)/launch/fetch_move_base.launch" >
+      <arg name="name" value="fetch" />
+      <arg if="$(arg use_keepout)" name="map_topic" value="map_keepout" />
+      <arg unless="$(arg use_keepout)" name="map_topic" value="map" />
+      <arg name="cmd_vel_topic" value="cmd_vel" />
+      <arg name="odom_topic" value="/odom_combined" />
+    </include>
+
+    <!-- tilt the head -->
+    <node pkg="fetch_navigation" type="tilt_head.py" name="tilt_head_node" />
 
     <!-- load amcl params -->
     <rosparam command="load"
