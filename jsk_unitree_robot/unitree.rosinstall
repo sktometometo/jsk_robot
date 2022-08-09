@@ -10,3 +10,6 @@
     local-name: unitree_ros_to_real
     uri: https://github.com/sktometometo/unitree_ros_to_real.git
     version: develop
+- git:
+    local-name: realsense-ros
+    uri: https://github.com/IntelRealSense/realsense-ros.git
