@@ -10,7 +10,7 @@ optional arguments:
     -w WORKSPACE_PATH      specify target workspace
     -d DESTINATION_ADDRESS destination address
     -r ROSINSTALL_PATH     specify base rosinstall file
-    -j NUM_JOBS            number of jobs (default: 10)
+    -j NUM_JOBS            number of jobs (default: number of processors)
     -l                     do not send a mail
 "
 }
@@ -20,7 +20,7 @@ function get_full_path()
     echo "$(cd $(dirname $1) && pwd)/$(basename $1)"
 }
 
-NUM_JOBS=10
+NUM_JOBS=$(grep -c ^processor /proc/cpuinfo)
 SEND_MAIL=true
 FORCE_ROSINSTALL_REPLACE=false
 WORKSPACE=$(get_full_path $HOME/ros/melodic)
