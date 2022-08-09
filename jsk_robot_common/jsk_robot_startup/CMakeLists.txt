@@ -140,6 +140,11 @@ install(DIRECTORY lifelog util launch images config cfg
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
+catkin_install_python(
+    PROGRAMS scripts/t265_odometry_transformer.py
+    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 if(mongodb_store_FOUND)
 install(TARGETS jsk_robot_lifelog
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
