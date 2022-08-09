@@ -12,6 +12,10 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <exec_depend>xacro</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>go1_description</exec_depend>
 
   <export>
   </export>
