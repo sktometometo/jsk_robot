@@ -42,7 +42,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/sktometometo/jsk_demos.git
-    version: PR/fetchdev/add-elevator-operation
+    version: develop/fetch/private
 - git:
     local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
