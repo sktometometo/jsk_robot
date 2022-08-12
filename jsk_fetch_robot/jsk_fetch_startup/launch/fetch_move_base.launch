@@ -30,4 +30,26 @@
     <remap from="map" to="$(arg map_topic)" />
   </node>
 
+  <!-- planners, costmaps, etc -->
+  <node pkg="move_base" type="move_base" name="move_base_no_recovery" respawn="true" output="screen">
+    <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/$(arg name)/costmap_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/$(arg name)/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/$(arg name)/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/costmap_global.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/$(arg name)/costmap_global.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/move_base.yaml" command="load" />
+    <rosparam file="$(find fetch_navigation)/config/$(arg name)/move_base.yaml" command="load" />
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_common_params.yaml" />
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_$(env ROS_DISTRO)_params.yaml" />
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <remap from="map" to="$(arg map_topic)" />
+    <remap from="/move_base_simple/goal" to="/move_base_no_recovery_simple/goal" />
+  </node>
+
 </launch>
