@@ -160,7 +160,7 @@
 - git:
     local-name: euslisp/Euslisp
     uri: https://github.com/Affonso-Gui/EusLisp.git
-    version: eus10
+    version: eus10-pr
 - git:
     local-name: jsk-ros-pkg/jsk_roseus
     uri: https://github.com/knorth55/jsk_roseus.git
@@ -185,4 +185,4 @@
 - git:
     local-name: euslime
     uri: https://github.com/jsk-ros-pkg/euslime.git
-    version: master
+    version: eus10
