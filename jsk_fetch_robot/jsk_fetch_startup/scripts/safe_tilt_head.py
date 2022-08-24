@@ -115,8 +115,8 @@ class NavHeadController:
 
     def loop(self):
         while not rospy.is_shutdown():
-            with roslock_acquire(self.lock_for_head):
-                if abs((rospy.Time.now() - self.last_vel_time).to_sec()) < 1.0:
+            if abs((rospy.Time.now() - self.last_vel_time).to_sec()) < 1.0:
+                with roslock_acquire(self.lock_for_head):
                     goal = PointHeadGoal()
                     goal.target.header.stamp = rospy.Time.now()
                     goal.target.header.frame_id = "base_link"
@@ -140,8 +140,8 @@ class NavHeadController:
 
                     self.client.send_goal(goal)
                     self.client.wait_for_result()
-                else:
-                    rospy.sleep(1.0)
+            else:
+                rospy.sleep(1.0)
 
 if __name__=="__main__":
     rospy.init_node("safe_tilt_head_node")
