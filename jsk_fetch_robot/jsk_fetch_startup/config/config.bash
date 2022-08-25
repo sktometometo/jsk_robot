@@ -42,5 +42,5 @@ elif [ $(hostname) = 'fetch1075' ]; then
 
   export NETWORK_DEFAULT_WIFI_INTERFACE="wlan0";
   export NETWORK_DEFAULT_ROS_INTERFACE="fetch1075";
-  export NETWORK_DEFAULT_PROFILE_ID="sanshiro-73B2";
+  export NETWORK_DEFAULT_PROFILE_ID="sanshiro-73B2-dongle";
 fi
