@@ -22,8 +22,10 @@
     </node>
 
     <!-- trigger behavior servers -->
+    <!--
     <include file="$(find trigger_behavior_recovery)/launch/behavior_server_beg_to_person.launch" />
     <include file="$(find trigger_behavior_recovery)/launch/behavior_server_speak_and_wait.launch" />
+    -->
 
     <!-- localize the robot -->
     <include file="$(find fetch_navigation)/launch/include/amcl.launch.xml" >

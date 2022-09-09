@@ -26,6 +26,10 @@ complex_conservative_recovery:
       type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
     - name: "update_inflation_layer_local0"
       type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
+    - name: "update_costmap_global0"
+      type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
+    - name: "update_inflation_layer_global0"
+      type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
   conservative_reset:
     reset_distance: 3.0
   update_inflation_layer_local0:
@@ -34,6 +38,14 @@ complex_conservative_recovery:
     duration_dealline: 20.0
   update_costmap_local0:
     parameter_name: "/move_base/local_costmap"
+    footprint_padding: 0.05
+    duration_dealline: 9.0
+  update_inflation_layer_global0:
+    parameter_name: "/move_base/global_costmap/inflater"
+    inflation_radius: 0.30
+    duration_dealline: 20.0
+  update_costmap_global0:
+    parameter_name: "/move_base/global_costmap"
     footprint_padding: 0.05
     duration_dealline: 9.0
 speak_and_wait0:
