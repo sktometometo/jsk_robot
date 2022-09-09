@@ -4,8 +4,8 @@ recovery_behaviors:
     type: "complex_recovery/SequentialComplexRecovery"
   - name: "speak_and_wait0"
     type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
-  - name: "aggressive_reset"
-    type: "clear_costmap_recovery/ClearCostmapRecovery"
+  - name: "complex_aggressive_recovery"
+    type: "complex_recovery/SequentialComplexRecovery"
   - name: "complex_all_reset_recovery"
     type: "complex_recovery/SequentialComplexRecovery"
   - name: "move_slow_and_clear"
@@ -20,6 +20,8 @@ recovery_behaviors:
       #    type: "rotate_recovery/RotateRecovery"
 complex_conservative_recovery:
   recovery_behaviors:
+    - name: "conservative_speak_and_wait"
+      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
     - name: "conservative_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
     - name: "update_costmap_local0"
@@ -30,11 +32,16 @@ complex_conservative_recovery:
       type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
     - name: "update_inflation_layer_global0"
       type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
+  conservative_speak_and_wait:
+    speak_text: "一段階目のリカバリを実行します"
+    duration_wait: 3.0
+    duration_timeout: 1.0
+    sound_action: /robotsound_jp
   conservative_reset:
-    reset_distance: 3.0
+    reset_distance: 0.0
   update_inflation_layer_local0:
     parameter_name: "/move_base/local_costmap/inflater"
-    inflation_radius: 0.30
+    inflation_radius: 0.10
     duration_dealline: 20.0
   update_costmap_local0:
     parameter_name: "/move_base/local_costmap"
@@ -42,7 +49,7 @@ complex_conservative_recovery:
     duration_dealline: 9.0
   update_inflation_layer_global0:
     parameter_name: "/move_base/global_costmap/inflater"
-    inflation_radius: 0.30
+    inflation_radius: 0.10
     duration_dealline: 20.0
   update_costmap_global0:
     parameter_name: "/move_base/global_costmap"
@@ -53,14 +60,32 @@ speak_and_wait0:
   duration_wait: 5.0
   duration_timeout: 1.0
   sound_action: /robotsound_jp
-aggressive_reset:
-  reset_distance: 1.0
+complex_aggressive_recovery:
+  recovery_behaviors:
+    - name: "aggressive_speak_and_wait"
+      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
+    - name: "aggressive_reset"
+      type: "clear_costmap_recovery/ClearCostmapRecovery"
+  conservative_speak_and_wait:
+    speak_text: "あーもうやんなっちゃうなあ"
+    duration_wait: 5.0
+    duration_timeout: 1.0
+    sound_action: /robotsound_jp
+  aggressive_reset:
+    reset_distance: 1.0
 complex_all_reset_recovery:
   recovery_behaviors:
+    - name: "all_reset_speak_and_wait"
+      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
     - name: "all_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
     - name: "rotate_recovery0"
       type: "rotate_recovery/RotateRecovery"
+  all_reset_speak_and_wait:
+    speak_text: "もう周るくらいしかできることないなあ"
+    duration_wait: 5.0
+    duration_timeout: 1.0
+    sound_action: /robotsound_jp
   all_reset:
     reset_distance: 0.0
 move_slow_and_clear:
