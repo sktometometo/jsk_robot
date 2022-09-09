@@ -66,7 +66,7 @@ complex_aggressive_recovery:
       type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
     - name: "aggressive_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
-  conservative_speak_and_wait:
+  aggressive_speak_and_wait:
     speak_text: "あーもうやんなっちゃうなあ"
     duration_wait: 5.0
     duration_timeout: 1.0
