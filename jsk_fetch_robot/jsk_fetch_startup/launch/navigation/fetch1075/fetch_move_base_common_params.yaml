@@ -46,7 +46,7 @@ complex_conservative_recovery:
   update_costmap_local0:
     parameter_name: "/move_base/local_costmap"
     footprint_padding: 0.0
-    duration_dealline: 9.0
+    duration_dealline: 20.0
   update_inflation_layer_global0:
     parameter_name: "/move_base/global_costmap/inflater"
     inflation_radius: 0.10
@@ -54,7 +54,7 @@ complex_conservative_recovery:
   update_costmap_global0:
     parameter_name: "/move_base/global_costmap"
     footprint_padding: 0.0
-    duration_dealline: 9.0
+    duration_dealline: 20.0
 speak_and_wait0:
   speak_text: "デトロ！あけろいと市警だ！"
   duration_wait: 5.0
