@@ -1,42 +1,62 @@
 recovery_behavior_enabled: true
 recovery_behaviors:
-  - name: "conservative_reset"
-    type: "clear_costmap_recovery/ClearCostmapRecovery"
-  - name: "trigger_beg_to_person0"
-    type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
-  - name: "rotate_recovery0"
-    type: "rotate_recovery/RotateRecovery"
-  - name: "aggressive_reset"
-    type: "clear_costmap_recovery/ClearCostmapRecovery"
-  - name: "trigger_speak_and_wait0"
-    type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
-  - name: "rotate_recovery1"
-    type: "rotate_recovery/RotateRecovery"
-  - name: "all_reset"
-    type: "clear_costmap_recovery/ClearCostmapRecovery"
+  - name: "complex_conservative_recovery"
+    type: "complex_recovery/SequentialComplexRecovery"
   - name: "speak_and_wait0"
     type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
-  - name: "rotate_recovery2"
-    type: "rotate_recovery/RotateRecovery"
+  - name: "aggressive_reset"
+    type: "clear_costmap_recovery/ClearCostmapRecovery"
+  - name: "complex_all_reset_recovery"
+    type: "complex_recovery/SequentialComplexRecovery"
   - name: "move_slow_and_clear"
     type: "move_slow_and_clear/MoveSlowAndClear"
-conservative_reset:
-  reset_distance: 3.0
-trigger_beg_to_person0:
-  trigger_action: /beg_to_person_behavior/behavior
-aggressive_reset:
-  reset_distance: 1.0
-trigger_speak_and_wait0:
-  trigger_action: /speak_and_wait_behavior/behavior
-all_reset:
-  reset_distance: 0.0
+      #  - name: "trigger_beg_to_person0"
+      #    type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
+      #  - name: "trigger_speak_and_wait0"
+      #    type: "trigger_behavior_recovery/TriggerBehaviorRecovery"
+      #  - name: "rotate_recovery1"
+      #    type: "rotate_recovery/RotateRecovery"
+      #  - name: "rotate_recovery2"
+      #    type: "rotate_recovery/RotateRecovery"
+complex_conservative_recovery:
+  recovery_behaviors:
+    - name: "conservative_reset"
+      type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "update_costmap_local0"
+      type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
+    - name: "update_inflation_layer_local0"
+      type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
+  conservative_reset:
+    reset_distance: 3.0
+  update_inflation_layer_local0:
+    parameter_name: "/move_base/local_costmap/inflater"
+    inflation_radius: 0.30
+    duration_dealline: 20.0
+  update_costmap_local0:
+    parameter_name: "/move_base/local_costmap"
+    footprint_padding: 0.05
+    duration_dealline: 9.0
 speak_and_wait0:
   speak_text: "とおれません、みちをあけてください"
   duration_wait: 5.0
   duration_timeout: 1.0
   sound_action: /robotsound_jp
+aggressive_reset:
+  reset_distance: 1.0
+complex_all_reset_recovery:
+  recovery_behaviors:
+    - name: "all_reset"
+      type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "rotate_recovery0"
+      type: "rotate_recovery/RotateRecovery"
+  all_reset:
+    reset_distance: 0.0
 move_slow_and_clear:
   planner_namespace: TrajectoryPlannerROS
   max_trans_param_name: max_vel_x
   max_rot_param_name: max_vel_theta
 max_planning_retries: 2
+    #trigger_beg_to_person0:
+    #  trigger_action: /beg_to_person_behavior/behavior
+    #trigger_speak_and_wait0:
+    #  trigger_action: /speak_and_wait_behavior/behavior
