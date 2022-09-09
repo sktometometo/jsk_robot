@@ -34,7 +34,7 @@ complex_conservative_recovery:
       type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
   conservative_speak_and_wait:
     speak_text: "一段階目のリカバリを実行します"
-    duration_wait: 3.0
+    duration_wait: 5.0
     duration_timeout: 1.0
     sound_action: /robotsound_jp
   conservative_reset:
@@ -45,7 +45,7 @@ complex_conservative_recovery:
     duration_dealline: 20.0
   update_costmap_local0:
     parameter_name: "/move_base/local_costmap"
-    footprint_padding: 0.05
+    footprint_padding: 0.0
     duration_dealline: 9.0
   update_inflation_layer_global0:
     parameter_name: "/move_base/global_costmap/inflater"
@@ -53,10 +53,10 @@ complex_conservative_recovery:
     duration_dealline: 20.0
   update_costmap_global0:
     parameter_name: "/move_base/global_costmap"
-    footprint_padding: 0.05
+    footprint_padding: 0.0
     duration_dealline: 9.0
 speak_and_wait0:
-  speak_text: "とおれません、みちをあけてください"
+  speak_text: "デトロ！あけろいと市警だ！"
   duration_wait: 5.0
   duration_timeout: 1.0
   sound_action: /robotsound_jp
@@ -93,7 +93,3 @@ move_slow_and_clear:
   max_trans_param_name: max_vel_x
   max_rot_param_name: max_vel_theta
 max_planning_retries: 2
-    #trigger_beg_to_person0:
-    #  trigger_action: /beg_to_person_behavior/behavior
-    #trigger_speak_and_wait0:
-    #  trigger_action: /speak_and_wait_behavior/behavior
