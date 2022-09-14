@@ -62,7 +62,7 @@
 # until it is merged to master
 - git:
     local-name: jsk-ros-pkg/jsk_robot
-    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    uri: https://github.com/sktometometo/jsk_robot.git
     version: develop/fetch
 - git:
     local-name: knorth55/app_manager_utils
