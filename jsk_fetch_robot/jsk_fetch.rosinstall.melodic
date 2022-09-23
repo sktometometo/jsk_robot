@@ -57,7 +57,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/sktometometo/jsk_recognition.git
-    version: develop/fetch
+    version: develop/private/fetch
 # we need to use the development branch (fetch15 branch in knorth55's fork)
 # until it is merged to master
 - git:
