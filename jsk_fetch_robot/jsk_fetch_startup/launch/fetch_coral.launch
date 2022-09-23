@@ -16,7 +16,7 @@
           type: human_pose_estimator
         - name: edgetpu_panorama_human_pose_estimator
           type: panorama_human_pose_estimator
-      default: edgetpu_human_pose_estimator
+      default: edgetpu_panorama_human_pose_estimator
     edgetpu_human_pose_estimator:
       input_topic: $(arg input_image)
       image_transport: raw
@@ -38,7 +38,7 @@
           type: object_detector
         - name: edgetpu_panorama_object_detector
           type: panorama_object_detector
-      default: edgetpu_object_detector
+      default: edgetpu_panorama_object_detector
     edgetpu_object_detector:
       input_topic: $(arg input_image)
       image_transport: raw
