@@ -101,11 +101,33 @@ rosdep update
 # realsense-ros should not be installed from ROS repository
 rosdep install --from-paths $WORKSPACE/src --ignore-src -y -r --skip-keys \
 "\
+baxter_description \
+baxter_moveit_config \
+baxter_tools \
+cobotta_teleop \
+densocobotta_descriptions \
+dynamixel_controllers \
+face_recognition \
+gen3_lite_gen3_lite_2f_move_it_config \
 jsk_footstep_controller \
 jsk_footstep_planner \
+json_prolog \
+kinova_teleop \
 librealsense2 \
+linux_hardware \
+magni_nav \
+nao_bringup \
+nao_interaction_launchers \
+nao_interaction_msgs \
+pepper_bringup \
+pepper_description \
+pr2eus_openrave \
+ps4eye \
+python3-google-auth-oauthlib-pip \
 realsense2_camera \
 realsense2_description \
+rqt_pr2_dashboard \
+snap_map_icp \
 "
 ROSDEP_INSTALL_RESULT=$?
 # Build workspace
