@@ -182,6 +182,10 @@
     <arg name="input_panorama_image" value="/dual_fisheye_to_panorama/quater/output" />
   </include>
 
+  <!-- person_tracker -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_people_tracker.launch">
+  </include>
+
   <!-- rwt_image_view -->
   <include file="$(find jsk_robot_startup)/lifelog/rwt_image_view.launch" if="$(arg rwt_image_view)">
     <arg name="launch_roswww" value="false" />
