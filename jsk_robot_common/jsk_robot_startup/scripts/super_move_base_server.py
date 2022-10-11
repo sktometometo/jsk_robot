@@ -2,6 +2,9 @@
 # -*- encoding: utf-8 -*-
 
 import copy
+import itertools
+import sys
+
 import rospy
 import actionlib
 import tf2_ros
@@ -19,18 +22,25 @@ class SuperMoveBaseServer(object):
 
     def __init__(self):
 
+        self.planning_tolerance = rospy.get_param('~planning_tolerance', 0.1)
+
         self.map_frame_id = rospy.get_param('~map_frame_id', 'map')
         self.base_frame_id = rospy.get_param('~base_frame_id', 'base_link')
 
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
+        try:
+            rospy.wait_for_service('~plan', timeout=rospy.Duration(30))
+        except (rospy.ROSException, rospy.ROSInterruptException) as e:
+            rospy.logerr('Planning service unavailable.')
+            sys.exit(1)
         self.planning_client = rospy.ServiceProxy('~plan', GetPlan)
 
         self.move_base_client = actionlib.SimpleActionClient('~target_move_base', MoveBaseAction)
         self.move_base_server = actionlib.SimpleActionServer('~move_base', MoveBaseAction, self.execute, False)
         self.action_goal_pub = rospy.Publisher('~move_base/goal', MoveBaseActionGoal, queue_size=1)
-        self.simple_move_base = rospy.Subscriber('~move_base_simple', PoseStamped, self.callback)
+        self.simple_move_base = rospy.Subscriber('~move_base_simple/goal', PoseStamped, self.callback)
 
         self.move_base_server.start()
 
@@ -45,8 +55,8 @@ class SuperMoveBaseServer(object):
 
         try:
             transform = self.tf_buffer.lookup_transform(
-                    self.base_frame_id,
                     self.map_frame_id,
+                    self.base_frame_id,
                     rospy.Time(),
                     rospy.Duration(1)
                     )
@@ -58,13 +68,13 @@ class SuperMoveBaseServer(object):
 
         current_pose = PoseStamped()
         current_pose.header = transform.header
-        current_pose.position.x = transform.translation.x
-        current_pose.position.y = transform.translation.y
-        current_pose.position.z = transform.translation.z
-        current_pose.rotation.x = transform.orientation.x
-        current_pose.rotation.y = transform.orientation.y
-        current_pose.rotation.z = transform.orientation.z
-        current_pose.rotation.w = transform.orientation.w
+        current_pose.pose.position.x = transform.transform.translation.x
+        current_pose.pose.position.y = transform.transform.translation.y
+        current_pose.pose.position.z = transform.transform.translation.z
+        current_pose.pose.orientation.x = transform.transform.rotation.x
+        current_pose.pose.orientation.y = transform.transform.rotation.y
+        current_pose.pose.orientation.z = transform.transform.rotation.z
+        current_pose.pose.orientation.w = transform.transform.rotation.w
 
         return current_pose
 
@@ -75,19 +85,20 @@ class SuperMoveBaseServer(object):
     def execute(self, goal):
 
         start_pose = self.get_current_pose()
-        goal_pose = goal.target_pose()
+        goal_pose = goal.target_pose
 
         req = GetPlanRequest()
-        req.start_pose = start_pose
+        req.tolerance = self.planning_tolerance
+        req.start = start_pose
         modified_goal = None
         for (dx, dy) in itertools.product([0, -1, 1], [0, -1, 1]):
-            req.goal_pose = copy.deepcopy(goal_pose)
-            req.goal_pose.position.x += dx
-            req.goal_pose.position.y += dy
-            plan = self.planning_client(req)
+            req.goal = copy.deepcopy(goal_pose)
+            req.goal.pose.position.x += dx
+            req.goal.pose.position.y += dy
+            plan = self.planning_client(req).plan
             if len(plan.poses) != 0:
                 modified_goal = MoveBaseGoal()
-                modified_goal.target_pose = req.goal_pose
+                modified_goal.target_pose = req.goal
                 break
 
         if modified_goal is None:
@@ -115,11 +126,12 @@ class SuperMoveBaseServer(object):
                 self.move_base_server.set_aborted(result)
                 return
             current_pose = self.get_current_pose()
-            target_pose = modified_goal.goal_pose
+            target_pose = modified_goal.target_pose
             req = GetPlanRequest()
-            req.start_pose = current_pose
-            req.goal_pose = target_pose
-            plan = self.planning_client(req)
+            req.tolerance = self.planning_tolerance
+            req.start = current_pose
+            req.goal = target_pose
+            plan = self.planning_client(req).plan
             if len(plan.poses) == 0:
                 planning_failed_count += 1
             else:
@@ -133,16 +145,17 @@ class SuperMoveBaseServer(object):
                     return
                 retry_count += 1
                 req = GetPlanRequest()
-                req.start_pose = current_pose
+                req.tolerance = self.planning_tolerance
+                req.start = current_pose
                 modified_goal = None
                 for (dx, dy) in itertools.product([0, -1, 1], [0, -1, 1]):
-                    req.goal_pose = copy.deepcopy(goal_pose)
-                    req.goal_pose.position.x += dx
-                    req.goal_pose.position.y += dy
-                    plan = self.planning_client(req)
+                    req.goal = copy.deepcopy(goal_pose)
+                    req.goal.pose.position.x += dx
+                    req.goal.pose.position.y += dy
+                    plan = self.planning_client(req).plan
                     if len(plan.poses) != 0:
                         modified_goal = MoveBaseGoal()
-                        modified_goal.target_pose = req.goal_pose
+                        modified_goal.target_pose = req.goal
                         break
                 if modified_goal is None:
                     rospy.logerr('No valid plan found even after retrying.')
