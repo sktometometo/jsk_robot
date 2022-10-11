@@ -7,6 +7,7 @@ import actionlib
 import tf2_ros
 
 from move_base_msgs.msg import MoveBaseAction
+from move_base_msgs.msg import MoveBaseActionGoal
 from move_base_msgs.msg import MoveBaseGoal
 from move_base_msgs.msg import MoveBaseResult
 from nav_msgs.srv import GetPlan
@@ -28,8 +29,17 @@ class SuperMoveBaseServer(object):
 
         self.move_base_client = actionlib.SimpleActionClient('~target_move_base', MoveBaseAction)
         self.move_base_server = actionlib.SimpleActionServer('~move_base', MoveBaseAction, self.execute, False)
+        self.action_goal_pub = rospy.Publisher('~move_base/goal', MoveBaseActionGoal, queue_size=1)
+        self.simple_move_base = rospy.Subscriber('~move_base_simple', PoseStamped, self.callback)
 
         self.move_base_server.start()
+
+    def callback(self, msg):
+
+        action_goal = MoveBaseActionGoal()
+        action_goal.header.stamp = rospy.Time.now()
+        action_goal.goal.target_pose = msg
+        self.action_goal_pub.publish(action_goal)
 
     def get_current_pose(self):
 
