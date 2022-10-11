@@ -44,7 +44,9 @@
     </include>
 
     <!-- tilt the head -->
+    <!--
     <node pkg="jsk_fetch_startup" type="tilt_head.py" name="tilt_head_node" />
+    -->
 
     <!-- load amcl params -->
     <rosparam command="load"
