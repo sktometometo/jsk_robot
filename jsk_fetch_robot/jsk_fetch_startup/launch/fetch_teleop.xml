@@ -88,7 +88,9 @@
     <param name="tuck_button" value="5"/>
   </node>
 
+  <!--
   <node name="safe_tilt_head" pkg="jsk_fetch_startup" type="safe_tilt_head.py" />
+  -->
 
   <!-- audible warning on unsafe teleop -->
   <node pkg="jsk_robot_startup" type="unsafe_warning.l" name="unsafe_warning" respawn="true" />

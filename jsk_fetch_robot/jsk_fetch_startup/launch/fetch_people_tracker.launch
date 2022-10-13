@@ -1,4 +1,5 @@
 <launch>
+  <!-- rect_array_in_panorama_to_bounding_box_array -->
   <node
       pkg="jsk_perception"
       type="rect_array_in_panorama_to_bounding_box_array.py"
@@ -20,8 +21,13 @@
   </node>
 
   <!-- motpy_bbox_tracker -->
-  <node pkg="jsk_perception" type="motpy_bbox_tracker_node.py" name="motpy_bbox_tracker_node" output="screen">
-      <remap from="~input" to="/edgetpu_panorama_object_detection_rect_array_in_panorama_to_bounding_box_array/bbox_array" />
+  <node
+      pkg="jsk_perception"
+      type="motpy_bbox_tracker_node.py"
+      name="motpy_bbox_tracker_node_on_panorama_object_detector"
+      output="screen"
+      >
+      <remap from="~input" to="/edgetpu_panorama_object_detector/bbox_array" />
       <rosparam subst_value="true">
           dt: 0.2
           target_labels:
@@ -29,6 +35,44 @@
             - bicycle
             - car
           label_names: $(find jsk_perception)/config/coco_labelnames.yaml
+          approximate_sync: True
+          slop: 0.1
+      </rosparam>
+  </node>
+
+
+  <!-- rect_array_in_panorama_to_bounding_box_array -->
+  <node
+      pkg="jsk_perception"
+      type="rect_array_in_panorama_to_bounding_box_array.py"
+      name="edgetpu_panorama_human_pose_estimator_rect_array_in_panorama_to_bounding_box_array"
+      output="log"
+      >
+      <remap from="~panorama_image" to="/dual_fisheye_to_panorama/quater/output" />
+      <remap from="~panorama_info" to="/dual_fisheye_to_panorama/panorama_info" />
+      <remap from="~input_class" to="/edgetpu_panorama_human_pose_estimator/output/class" />
+      <remap from="~input_rects" to="/edgetpu_panorama_human_pose_estimator/output/rects" />
+      <remap from="~bbox_array" to="/edgetpu_panorama_human_pose_estimator/bbox_array" />
+      <rosparam>
+          frame_fixed: "map"
+          dimensions_labels:
+            human: [0.5, 0.5, 1.5]
+      </rosparam>
+  </node>
+
+  <!-- motpy_bbox_tracker -->
+  <node
+      pkg="jsk_perception"
+      type="motpy_bbox_tracker_node.py"
+      name="motpy_bbox_tracker_node_on_panorama_human_pose_estimator"
+      output="screen"
+      >
+      <remap from="~input" to="/edgetpu_panorama_human_pose_estimator/bbox_array" />
+      <rosparam subst_value="true">
+          dt: 0.2
+          target_labels:
+            - human
+          label_names: $(find jsk_fetch_startup)/config/human_pose_estimator_labelnames.yaml
           approximate_sync: True
           slop: 0.1
       </rosparam>
