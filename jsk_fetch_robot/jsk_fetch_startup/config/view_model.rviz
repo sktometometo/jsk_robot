@@ -3,7 +3,9 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /TF1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 728
   - Class: rviz/Selection
@@ -18,6 +20,7 @@ Panels:
   - Class: rviz/Views
     Expanded:
       - /Current View1
+      - /Current View1/Focal Point1
     Name: Views
     Splitter Ratio: 0.5
   - Class: rviz/Time
@@ -108,11 +111,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        head_box_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         head_camera_depth_frame:
           Alpha: 1
           Show Axes: false
@@ -165,6 +163,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        l_gripper_finger_tip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         l_wheel_link:
           Alpha: 1
           Show Axes: false
@@ -176,6 +179,11 @@ Visualization Manager:
           Show Trail: false
           Value: true
         r_gripper_finger_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_gripper_finger_tip:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -195,6 +203,15 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        side_hook_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        side_hook_top:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         torso_fixed_link:
           Alpha: 1
           Show Axes: false
@@ -230,75 +247,81 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         base_camera_mount:
-          Value: true
+          Value: false
         base_link:
-          Value: true
+          Value: false
         bellows_link:
-          Value: true
+          Value: false
         bellows_link2:
-          Value: true
+          Value: false
         d435_front_left_link:
-          Value: true
+          Value: false
         d435_front_right_link:
-          Value: true
+          Value: false
         elbow_flex_link:
-          Value: true
+          Value: false
         estop_link:
-          Value: true
+          Value: false
         forearm_roll_link:
-          Value: true
+          Value: false
         gripper_link:
-          Value: true
-        head_box_link:
-          Value: true
+          Value: false
         head_camera_depth_frame:
-          Value: true
+          Value: false
         head_camera_depth_optical_frame:
-          Value: true
+          Value: false
         head_camera_link:
-          Value: true
+          Value: false
         head_camera_rgb_frame:
-          Value: true
+          Value: false
         head_camera_rgb_optical_frame:
-          Value: true
+          Value: false
         head_l515_mount_link:
-          Value: true
+          Value: false
         head_l515_virtual_mount_link:
-          Value: true
+          Value: false
         head_pan_link:
-          Value: true
+          Value: false
         head_tilt_link:
-          Value: true
+          Value: false
         insta360_link:
-          Value: true
+          Value: false
         l515_head_link:
-          Value: true
+          Value: false
         l_gripper_finger_link:
           Value: true
+        l_gripper_finger_tip:
+          Value: true
         l_wheel_link:
-          Value: true
+          Value: false
         laser_link:
-          Value: true
+          Value: false
         r_gripper_finger_link:
-          Value: true
+          Value: false
+        r_gripper_finger_tip:
+          Value: false
         r_wheel_link:
-          Value: true
+          Value: false
         shoulder_lift_link:
-          Value: true
+          Value: false
         shoulder_pan_link:
-          Value: true
+          Value: false
+        side_hook_base:
+          Value: false
+        side_hook_top:
+          Value: false
         torso_fixed_link:
-          Value: true
+          Value: false
         torso_lift_link:
-          Value: true
+          Value: false
         upperarm_roll_link:
-          Value: true
+          Value: false
         wrist_flex_link:
-          Value: true
+          Value: false
         wrist_roll_link:
-          Value: true
+          Value: false
       Marker Scale: 0.5
       Name: TF
       Show Arrows: true
@@ -328,8 +351,6 @@ Visualization Manager:
             bellows_link2:
               {}
             head_pan_link:
-              head_box_link:
-                {}
               head_tilt_link:
                 head_camera_link:
                   head_camera_depth_frame:
@@ -340,8 +361,9 @@ Visualization Manager:
                       {}
                 head_l515_virtual_mount_link:
                   head_l515_mount_link:
-                    l515_head_link:
-                      {}
+                    {}
+                  l515_head_link:
+                    {}
             insta360_link:
               {}
             shoulder_pan_link:
@@ -353,9 +375,14 @@ Visualization Manager:
                         wrist_roll_link:
                           gripper_link:
                             l_gripper_finger_link:
-                              {}
+                              l_gripper_finger_tip:
+                                {}
                             r_gripper_finger_link:
-                              {}
+                              r_gripper_finger_tip:
+                                {}
+            side_hook_base:
+              side_hook_top:
+                {}
       Update Interval: 0
       Value: true
   Enabled: true
@@ -386,7 +413,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.618305206298828
+      Distance: 0.15862257778644562
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -401,10 +428,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.564796507358551
-      Target Frame: <Fixed Frame>
+      Pitch: 0.09979724884033203
+      Target Frame: gripper_link
       Value: Orbit (rviz)
-      Yaw: 1.5854246616363525
+      Yaw: 5.678631782531738
     Saved: ~
 Window Geometry:
   Displays:
