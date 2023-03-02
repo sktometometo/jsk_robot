@@ -42,6 +42,7 @@
             /spot/navigate_to/goal
             /spot/navigate_to/result
             /spot/navigate_to/status
+            /spot/tracked_world_objects
             /spot/odometry
             /spot/odometry/twist
             /spot/status/battery_states
