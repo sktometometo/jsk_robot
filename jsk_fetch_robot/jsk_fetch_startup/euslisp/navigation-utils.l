@@ -654,4 +654,21 @@ Args:
     (send *ri* :go-pos-unsafe 0 0 -80) ;; face the front against the trash can
     success-move-to-trashcan-front))
 
+(defun write-message-on-message-board (message timeout_duration)
+  (if (not (ros::find-load-msg-path "enr_xyz"))
+    (progn
+      (ros::ros-warn "\"enr_xyz\" is not found. skipped write a message")
+      (return-from write-message-on-message-board nil)
+      )
+    (ros::load-ros-manifest "enr_xyz")
+    )
+  (if (not (ros::wait-for-service "/enr_message_board_server/write_message" 3))
+    (progn
+      (ros::ros-warn "\"/enr_message_board_server/write_message\" service is not available. skipped writing a message.")
+      (return-from write-message-on-message-board nil)
+      )
+    )
+  (let (write-request (instance enr_xyz::WriteMessageRequest :init :message message :timeout_duration timeout_duration))
+    (ros::service-call "/enr_message_board_server/write_message" write-request))
+  )
 
