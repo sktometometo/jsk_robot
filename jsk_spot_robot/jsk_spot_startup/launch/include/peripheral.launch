@@ -1,7 +1,27 @@
 <launch>
+    <arg name="port_righteye" default="/dev/eye_left"/>
+    <arg name="port_lefteye" default="/dev/eye_right"/>
+
     <include file="$(find jsk_perception)/sample/sample_insta360_air.launch">
         <arg name="width" value="2176"/>
         <arg name="height" value="1088"/>
         <arg name="panorama_resolution_mode" value="low"/>
     </include>
+
+    <node pkg="rosserial_python" type="serial_node.py" name="righteye_driver">
+        <rosparam subst_value="true">
+            port: $(arg port_righteye)
+            baud: 57600
+            mode_right: true
+        </rosparam>
+    </node>
+
+    <node pkg="rosserial_python" type="serial_node.py" name="lefteye_driver">
+        <rosparam subst_value="true">
+            port: $(arg port_lefteye)
+            baud: 57600
+            mode_right: false
+        </rosparam>
+    </node>
+
 </launch>
