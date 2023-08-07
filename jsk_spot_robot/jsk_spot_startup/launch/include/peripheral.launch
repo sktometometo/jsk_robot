@@ -2,6 +2,7 @@
     <arg name="port_enr" default="/dev/esp_now_ros_interface"/>
     <arg name="port_righteye" default="/dev/eye_left"/>
     <arg name="port_lefteye" default="/dev/eye_right"/>
+    <arg name="port_elevator_device" default="/dev/elevator_device"/>
 
     <include file="$(find jsk_perception)/sample/sample_insta360_air.launch">
         <arg name="width" value="2176"/>
@@ -12,6 +13,14 @@
 
     <include file="$(find esp_now_ros)/launch/demo.launch">
         <arg name="port" value="$(arg port_enr)"/>
+    </include>
+
+    <!-- launch elevator device -->
+    <include
+        file="$(find elevator_operation)/launch/m5stack_core2_driver.launch"
+        >
+        <arg name="device_name" value="$(arg port_elevator_device)" />
+        <arg name="output_altitude_topic" value="/elevator_altitude" />
     </include>
 
 </launch>
