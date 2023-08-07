@@ -5,3 +5,5 @@ apps:
   dispay: Head Lead Demo
 - app: jsk_spot_startup/sample_eye_rotation
   dispay: Sample Eye Rotation
+- app: jsk_spot_startup/sample_elevator
+  dispay: Sample Elevator
