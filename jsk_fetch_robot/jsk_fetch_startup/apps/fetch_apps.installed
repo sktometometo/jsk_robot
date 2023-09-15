@@ -17,6 +17,8 @@ apps:
     display: call k-okada
   - app: jsk_fetch_startup/go_to_kitchen
     display: go to kitchen
+  - app: jsk_fetch_startup/go_to_kitchen_without_plugins
+    display: go to kitchen without plugins
   - app: jsk_fetch_startup/patrol
     display: fetch patrol in 73B2
   - app: jsk_fetch_startup/speak_battery
