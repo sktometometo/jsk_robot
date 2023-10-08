@@ -6,6 +6,8 @@ project(jsk_unitree_startup)
 ## is used, also find other catkin packages
 find_package(catkin)
 
+catkin_add_env_hooks(99.jsk_unitree_startup SHELLS bash DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
+
 ###################################
 ## catkin specific configuration ##
 ###################################
