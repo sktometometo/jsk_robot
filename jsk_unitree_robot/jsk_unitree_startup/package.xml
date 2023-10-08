@@ -17,6 +17,7 @@
   <run_depend>teleop_twist_joy</run_depend>
   <run_depend>respeaker_ros</run_depend>
   <run_depend>esp_now_ros</run_depend>
+  <run_depend>uwb_localization</run_depend>
 
   <!-- for diagnostic aggregator -->
   <run_depend>diagnostic_aggregator</run_depend>
