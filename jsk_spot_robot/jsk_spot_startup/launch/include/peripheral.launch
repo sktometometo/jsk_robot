@@ -16,11 +16,13 @@
     </include>
 
     <!-- launch elevator device -->
+    <!--
     <include
         file="$(find elevator_operation)/launch/m5stack_core2_driver.launch"
         >
         <arg name="device_name" value="$(arg port_elevator_device)" />
         <arg name="output_altitude_topic" value="/elevator_altitude" />
     </include>
+    -->
 
 </launch>
