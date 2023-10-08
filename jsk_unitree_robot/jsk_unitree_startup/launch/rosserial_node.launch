@@ -13,6 +13,9 @@
   <arg name="debounce_period" default="50" />
   <arg name="press_interval" default="500" />
 
+  <!-- Args for esp_now_ros_interface -->
+  <arg name="port_sdp_interface" default="/dev/ttyACM1"/>
+
   <!-- custom hardware for rosserial/joy node -->
   <node name="serial_node" type="serial_node.py"
         pkg="rosserial_python" respawn="true" >
@@ -38,5 +41,10 @@
     <remap from="mux" to="input_joy_mux" />
     <param name="wait" value="true" />
   </node>
+
+  <!-- esp_now_ros -->
+  <include file="$(find esp_now_ros)/launch/demo.launch" >
+      <arg name="port" value="$(arg port_sdp_interface)"/>
+  </include>
 
 </launch>
