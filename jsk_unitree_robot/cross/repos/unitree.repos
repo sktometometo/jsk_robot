@@ -42,6 +42,10 @@ repositories:
     # Also, some users may not be able to use sudo apt install to install python3-venv (sudo command), etc.
     # The following PR will enable catkin_virtualenv in environments without ensurepip by doing get-pip.py within venv.
     # https://github.com/locusrobotics/catkin_virtualenv/pull/90
+  rosserial:
+    type: git
+    url: https://github.com/ros-drivers/rosserial.git
+    version: melodic-devel
   esp_now_ros:
     type: git
     url: https://github.com/sktometometo/esp_now_ros
@@ -50,4 +54,8 @@ repositories:
     type: git
     url: https://github.com/sktometometo/esp_now_ros_demo
     version: main
+  geometry2:
+    type: git
+    url: https://github.com/ros/geometry2.git
+    version: noetic-devel
  
