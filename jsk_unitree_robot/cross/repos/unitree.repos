@@ -24,3 +24,15 @@ repositories:
     # enable to run simple apps parallel to other apps
     # https://github.com/PR2/app_manager/pull/59 have been merged,
     # but 1.4.0 have not released yet.
+  esp_now_ros:
+    type: git
+    url: https://github.com/sktometometo/esp_now_ros
+    version: master
+  rosserial:
+    type: git
+    url: https://github.com/ros-drivers/rosserial
+    version: melodic-devel
+  catkin_virtualenv:
+    type: git
+    url: https://github.com/locusrobotics/catkin_virtualenv.git
+    version: master
