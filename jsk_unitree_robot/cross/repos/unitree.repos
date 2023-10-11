@@ -45,7 +45,7 @@ repositories:
   esp_now_ros:
     type: git
     url: https://github.com/sktometometo/esp_now_ros
-    version: dev/uwb_demo
+    version: master
   esp_now_ros_demo:
     type: git
     url: https://github.com/sktometometo/esp_now_ros_demo

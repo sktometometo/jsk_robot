@@ -31,9 +31,9 @@ if [ "$ROS_IP" == "192.168.123.14" ];then
        DISPLAY=:0.0 gnome-terminal -- bash -c "export GST_PLUGIN_PATH=/home/unitree/Unitree/autostart/imageai/mLComSystemFrame/ThirdParty/webSinkPipe/build; cd /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/pyScripts; PYTHONPATH= python3 live_human_pose.py; exec bash"
     fi
     # wait for soundplay
-    while ! eval rostopic info /robotsound 2$toStartlog; do sleep 2; done
+    #while ! eval rostopic info /robotsound 2$toStartlog; do sleep 2; done
     sleep 2 # wait for a while...
-    roslaunch jsk_unitree_startup unitree_bringup.launch network:=ethernet &
+    roslaunch --wait jsk_unitree_startup unitree_bringup.launch network:=ethernet &
 fi
 
 eval echo "[jsk_startup] done... " $toStartlog
