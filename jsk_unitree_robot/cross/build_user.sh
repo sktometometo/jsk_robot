@@ -35,7 +35,8 @@ for dir in $(find ${SOURCE_ROOT}/src/jsk_robot -maxdepth 1 -mindepth 1 -type d);
 done
 
 # add unitree repos
-[ ${UPDATE_SOURCE_ROOT} -eq 0 ] || vcs import ${SOURCE_ROOT}/src < repos/unitree.repos
+#[ ${UPDATE_SOURCE_ROOT} -eq 0 ] || vcs import ${SOURCE_ROOT}/src < repos/unitree.repos
+vcs import ${SOURCE_ROOT}/src < repos/unitree.repos
 
 # check if /proc/sys/fs/binfmt_misc/qemu-* is updated
 # See https://github.com/k-okada/jsk_robot/issues/61
