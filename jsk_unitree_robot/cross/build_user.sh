@@ -1,6 +1,17 @@
 #!/bin/bash
 
 IMAGE_NAME="${IMAGE_NAME:-ros1-unitree}"
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    JOBS=$(cat /proc/cpuinfo | grep "processor" | wc -l)
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    JOBS=$(sysctl -n hw.logicalcpu)
+else
+    JOBS=8
+fi
+
+echo "NUM JOBS=${JOBS}"
+
 TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
 INSTALL_ROOT=System
@@ -36,7 +47,7 @@ for dir in $(find ${SOURCE_ROOT}/src/jsk_robot -maxdepth 1 -mindepth 1 -type d);
 done
 
 # add unitree repos
-[ ${UPDATE_SOURCE_ROOT} -eq 0 ] || vcs import ${SOURCE_ROOT}/src < repos/unitree.repos
+[ ${UPDATE_SOURCE_ROOT} -eq 0 ] || vcs import --workers ${JOBS} ${SOURCE_ROOT}/src < repos/unitree.repos
 
 # check if /proc/sys/fs/binfmt_misc/qemu-* is updated
 # See https://github.com/k-okada/jsk_robot/issues/61
