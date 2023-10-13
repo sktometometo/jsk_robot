@@ -1,5 +1,7 @@
 #!/bin/bash
 
+IMAGE_NAME="${IMAGE_NAME:-ros1-unitree}"
+
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     JOBS=$(cat /proc/cpuinfo | grep "processor" | wc -l)
 elif [[ "$OSTYPE" == "darwin"* ]]; then
