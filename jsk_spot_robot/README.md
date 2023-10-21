@@ -19,7 +19,7 @@ source /opt/ros/melodic/setup.bash
 mkdir ~/spot_ws/src -p
 cd ~/spot_ws/src
 wstool init .
-wstool set jsk-ros-pkg/jsk_robot https://github.com/k-okada/jsk_robot.git --git -v spot_arm
+wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot_arm
 wstool update
 wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_user.rosinstall
 wstool update
