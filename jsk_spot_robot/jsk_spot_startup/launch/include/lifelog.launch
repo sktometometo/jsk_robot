@@ -56,6 +56,13 @@
       name="spot_status_trigger_publisher"
       args="pub -r 0.003 /spot/status/trigger geometry_msgs/PointStamped 'header: auto'" />
 
+  <!-- diary node -->
+  <node
+      pkg="database_talker"
+      type="make_aibo_diary.py"
+      name="make_aibo_diary"
+      output="screen" />
+
   <!-- store image description -->
   <node name="store_image_description"
 	pkg="jsk_robot_startup" type="store_image_description.py" >
