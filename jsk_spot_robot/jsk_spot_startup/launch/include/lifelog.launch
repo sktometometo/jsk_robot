@@ -1,224 +1,105 @@
 <launch>
-  <arg name="min_percent" default="5" />
-  <arg name="max_percent" default="15" />
+  <arg name="spot_credentials_json" default="$(find spot_driver)/auth/spot_credentials.json" />
+  <arg name="openai_credentials_json" default="/var/lib/robot/credentials/openai_credentials.json" />
+  <arg name="google_credentials_json" default="/var/lib/robot/credentials/belka-xc9u-244cc72fdda0.json" />
+  <arg name="gdrive_credentials_yaml" default="/var/lib/robot/credentials/pydrive_settings.yaml" />
 
-  <node pkg="jsk_robot_startup" type="email_topic.py" name="email_topic" output="screen" >
-  </node>
-
-  <node name="smach_to_mail" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
-    <remap from="~smach/container_status" to="/server_name/smach/container_status" />
-    <param name="sender_address" command='python -c "import rospy;print(rospy.get_param(\"robot/name\")+\"@jsk.imi.i.u-tokyo.ac.jp\")"' />
-    <param name="receiver_address" command='python -c "import rospy;print(rospy.get_param(\"robot/type\")+\"@jsk.imi.i.u-tokyo.ac.jp\")"' />
-  </node>
-
-  <!-- EDIT: rosparam for all robots -->
-  <param name="robot/database" value="jsk_robot_lifelog"/>
-
-  <!-- logging database -->
-  <param name="mongodb_replicate_on_write" value="true" /> <!-- need to set True to query from extra serveres, otherwise it only query from local server -->
-  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
-    <arg name="use_daemon" value="true"/>
-    <arg name="port" value="27017" />
-    <arg name="repl_set_mode" value="false" />
-    <arg name="replicate" default="true" />
+  <include file="$(find jsk_robot_startup)/launch/lifelog.launch" >
+    <arg name="logger_save_action" value="false" />
+    <arg name="logger_save_smach" value="false" />
+    <arg name="logger_save_faces" value="false" />
+    <arg name="logger_save_dialogflow" value="false" />
+    <arg name="logger_save_google_chat" value="false" />
+    <arg name="logger_save_video_to_scene" value="false" /> <!-- to reduce CPU load we use /spot_driver/trigger -->
+    <arg name="image" value="/dual_fisheye_to_panorama/output" />
   </include>
-
-  <!-- outputs /spot/camera/hand_color/image/output when new scene found -->
-  <include file="$(find jsk_perception)/launch/video_to_scene.launch" >
-    <arg name="INPUT_IMAGE" value="/spot/camera/hand_color/image" />
-    <arg name="IMAGE_TRANSPORT" default="compressed" />
-    <arg name="launch_manager" value="true" />
-    <arg name="manager" value="vidoe_to_scene_nodelet_manager" />
-    <arg name="min_percent" value="$(arg min_percent)" />
-    <arg name="max_percent" value="$(arg max_percent)" />
-  </include>
-
-  <arg name="map_frame" default="odom" />
-  <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
-    <arg name="save_rgb" value="false" />
-    <arg name="save_depth" value="false" />
-    <!-- <arg name="save_tf" value="true" /> -->
-    <!-- <arg name="save_joint_states" value="true" /> -->
-    <arg name="save_tf" value="false" />
-    <arg name="save_joint_states" value="false" />
-    <arg name="save_base_trajectory" value="false" />
-    <arg name="save_object_detection" value="false" />
-    <arg name="save_action" value="true" />
-    <arg name="save_smach" value="true" />
-    <arg name="save_faces" value="true" />
-    <arg name="save_dialogflow" value="true" />
-    <arg name="save_app" value="false" />
-    <arg name="enable_monitor" value="false" />
-    <arg name="log_rate" value="1.0" />
-    <arg name="launch_manager" value="true" />
-    <arg name="manager" value="mongodb_record_nodelet_manager" />
-    <arg name="map_frame_id" value="$(arg map_frame)" />
-    <arg name="approximate_sync" value="true"/>
-  </include>
-
-  <!-- publish /spot/trigger_mongodb_event when video_to_scene, */class or dialogflow are detected -->
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_video_to_scene"
-        args="--wait-for-start /spot/camera/hand_color/image/output/compressed /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_back"
-        args="--wait-for-start /spot/ncb_provider/back_fisheye_image/class /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;topic&quot;]+&quot;__&quot;+&quot;_&quot;.join(m.label_names))' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_frontleft"
-        args="--wait-for-start /spot/ncb_provider/frontleft_fisheye_image/class /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;topic&quot;]+&quot;__&quot;+&quot;_&quot;.join(m.label_names))' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_frontright"
-        args="--wait-for-start /spot/ncb_provider/frontright_fisheye_image/class /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;topic&quot;]+&quot;__&quot;+&quot;_&quot;.join(m.label_names))' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_left"
-        args="--wait-for-start /spot/ncb_provider/left_fisheye_image/class /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;topic&quot;]+&quot;__&quot;+&quot;_&quot;.join(m.label_names))' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_right"
-        args="--wait-for-start /spot/ncb_provider/right_fisheye_image/class /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;topic&quot;]+&quot;__&quot;+&quot;_&quot;.join(m.label_names))' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_hand"
-        args="--wait-for-start /spot/ncb_provider/hand_fisheye_image/class /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;topic&quot;]+&quot;__&quot;+&quot;_&quot;.join(m.label_names))' --import std_msgs" />
-
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_aws_auto_checkin"
-        args="--wait-for-start /aws_auto_checkin_app/output/class /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_aws_detect_faces"
-        args="--wait-for-start /aws_detect_faces/attributes /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_dialogflow_client"
-        args="--wait-for-start /dialogflow_client/text_action/result /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_google_chat_ros_send_goal"
-        args="--wait-for-start /google_chat_ros/send/goal /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_google_chat_ros_message_activity"
-        args="--wait-for-start /google_chat_ros/message_activity /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=rospy.Time.now(), frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs rospy" />
-
   <!-- republish compressed/throttled image data only when /publish_trigger_mongodb_event is published -->
-  <node name="camera_throttle_nodelet"
-        pkg="nodelet" type="nodelet"
-        args="load jsk_topic_tools/SynchronizedThrottle mongodb_record_nodelet_manager" >
+  <!-- relay /spot_driver/trigger -> /publish_trigger_mongodb_event to store /usb_cam/image_raw-->
+  <node name="relay_spot_trigger_to_mongodb_trigger"
+	pkg="topic_tools" type="relay"
+        args="/spot/status/trigger /publish_trigger_mongodb_event" />
+  <!-- debug code  for abo without /hungy_status -->
+  <!-- <node name="relay_spot_trigger_to_mongodb_trigger_debug" -->
+  <!-- 	pkg="topic_tools" type="transform" -->
+  <!-- 	args="/spot_driver/trigger /publish_trigger_mongodb_event spot_driver/StringStatus 'spot_driver.msg.StringStatus(header=std_msgs.msg.Header(stamp=rospy.Time.now()))' -\-import std_msgs spot_driver rospy" /> -->
+
+  <!-- spot data -->
+  <node name="spot_driver_logger"
+        pkg="jsk_robot_startup" type="mongo_record.py"
+        respawn="true">
     <rosparam subst_value="true">
+      topics:
+      - /spot/status/manipulator_state/throttled
+      - /spot/status/feedback/throttled
+    </rosparam>
+  </node>
+
+  <node name="spot_staus_synchronize_republish"
+        pkg="jsk_topic_tools" type="synchronize_republish.py">
+    <rosparam>
       approximate_sync: true
+      allow_headerless: true
       topics:
-      - /publish_trigger_mongodb_event
-      - /spot/camera/hand_color/image/compressed
-      - /spot/camera/frontleft/image/compressed
-      - /spot/camera/frontright/image/compressed
-      - /spot/camera/left/image/compressed
-      - /spot/camera/right/image/compressed
-      - /spot/camera/back/image/compressed
+        - /spot/status/manipulator_state
+        - /spot/status/feedback
+        - /spot/status/trigger
     </rosparam>
+    <remap from="~pub_00" to="/spot/status/manipulator_state/throttled" />
+    <remap from="~pub_01" to="/spot/status/feedback/throttled" />
+    <remap from="~pub_02" to="/spot/status/trigger/throttled" />
   </node>
 
-  <!-- store thottled image -->
-  <group ns="lifelog">
-    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
-      <arg name="node_name" value="hand_color_logger" />
-      <arg name="image" value="/spot/camera/hand_color/image/compressed/throttled" />
-      <arg name="manager" value="mongodb_record_nodelet_manager" />
-    </include>
-    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
-      <arg name="node_name" value="frontleft_logger" />
-      <arg name="image" value="/spot/camera/frontleft/image/compressed/throttled" />
-      <arg name="manager" value="mongodb_record_nodelet_manager" />
-    </include>
-    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
-      <arg name="node_name" value="frontright_logger" />
-      <arg name="image" value="/spot/camera/frontright/image/compressed/throttled" />
-      <arg name="manager" value="mongodb_record_nodelet_manager" />
-    </include>
-    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
-      <arg name="node_name" value="left_logger" />
-      <arg name="image" value="/spot/camera/left/image/compressed/throttled" />
-      <arg name="manager" value="mongodb_record_nodelet_manager" />
-    </include>
-    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
-      <arg name="node_name" value="right_logger" />
-      <arg name="image" value="/spot/camera/right/image/compressed/throttled" />
-      <arg name="manager" value="mongodb_record_nodelet_manager" />
-    </include>
-    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
-      <arg name="node_name" value="back_logger" />
-      <arg name="image" value="/spot/camera/back/image/compressed/throttled" />
-      <arg name="manager" value="mongodb_record_nodelet_manager" />
-    </include>
-  </group>
+  <!-- Publish /spot/status/trigger once at 5 minutes -->
+  <node
+      pkg="rostopic"
+      type="rostopic"
+      name="spot_status_trigger_publisher"
+      args="pub -r 0.003 /spot/status/trigger geometry_msgs/PointStamped 'header: auto'" />
 
-  <!-- save classification data -->
-  <node name="classification_logger"
-        pkg="jsk_robot_startup" type="mongo_record.py" >
+  <!-- store image description -->
+  <node name="store_image_description"
+	pkg="jsk_robot_startup" type="store_image_description.py" >
+    <remap from="image" to="/dual_fisheye_to_panorama/output/compressed/throttled" />
+    <rosparam param="_this_alywayw_returns_no_questions">["what does this image describe? and what unusual scene can be seen? If this image is  dark,  say  \"none\"."]</rosparam>
+    <rosparam param="questions">["what does this image describe? and what unusual scene can be seen?"]</rosparam>
+  </node>
+  <!-- openai -->
+  <group ns="openai">
+    <node pkg="openai_ros" type="openai_node.py" name="openai" output="screen" >
+      <rosparam command="load" file="$(arg openai_credentials_json)" />
+    </node>
+  </group>  
+  <!-- vqa -->
+  <include file="$(find jsk_perception)/launch/vqa.launch" >
+    <arg name="host" value="133.11.216.90" />
+    <arg name="port" value="9999" />
+    <arg name="run_api" value="false" />
+  </include>
+  <node name="vqa_logger"
+        pkg="jsk_robot_startup" type="mongo_record.py"
+        respawn="true">
     <rosparam subst_value="true">
       topics:
-      - /spot/ncb_provider/back_fisheye_image/class
-      - /spot/ncb_provider/frontleft_fisheye_image/class
-      - /spot/ncb_provider/frontright_fisheye_image/class
-      - /spot/ncb_provider/hand_color_image/class
-      - /spot/ncb_provider/left_fisheye_image/class
-      - /spot/ncb_provider/right_fisheye_image/class
+      - /vqa/inference_server/result
     </rosparam>
   </node>
 
-  <!-- save bbox data -->
-  <node name="bbox_logger"
-        pkg="jsk_robot_startup" type="mongo_record.py" >
-    <rosparam subst_value="true">
-      topics:
-      - /spot/ncb_provider/bbox_array
-    </rosparam>
-  </node>
+  <!-- google chat -->
+  <include file="$(find google_chat_ros)/launch/google_chat.launch" >
+    <arg name="use_helper" default="false" />
+    <arg name="receiving_mode" value="pubsub" />
+    <arg name="google_cloud_credentials_json" value="$(arg google_credentials_json)" />
+    <arg name="project_id" value="spot-jsk-xc9u" />
+    <arg name="subscription_id" value="chat-sub" />
+  </include>
 
-  <node name="gps_logger"
-        pkg="jsk_robot_startup" type="mongo_record.py" >
-    <rosparam subst_value="true">
-      topics:
-      - /ublox/fix
-      - /ublox/fix_velocity
-    </rosparam>
-  </node>
+  <!-- gdrive_ros -->
+  <include file="$(find gdrive_ros)/launch/gdrive_server.launch" >
+    <arg name="settings_yaml" value="$(arg gdrive_credentials_yaml)" />
+    <arg name="respawn" value="true" />
+    <arg name="node_name" value="gdrive_ros" />
+  </include>
 
-  <rosparam ns="lifelog/joint_states_throttle">
-    periodic: false
-    threshold: 0.01
-  </rosparam>
-
-  <rosparam ns="lifelog/action_logger">
-    white_list:
-      type:
-      - control_msgs/FollowJointTrajectoryActionFeedback
-      - control_msgs/FollowJointTrajectoryActionGoal
-      - control_msgs/FollowJointTrajectoryActionResult
-      - pr2_common_action_msgs/TuckArmsActionFeedback
-      - pr2_common_action_msgs/TuckArmsActionGoal
-      - pr2_common_action_msgs/TuckArmsActionResult
-      - pr2_controllers_msgs/PointHeadActionFeedback
-      - pr2_controllers_msgs/PointHeadActionGoal
-      - pr2_controllers_msgs/PointHeadActionResult
-      - pr2_controllers_msgs/Pr2GripperCommandActionFeedback
-      - pr2_controllers_msgs/Pr2GripperCommandActionGoal
-      - pr2_controllers_msgs/Pr2GripperCommandActionResult
-      - sound_play/SoundRequestActionResult
-      - sound_play/SoundRequestActionGoal
-      - spot_msgs/PickObjectInImageActionGoal
-      - spot_msgs/PickObjectInImageActionResult
-  </rosparam>
-
-  <rosparam ns="lifelog/speech_logger">
-    topics:
-      - /sound_play/goal
-      - /robotsound/goal
-      - /robotsound_jp/goal
-      - /sound_play
-      - /robotsound
-      - /robotsound_jp
-  </rosparam>
-
-  <rosparam ns="lifelog/face_logger">
-    topics:
-    - /faces_name
-    - /aws_auto_checkin_app/output/class
-    - /aws_detect_faces/attributes
-  </rosparam>
 
 </launch>
+
