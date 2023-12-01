@@ -4,6 +4,9 @@
   <arg name="google_credentials_json" default="/var/lib/robot/credentials/belka-xc9u-244cc72fdda0.json" />
   <arg name="gdrive_credentials_yaml" default="/var/lib/robot/credentials/pydrive_settings.yaml" />
 
+  <arg name="INPUT_IMAGE" default="/dual_fisheye_to_panorama/output" />
+  <arg name="MASK_IMAGE_PATH" default="$(find jsk_spot_startup)/image_mask/dual_fisheye_to_panorama_mask.png" />
+
   <include file="$(find jsk_robot_startup)/launch/lifelog.launch" >
     <arg name="logger_save_action" value="false" />
     <arg name="logger_save_smach" value="false" />
@@ -11,7 +14,28 @@
     <arg name="logger_save_dialogflow" value="false" />
     <arg name="logger_save_google_chat" value="false" />
     <arg name="logger_save_video_to_scene" value="false" /> <!-- to reduce CPU load we use /spot_driver/trigger -->
-    <arg name="image" value="/dual_fisheye_to_panorama/output" />
+    <arg name="image" value="/dual_fisheye_to_panorama_apply_mask_image/output" />
+
+  <node name="dual_fisheye_to_panorama_mask_image_publisher"
+      pkg="jsk_perception" type="image_publisher.py">
+    <rosparam subst_value="true">
+      file_name: $(arg MASK_IMAGE_PATH)
+      encoding: mono8
+      publish_info: false
+    </rosparam>
+  </node>
+
+  <node name="dual_fisheye_to_panorama_apply_mask_image"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_perception/ApplyMaskImage"
+        respawn="true" >
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/mask" to="/dual_fisheye_to_panorama_apply_mask_image/output" />
+    <rosparam>
+      approximate_sync: true
+    </rosparam>
+  </node>
+
   </include>
   <!-- republish compressed/throttled image data only when /publish_trigger_mongodb_event is published -->
   <!-- relay /spot_driver/trigger -> /publish_trigger_mongodb_event to store /usb_cam/image_raw-->
@@ -66,7 +90,7 @@
   <!-- store image description -->
   <node name="store_image_description"
 	pkg="jsk_robot_startup" type="store_image_description.py" >
-    <remap from="image" to="/dual_fisheye_to_panorama/output/compressed/throttled" />
+    <remap from="image" to="/dual_fisheye_to_panorama_apply_mask_image/output/compressed/throttled" />
     <rosparam param="_this_alywayw_returns_no_questions">["what does this image describe? and what unusual scene can be seen? If this image is  dark,  say  \"none\"."]</rosparam>
     <rosparam param="questions">["what does this image describe? and what unusual scene can be seen?"]</rosparam>
   </node>
