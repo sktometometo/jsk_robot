@@ -15,27 +15,6 @@
     <arg name="logger_save_google_chat" value="false" />
     <arg name="logger_save_video_to_scene" value="false" /> <!-- to reduce CPU load we use /spot_driver/trigger -->
     <arg name="image" value="/dual_fisheye_to_panorama_apply_mask_image/output" />
-
-  <node name="dual_fisheye_to_panorama_mask_image_publisher"
-      pkg="jsk_perception" type="image_publisher.py">
-    <rosparam subst_value="true">
-      file_name: $(arg MASK_IMAGE_PATH)
-      encoding: mono8
-      publish_info: false
-    </rosparam>
-  </node>
-
-  <node name="dual_fisheye_to_panorama_apply_mask_image"
-        pkg="nodelet" type="nodelet"
-        args="standalone jsk_perception/ApplyMaskImage"
-        respawn="true" >
-    <remap from="~input" to="$(arg INPUT_IMAGE)" />
-    <remap from="~input/mask" to="/dual_fisheye_to_panorama_apply_mask_image/output" />
-    <rosparam>
-      approximate_sync: true
-    </rosparam>
-  </node>
-
   </include>
   <!-- republish compressed/throttled image data only when /publish_trigger_mongodb_event is published -->
   <!-- relay /spot_driver/trigger -> /publish_trigger_mongodb_event to store /usb_cam/image_raw-->
@@ -46,6 +25,40 @@
   <!-- <node name="relay_spot_trigger_to_mongodb_trigger_debug" -->
   <!-- 	pkg="topic_tools" type="transform" -->
   <!-- 	args="/spot_driver/trigger /publish_trigger_mongodb_event spot_driver/StringStatus 'spot_driver.msg.StringStatus(header=std_msgs.msg.Header(stamp=rospy.Time.now()))' -\-import std_msgs spot_driver rospy" /> -->
+
+  <!--
+  <node
+      pkg="jsk_perception"
+      type="image_publisher.py"
+      name="dual_fisheye_to_panorama_mask_image_publisher"
+      >
+    <rosparam subst_value="true">
+      file_name: $(arg MASK_IMAGE_PATH)
+      encoding: mono8
+      publish_info: false
+    </rosparam>
+  </node>
+  -->
+
+  <node
+      pkg="image_publisher"
+      type="image_publisher"
+      name="dual_fisheye_to_panorama_mask_image_publisher"
+      args="$(arg MASK_IMAGE_PATH)" >
+    <param name="publish_rate" value="5" />
+  </node>
+
+  <node name="dual_fisheye_to_panorama_apply_mask_image"
+        pkg="nodelet" type="nodelet"
+        args="standalone jsk_perception/ApplyMaskImage"
+        respawn="true" >
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <remap from="~input/mask" to="/dual_fisheye_to_panorama_mask_image_publisher/image_raw" />
+    <rosparam>
+      approximate_sync: true
+    </rosparam>
+  </node>
+
 
   <!-- spot data -->
   <node name="spot_driver_logger"
