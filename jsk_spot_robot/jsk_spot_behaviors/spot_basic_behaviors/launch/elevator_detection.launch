@@ -11,7 +11,7 @@
     <arg name="TOPIC_CAMERA_LEFT" default="/spot/camera/left"/>
     <arg name="TOPIC_CAMERA_BACK" default="/spot/camera/back"/>
 
-    <arg name="elevator_device_type" default=""/>
+    <arg name="elevator_device_type" default="core2"/>
     <arg name="elevator_device_name" default="/dev/elevator_device"/>
     <arg name="initial_floor" default="0"/>
 
