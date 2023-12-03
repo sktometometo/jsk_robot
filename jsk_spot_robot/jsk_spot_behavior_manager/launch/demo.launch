@@ -1,6 +1,8 @@
 <launch>
     <arg name="initial_node_id" default="eng2_73B2_dock" />
 
+    <arg name="autowalk_root" default="/export/nfs/share/autowalks" />
+
     <!-- behahvior_executor_server for autonomous walking -->
     <node
         pkg="jsk_spot_behavior_manager"
@@ -11,7 +13,7 @@
 
         <rosparam
             ns="map"
-            file="/home/sktometometo/behavior_graph/graph.yaml"
+            file="/export/nfs/share/graph.yaml"
             subst_value="true"
             />
 
