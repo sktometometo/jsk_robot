@@ -16,7 +16,7 @@ if __name__ == '__main__':
     behavior_client.wait_for_server()
 
     start_node = rospy.get_param('~start_node', 'eng2_73B2_dock')
-    target_node = rospy.get_param('~target_node', 'eng2_3FElevator')
+    target_node = rospy.get_param('~target_node', 'eng2_7F_breezeway')
     dock_id = int(rospy.get_param('~dock_id', 521))
 
     client.claim()
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     result = client.get_execute_behaviors_result()
     rospy.loginfo("Result forward: {} {}".format(result.success, result.message))
 
-    client.execute_behaviors(NavigationGoal(target_node_id=start_node))
+    client.execute_behaviors(target_node_id=start_node)
     result = client.get_execute_behaviors_result()
     rospy.loginfo("Result backward: {} {}".format(result.success, result.message))
 
