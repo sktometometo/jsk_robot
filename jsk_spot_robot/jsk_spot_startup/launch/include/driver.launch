@@ -5,7 +5,9 @@
 
   <arg name="use_voice_text" default="false" doc="voice_text needs license" />
   <arg name="use_app_manager" default="true" />
-  <arg name="use_gps" default="true" />
+  <arg name="use_gps" default="false" />
+
+  <arg name="device_ublox" default="/dev/ublox_device" />
 
 
   <group if="$(arg launch_robot_state_publisher)">
@@ -179,17 +181,50 @@
   <!-- </node> -->
 
   <!-- app manager -->
-  <include
-      file="$(find jsk_robot_startup)/lifelog/app_manager.launch"
+  <group
       if="$(arg use_app_manager)"
       >
-    <arg name="use_applist" value="false" />
-    <arg name="respawn" value="false" />
-  </include>
+    <include
+        file="$(find jsk_robot_startup)/lifelog/app_manager.launch"
+        >
+      <arg name="use_applist" value="false" />
+      <arg name="respawn" value="false" />
+    </include>
+
+    <include
+        file="$(find app_scheduler)/launch/app_scheduler.launch"
+        >
+        <arg name="yaml_path" value="/var/lib/robot/app_schedule.yaml" />
+    </include>
+  </group>
 
   <!-- gps -->
-  <include if="$(arg use_gps)" file="$(find ublox_gps)/launch/ublox_device.launch" >
-    <arg name="param_file_name" value="zed_f9p" />
-  </include>
+  <node
+      pkg="ublox_gps"
+      type="ublox_gps"
+      name="ublox"
+      output="screen"
+      clear_params="true"
+      if="$(arg use_gps)" 
+      respawn="false"
+      respawn_delay="30">
+    <rosparam subst_value="true">
+        device: $(arg device_ublox)
+        frame_id: gps
+        uart1:
+          baudrate: 38400
+        config_on_startup: true
+
+        rate: 0.016
+        # TMODE3 Config
+        tmode3: 1                   # Survey-In Mode
+        sv_in:
+          reset: false              # True: disables and re-enables survey-in (resets)
+                                    # False: Disables survey-in only if TMODE3 is
+                                    # disabled
+          min_dur: 300              # Survey-In Minimum Duration [s]
+          acc_lim: 3.0              # Survey-In Accuracy Limit [m]
+    </rosparam>
+  </node>
 
 </launch>
