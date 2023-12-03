@@ -224,13 +224,17 @@ class BehaviorManagerNode(object):
         node_to = self.graph.nodes[edge.node_id_to]
 
         # Exception from behavior will be caught in handler
+        rospy.loginfo("Running run_initial...")
         success_initial = behavior.run_initial(
             node_from, node_to, edge, self.pre_edge)
         if success_initial is False:
+            rospy.loginfo("run_initial failed. exitting..")
             behavior.run_final(node_from, node_to, edge, self.pre_edge)
             return False
         else:
+            rospy.loginfo("running run_main...")
             success_main = behavior.run_main(
                 node_from, node_to, edge, self.pre_edge)
+            rospy.loginfo("running run_final")
             behavior.run_final(node_from, node_to, edge, self.pre_edge)
             return success_main
