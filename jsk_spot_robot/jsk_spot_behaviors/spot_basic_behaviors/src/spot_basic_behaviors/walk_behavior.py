@@ -3,6 +3,7 @@
 from jsk_spot_behavior_manager.base_behavior import BaseBehavior
 
 import rospy
+import time
 
 
 class WalkBehavior(BaseBehavior):
@@ -59,33 +60,43 @@ class WalkBehavior(BaseBehavior):
         # start navigation
         success = False
         rate = rospy.Rate(10)
+        num_trials = rospy.get_param('/spot_basic_behaviors/walk_behaviors/num_trials', 5)
         velocity_limit_linear_x = rospy.get_param('/spot_basic_behaviors/walk_behaviors/velocity_limit_linear_x', 1.0)
         velocity_limit_linear_y = rospy.get_param('/spot_basic_behaviors/walk_behaviors/velocity_limit_linear_y', 1.0)
         velocity_limit_angular_z = rospy.get_param('/spot_basic_behaviors/walk_behaviors/velocity_limit_angular_z', 1.0)
-        if not self.silent_mode:
-            self.sound_client.say('移動します', blocking=True)
-        self.spot_client.navigate_to(
-                end_id,
-                velocity_limit=(
-                    velocity_limit_linear_x,
-                    velocity_limit_linear_y,
-                    velocity_limit_angular_z
-                    ),
-                blocking=False)
-        while not rospy.is_shutdown():
-            rate.sleep()
-            if self.spot_client.wait_for_navigate_to_result(rospy.Duration(0.1)):
-                result = self.spot_client.get_navigate_to_result()
-                success = result.success
-                rospy.loginfo('result: {}'.format(result))
-                break
 
-        # recovery on failure
-        if not success:
+        for i in range(num_trials):
+            rospy.logerr("{}/{} th trial".format(i, num_trials))
             if not self.silent_mode:
-                self.sound_client.say('失敗したので元に戻ります', blocking=True)
-            self.spot_client.navigate_to(start_id, blocking=True)
-            self.spot_client.wait_for_navigate_to_result()
+                self.sound_client.say('移動します', blocking=True)
+            self.spot_client.navigate_to(
+                    end_id,
+                    velocity_limit=(
+                        velocity_limit_linear_x,
+                        velocity_limit_linear_y,
+                        velocity_limit_angular_z
+                        ),
+                    blocking=False)
+            while not rospy.is_shutdown():
+                rate.sleep()
+                if self.spot_client.wait_for_navigate_to_result(rospy.Duration(0.1)):
+                    result = self.spot_client.get_navigate_to_result()
+                    success = result.success
+                    rospy.logerr('Navigation result: {}'.format(result))
+                    rospy.logerr('Navigation suceess type: {} value: {}'.format(type(success), success))
+                    break
+
+            # recovery on failure
+            if success:
+                rospy.loginfo("Moving success")
+                break
+            else:
+                rospy.logerr("Returning to {} because of failure".format(start_id))
+                if not self.silent_mode:
+                    self.sound_client.say('失敗したので元に戻ります', blocking=True)
+                self.spot_client.navigate_to(start_id, blocking=True)
+
+            time.sleep(10.)
 
         return success
 
