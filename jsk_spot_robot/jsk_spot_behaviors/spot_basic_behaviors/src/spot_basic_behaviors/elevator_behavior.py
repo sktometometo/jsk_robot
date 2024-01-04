@@ -12,7 +12,7 @@ import math
 from switchbot_ros.msg import SwitchBotCommandGoal, SwitchBotCommandAction
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import Quaternion
-from std_msgs.msg import Float32, Bool, Int16
+from std_msgs.msg import Float32, Bool, Int16, Int32
 
 
 class ElevatorBehavior(BaseBehavior):
@@ -22,6 +22,9 @@ class ElevatorBehavior(BaseBehavior):
             self.door_is_open = True
         else:
             self.door_is_open = False
+
+        self.publisher_door_is_open.publish(Bool(data=self.door_is_open))
+        self.publisher_num_door_points.publish(Int32(data=len(msg.data)))
 
     def current_floor_callback(self, msg):
         self.current_floor = msg.data
@@ -61,6 +64,9 @@ class ElevatorBehavior(BaseBehavior):
 
         self.subscriber_current_floor = rospy.Subscriber("/elevator_state_publisher/current_floor", Int16, self.current_floor_callback)
         self.subscriber_rest_elevator = rospy.Subscriber("/elevator_state_publisher/rest_elevator", Bool, self.rest_elevator_callback)
+
+        self.publisher_door_is_open = rospy.Publisher("/elevator_state_publisher/door_is_open", Bool, queue_size=1)
+        self.publisher_num_door_points = rospy.Publisher("/elevator_state_publisher/num_door_points", Int32, queue_size=1)
 
         # value for switchbot
         self.action_client_switchbot = actionlib.SimpleActionClient(
