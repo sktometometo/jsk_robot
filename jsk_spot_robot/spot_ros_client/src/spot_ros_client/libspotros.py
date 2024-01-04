@@ -1,8 +1,17 @@
-import PyKDL
+try:
+    import PyKDL
+    _valid_PyKDL = True
+except:
+    _valid_PyKDL = False
+    pass
 import rospy
 import actionlib
-import tf2_ros
-import tf2_geometry_msgs
+try:
+    import tf2_ros
+    import tf2_geometry_msgs
+    _valid_tf2_ros = True
+except:
+    _valid_tf2_ros = False
 
 import math
 
@@ -297,8 +306,9 @@ class SpotRosClient:
             rospy.logerr('Action unavaliable: {}'.format(e))
 
         #
-        self.tf_buffer = tf2_ros.Buffer()
-        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
+        if _valid_tf2_ros:
+            self.tf_buffer = tf2_ros.Buffer()
+            self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
         rospy.loginfo("Action initialization done.")
 
@@ -323,17 +333,20 @@ class SpotRosClient:
             return None
 
     def get_robot_pose(self):
-        try:
-            frame_odom_to_base = tf2_geometry_msgs.transform_to_kdl(
-                    self.tf_buffer.lookup_transform(
-                        'odom',
-                        'base_link',
-                        rospy.Time()
+        if _valid_tf2_ros:
+            try:
+                frame_odom_to_base = tf2_geometry_msgs.transform_to_kdl(
+                        self.tf_buffer.lookup_transform(
+                            'odom',
+                            'base_link',
+                            rospy.Time()
+                            )
                         )
-                    )
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
+            except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
+                return None
+            return frame_odom_to_base
+        else:
             return None
-        return frame_odom_to_base
 
     def go_pose(self, target_frame, timeout = None):
         self.trajectory(
