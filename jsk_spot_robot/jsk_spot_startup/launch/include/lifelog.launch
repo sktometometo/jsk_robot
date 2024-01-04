@@ -137,13 +137,4 @@
     <arg name="subscription_id" value="chat-sub" />
   </include>
 
-  <!-- gdrive_ros -->
-  <include file="$(find gdrive_ros)/launch/gdrive_server.launch" >
-    <arg name="settings_yaml" value="$(arg gdrive_credentials_yaml)" />
-    <arg name="respawn" value="true" />
-    <arg name="node_name" value="gdrive_ros" />
-  </include>
-
-
 </launch>
-

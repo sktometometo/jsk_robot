@@ -119,10 +119,11 @@
   <!-- english speach node -->
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
+  <!--
   <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
         respawn="true" if="$(arg launch_sound_play)" >
-    <param name="device" value="hw:0,0" />
   </node>
+  -->
 
 
   <!-- japanese speech node -->
@@ -130,11 +131,12 @@
     <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
     <arg name="sound_play_respawn" value="true" />
   </include>
+  <!--
   <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
     <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
     <arg name="sound_play_respawn" value="true" />
   </include>
-
+  k-okada 2023/12/13 -->
   <!-- Notifier/Visualization -->
 
   <!-- <node -->
@@ -143,6 +145,12 @@
   <!--     name="laptop_battery" -->
   <!--     > -->
   <!-- </node> -->
+
+  <include
+      file="$(find switchbot_ros)/launch/switchbot.launch"
+      >
+      <arg name="token" value="/var/lib/robot/credentials/switchbot_token.txt"/>
+  </include>
 
   <node
       pkg="topic_tools"
@@ -191,11 +199,13 @@
       <arg name="respawn" value="false" />
     </include>
 
+    <!--
     <include
         file="$(find app_scheduler)/launch/app_scheduler.launch"
         >
         <arg name="yaml_path" value="/var/lib/robot/app_schedule.yaml" />
     </include>
+    -->
   </group>
 
   <!-- gps -->

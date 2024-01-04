@@ -5,6 +5,7 @@
   <arg name="launch_interaction" default="false" />
   <arg name="launch_panorama_detection" default="true" />
   <arg name="launch_lifelog" default="true" />
+  <arg name="launch_behavior_manager" default="true" />
 
   <arg name="use_driver" default="true" />
   <arg name="use_app_manager" default="true" />
@@ -30,7 +31,8 @@
 	   if="$(arg launch_interaction)" />
 
   <!-- behavior manager -->
-  <include file="$(find jsk_spot_behavior_manager)/launch/demo.launch" />
+  <include file="$(find jsk_spot_behavior_manager)/launch/demo.launch"
+      if="$(arg launch_behavior_manager)" />
 
   <include file="$(find gdrive_ros)/launch/gdrive_server.launch">
       <arg name="settings_yaml" value="/var/lib/robot/gdrive/belka_pydrive_settings.yaml"/>
@@ -42,7 +44,9 @@
            if="$(arg launch_panorama_detection)" />
 
   <!-- lifelog -->
+  <!--
   <include file="$(find jsk_spot_startup)/launch/include/lifelog.launch"
            if="$(arg launch_lifelog)" />
+           -->
 
 </launch>
