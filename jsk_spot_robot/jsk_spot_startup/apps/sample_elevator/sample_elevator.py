@@ -16,7 +16,7 @@ if __name__ == '__main__':
     behavior_client.wait_for_server()
 
     start_node = rospy.get_param('~start_node', 'eng2_73B2_dock')
-    target_node = rospy.get_param('~target_node', 'eng2_7F_breezeway')
+    target_node = rospy.get_param('~target_node', 'eng2_3FElevator')
     dock_id = int(rospy.get_param('~dock_id', 521))
 
     client.claim()

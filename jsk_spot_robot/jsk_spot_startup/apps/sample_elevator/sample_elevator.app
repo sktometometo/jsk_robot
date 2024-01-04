@@ -28,9 +28,28 @@ plugins:
         - /elevator_state_publisher/current_floor
         - /elevator_state_publisher/elevator_movement
         - /elevator_state_publisher/rest_elevator
+        - /elevator_state_publisher/door_is_open
+        - /elevator_state_publisher/num_door_points
         - /m5stack_core2_driver/imu
         - /m5stack_core2_driver/pressure
         - /m5stack_core2_driver/temperature
+        - /dual_fisheye_to_panorama/output/compressed
+        - /spot/depth/points
+        - /spot_recognition/bbox_array
+        - /spot_recognition/elevator_door_points
+        - /spot/body_pose
+        - /spot/depth/back/camera_info
+        - /spot/depth/back/image/compressedDepth
+        - /spot/depth/frontleft/camera_info
+        - /spot/depth/frontleft/image/compressedDepth
+        - /spot/depth/frontright/camera_info
+        - /spot/depth/frontright/image/compressedDepth
+        - /spot/depth/left/camera_info
+        - /spot/depth/left/image/compressedDepth
+        - /spot/depth/right/camera_info
+        - /spot/depth/right/image/compressedDepth
+        - /spot/depth/hand_depth/camera_info
+        - /spot/depth/hand_depth/image/compressedDepth
   - name: result_recorder_plugin
     type: app_recorder/result_recorder_plugin
     plugin_args:
