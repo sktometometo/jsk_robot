@@ -498,6 +498,27 @@ Args:
     (progn
       (notify-recognition :location "kitchen"))))
 
+(defun check-package-box ()
+  ;; Check if there is a package
+  (let (result msg_img answer)
+    (setq msg_img (one-shot-subscribe "/l515_head/color/image_rect_color" sensor_msgs::Image :timeout 1000))
+    (if msg_img
+      (progn
+        (init-vqa-action)
+        (setq result (run-vqa "Is there a package box in the image? Please answer 'yes' or 'no'." msg_img :timeout 10))
+        (if (and result (> (length (send result :result :result)) 0))
+          (progn
+            (setq answer (send (elt (send result :result :result) 0) :answer))
+            )
+          )
+        )
+      )
+    (if (and answer (string= "yes" answer))
+      (return-from check-package-box t)
+      )
+    )
+  nil)
+
 (defun move-to-sink-front (&key (n-trial 1) (offset #f(400 -500 0)))
   (let ((success-move-to-sink-front nil))
     (dotimes (i n-trial)
