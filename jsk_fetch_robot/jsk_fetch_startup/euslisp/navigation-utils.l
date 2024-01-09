@@ -711,8 +711,8 @@ Args:
   (unless *vqa-action*
     (setq *vqa-action*
           (instance ros::simple-action-client :init
-                    "/vqa/inference_server" jsk_recognition_msgs::VQAAction)))
-  (let* ((action-goal (instance jsk_recognition_msgs::VQAActionGoal :init)))
+                    "/vqa/inference_server" jsk_recognition_msgs::VQATaskAction)))
+  (let* ((action-goal (instance jsk_recognition_msgs::VQATaskActionGoal :init)))
     (send action-goal :goal :questions (list question))
     (send action-goal :goal :image msg_image)
     (send *vqa-action* :send-goal action-goal)
