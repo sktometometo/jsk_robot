@@ -432,7 +432,7 @@ Args:
       (ros::ros-info (format nil "Notify app that ~A is found." label-names))
       (write-message-on-message-board
         (list 120 33 132 149 126 152)
-        (format nil "Notify app that ~A is found." label-names)
+        (format nil "Notify app that ~A is found at ~A" label-names location)
         (ros::time 600)
         (ros::get-param "/robot/name" "default_name")
         )
