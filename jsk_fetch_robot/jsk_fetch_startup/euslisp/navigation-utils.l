@@ -706,17 +706,19 @@ Args:
   )
 
 
-(defun init-vqa-action ()
+(defun init-vqa-action (&key (timeout 10))
   (unless *vqa-action*
     (setq *vqa-action*
           (instance ros::simple-action-client :init
                     "/vqa/inference_server" jsk_recognition_msgs::VQATaskAction)))
+  (send *vqa-action* :wait-for-result :timeout timeout)
   )
 
 
 (defun run-vqa (question msg_image &key (timeout 30))
   "run vqa action client"
-  (init-vqa-action)
+  (if (not (init-vqa-action))
+    (return-from run-vqa nil))
   (let* ((action-goal (instance jsk_recognition_msgs::VQATaskGoal :init)))
     (send action-goal :questions (list question))
     (send action-goal :image msg_image)
