@@ -750,7 +750,7 @@ Args:
     (setq *vqa-action*
           (instance ros::simple-action-client :init
                     "/vqa/inference_server" jsk_recognition_msgs::VQATaskAction)))
-  (send *vqa-action* :wait-for-result :timeout timeout)
+  (send *vqa-action* :wait-for-server timeout)
   )
 
 
