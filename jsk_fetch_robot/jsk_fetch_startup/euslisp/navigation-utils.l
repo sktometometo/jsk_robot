@@ -15,6 +15,7 @@
 (defparameter *undock-action* nil)
 (defparameter *spots* nil)
 (defparameter *tfl* (instance ros::transform-listener :init))
+(defparameter *vqa-action* nil)
 
 (let ((robot-name (ros::get-param "/robot/name")))
   (defparameter *dock-spot*
@@ -704,3 +705,21 @@ Args:
     )
   )
 
+
+(defun run-vqa (question msg_image &key (timeout 30))
+  "run vqa action client"
+  (unless *vqa-action*
+    (setq *vqa-action*
+          (instance ros::simple-action-client :init
+                    "/vqa/inference_server" jsk_recognition_msgs::VQAAction)))
+  (let* ((action-goal (instance jsk_recognition_msgs::VQAActionGoal :init)))
+    (send action-goal :goal :questions (list question))
+    (send action-goal :goal :image msg_image)
+    (send *vqa-action* :send-goal action-goal)
+    (unless (send *vqa-action* :wait-for-result :timeout timeout)
+      (send *vqa-action* :cancel-all-goals)
+      (ros::ros-error "No result returned from /vqa action server")
+      (return-from run-vqa nil))
+    (send *vqa-action* :get-result)
+    )
+  )
