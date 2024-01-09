@@ -509,6 +509,10 @@ Args:
         (ros::publish "/photo_taken" img))
       (take-photo "kitchen_sink.jpg")
       (notify-recognition :location "kitchen sink"))
+      ;; check if there is a package
+      (if (check-package-box)
+        (notify-package :location "kitchen")
+        )
     (progn
       (notify-recognition :location "kitchen"))))
 
