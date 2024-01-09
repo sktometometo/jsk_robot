@@ -717,9 +717,9 @@ Args:
 (defun run-vqa (question msg_image &key (timeout 30))
   "run vqa action client"
   (init-vqa-action)
-  (let* ((action-goal (instance jsk_recognition_msgs::VQATaskActionGoal :init)))
-    (send action-goal :goal :questions (list question))
-    (send action-goal :goal :image msg_image)
+  (let* ((action-goal (instance jsk_recognition_msgs::VQATaskGoal :init)))
+    (send action-goal :questions (list question))
+    (send action-goal :image msg_image)
     (send *vqa-action* :send-goal action-goal)
     (unless (send *vqa-action* :wait-for-result :timeout timeout)
       (send *vqa-action* :cancel-all-goals)
