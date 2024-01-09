@@ -442,18 +442,24 @@ Args:
                   (format nil "~A is found" label-names))
       label-names)))
 
-(defun notify-package (&key (location "kitchen"))
-  (ros::ros-info (format nil "Notifying that there is a package in ~A" location))
-  (write-message-on-message-board
-    (list 120 33 132 149 126 152)
-    (format nil "There is a package in ~A" location)
-    (ros::time 600)
-    (ros::get-param "/robot/name" "default_name")
+(defun notify-package (exist &key (location "kitchen"))
+  (let (message)
+    (if exist
+        (setq message (format nil "There is a package in ~A" location))
+      (setq message (format nil "There is no package in ~A" location))
+      )
+    (ros::ros-info (format nil "Notifying that ~A" message))
+    (write-message-on-message-board
+      (list 120 33 132 149 126 152)
+      message
+      (ros::time 600)
+      (ros::get-param "/robot/name" "default_name")
+      )
+    (notify-app "Package box existance"
+                (ros::time-now)
+                location
+                message)
     )
-  (notify-app "Package box found"
-              (ros::time-now)
-              location
-              (format nil "Package box is found at ~A" location))
   )
 
 (defun notify-co2 (&key (location "kitchen"))
@@ -511,7 +517,8 @@ Args:
       (notify-recognition :location "kitchen sink"))
       ;; check if there is a package
       (if (check-package-box)
-        (notify-package :location "kitchen")
+          (notify-package t :location "kitchen")
+        (notify-package nil :location "kitchen")
         )
     (progn
       (notify-recognition :location "kitchen"))))
