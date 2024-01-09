@@ -28,6 +28,14 @@
     <env name="HOME" value="/home/fetch" />
   </node>
 
+  <!-- vqa client -->
+  <include file="$(find jsk_perception)/launch/vqa.launch">
+      <arg name="host" value="133.11.216.90" />
+      <arg name="port" value="9999" />
+      <arg name="run_api" value="false" />
+      <arg name="VQA_INPUT_IMAGE" value="/l515_head/color/image_rect_color" />
+  </include>
+
   <!-- logging database for go_to_kitchen -->
   <arg name="map_frame" default="map" />
   <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
