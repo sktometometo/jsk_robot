@@ -442,6 +442,20 @@ Args:
                   (format nil "~A is found" label-names))
       label-names)))
 
+(defun notify-package (&key (location "kitchen"))
+  (ros::ros-info (format nil "Notifying that there is a package in ~A" location))
+  (write-message-on-message-board
+    (list 120 33 132 149 126 152)
+    (format nil "There is a package in ~A" location)
+    (ros::time 600)
+    (ros::get-param "/robot/name" "default_name")
+    )
+  (notify-app "Package box found"
+              (ros::time-now)
+              location
+              (format nil "Package box is found at ~A" location))
+  )
+
 (defun notify-co2 (&key (location "kitchen"))
   (let* ((msg (one-shot-subscribe "/eco2" std_msgs::UInt16
                                   :timeout 3000)))
