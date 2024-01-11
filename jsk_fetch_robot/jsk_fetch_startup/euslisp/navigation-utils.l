@@ -538,7 +538,7 @@ Args:
           )
         )
       )
-    (ros::ros-info (format nil "Q: ~A, A: ~A") question answer)
+    (ros::ros-info (format nil "Q: ~A, A: ~A" question answer))
     (if (and answer (string= "yes" answer))
       (return-from check-package-box t)
       )
