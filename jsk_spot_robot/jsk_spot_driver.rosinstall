@@ -99,3 +99,8 @@
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/sktometometo/jsk_demos.git
     version: PR/hoge-py
+# Hoge
+- git:
+    local-name: sktometometo/smart_device_protocol
+    uri: https://github.com/sktometometo/smart_device_protocol.git
+    version: v0.5.1
