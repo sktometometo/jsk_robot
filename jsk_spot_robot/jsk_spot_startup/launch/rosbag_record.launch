@@ -22,21 +22,21 @@
             /spot/camera/left/image/compressed
             /spot/camera/right/camera_info
             /spot/camera/right/image/compressed
+            /spot/cmd_vel
+            /spot/depth_registered/back/camera_info
+            /spot/depth_registered/back/image/compressedDepth
+            /spot/depth_registered/frontleft/camera_info
+            /spot/depth_registered/frontleft/image/compressedDepth
+            /spot/depth_registered/frontright/camera_info
+            /spot/depth_registered/frontright/image/compressedDepth
+            /spot/depth_registered/left/camera_info
+            /spot/depth_registered/left/image/compressedDepth
+            /spot/depth_registered/right/camera_info
+            /spot/depth_registered/right/image/compressedDepth
             /spot/camera/hand_color/camera_info
             /spot/camera/hand_color/image/compressed
-            /spot/cmd_vel
-            /spot/depth/back/camera_info
-            /spot/depth/back/image/compressedDepth
-            /spot/depth/frontleft/camera_info
-            /spot/depth/frontleft/image/compressedDepth
-            /spot/depth/frontright/camera_info
-            /spot/depth/frontright/image/compressedDepth
-            /spot/depth/left/camera_info
-            /spot/depth/left/image/compressedDepth
-            /spot/depth/right/camera_info
-            /spot/depth/right/image/compressedDepth
-            /spot/depth/hand_depth/camera_info
-            /spot/depth/hand_depth/image/compressedDepth
+            /spot/camera/hand_depth_in_hand_color_frame/camera_info
+            /spot/camera/hand_depth_in_hand_color_frame/image/compressedDepth
             /spot/navigate_to/cancel
             /spot/navigate_to/feedback
             /spot/navigate_to/goal
@@ -134,31 +134,43 @@
             pkg="image_transport"
             type="republish"
             name="back_depth_compress"
-            args="raw in:=/spot/depth/back/image compressedDepth out:=/spot/depth/back/image"
+            args="raw in:=/spot/depth_registered/back/image compressedDepth out:=/spot/depth_registered/back/image"
             />
         <node
             pkg="image_transport"
             type="republish"
             name="frontleft_depth_compress"
-            args="raw in:=/spot/depth/frontleft/image compressedDepth out:=/spot/depth/frontleft/image"
+            args="raw in:=/spot/depth_registered/frontleft/image compressedDepth out:=/spot/depth_registered/frontleft/image"
             />
         <node
             pkg="image_transport"
             type="republish"
             name="frontright_depth_compress"
-            args="raw in:=/spot/depth/frontright/image compressedDepth out:=/spot/depth/frontright/image"
+            args="raw in:=/spot/depth_registered/frontright/image compressedDepth out:=/spot/depth_registered/frontright/image"
             />
         <node
             pkg="image_transport"
             type="republish"
             name="left_depth_compress"
-            args="raw in:=/spot/depth/left/image compressedDepth out:=/spot/depth/left/image"
+            args="raw in:=/spot/depth_registered/left/image compressedDepth out:=/spot/depth_registered/left/image"
             />
         <node
             pkg="image_transport"
             type="republish"
             name="right_depth_compress"
-            args="raw in:=/spot/depth/right/image compressedDepth out:=/spot/depth/right/image"
+            args="raw in:=/spot/depth_registered/right/image compressedDepth out:=/spot/depth_registered/right/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="hand_color_compress"
+            args="raw in:=/spot/camera/hand_color/image compressed out:=/spot/camera/hand_color/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="hand_depth_in_hand_color_frame_compress"
+            args="raw in:=/spot/camera/hand_depth_in_hand_color_frame/image compressed out:=/spot/camera/hand_depth_in_hand_color_frame/image"
             />
         <!-- Image compression nodes for Insta 360 Air camera -->
         <node
