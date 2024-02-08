@@ -1,8 +1,10 @@
 <launch>
     <arg name="port_enr" default="/dev/esp_now_ros_interface"/>
+    <arg name="throttled_rate" default="1.0"/>
 
     <include file="$(find smart_device_protocol)/launch/demo.launch">
         <arg name="port" value="$(arg port_enr)"/>
+        <arg name="tag_id" value="9"/>
     </include>
 
     <include file="$(find jsk_perception)/sample/sample_insta360_air.launch">
@@ -10,5 +12,7 @@
         <arg name="height" value="1088"/>
         <arg name="panorama_resolution_mode" value="low"/>
         <arg name="gui" value="false"/>
+        <arg name="throttle" value="true"/>
+        <arg name="throttled_rate" value="$(arg throttled_rate)"/>
     </include>
 </launch>
