@@ -42,95 +42,10 @@
         />
 
     <!-- image decompression -->
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="panorama_decompress"
-        args="compressed in:=/dual_fisheye_to_panorama/output raw out:=/dual_fisheye_to_panorama/output"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="back_camera_decompress"
-        args="compressed in:=/spot/camera/back/image raw out:=/spot/camera/back/image"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="frontleft_camera_decompress"
-        args="compressed in:=/spot/camera/frontleft/image raw out:=/spot/camera/frontleft/image"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="frontright_camera_decompress"
-        args="compressed in:=/spot/camera/frontright/image raw out:=/spot/camera/frontright/image"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="left_camera_decompress"
-        args="compressed in:=/spot/camera/left/image raw out:=/spot/camera/left/image"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="right_camera_decompress"
-        args="compressed in:=/spot/camera/right/image raw out:=/spot/camera/right/image"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="back_depth_registered_decompress"
-        args="compressedDepth in:=/spot/depth_registered/back/image raw out:=/spot/depth_registered/back/image"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="frontleft_depth_registered_decompress"
-        args="compressedDepth in:=/spot/depth_registered/frontleft/image raw out:=/spot/depth_registered/frontleft/image"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="frontright_depth_registered_decompress"
-        args="compressedDepth in:=/spot/depth_registered/frontright/image raw out:=/spot/depth_registered/frontright/image"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="left_depth_registered_decompress"
-        args="compressedDepth in:=/spot/depth_registered/left/image raw out:=/spot/depth_registered/left/image"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="right_depth_registered_decompress"
-        args="compressedDepth in:=/spot/depth_registered/right/image raw out:=/spot/depth_registered/right/image"
-        if="$(arg use_decompress)"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="hand_color_decompress"
-        args="compressed in:=/spot/camera/hand_color/image raw out:=/spot/camera/hand_color/image"
-        />
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="hand_depth_in_hand_color_frame_decompress"
-        args="compressed in:=/spot/camera/hand_depth_in_hand_color_frame/image raw out:=/spot/camera/hand_depth_in_hand_color_frame/image"
-        />
+    <include
+	file="$(find jsk_spot_startup)/launch/include/decompression.launch"
+	if="$(arg use_decompress)"
+	/>
 
     <!-- Create object detection visuzaliation image and comress it -->
     <node
