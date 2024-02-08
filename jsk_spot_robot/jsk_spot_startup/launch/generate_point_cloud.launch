@@ -1,0 +1,118 @@
+<launch>
+    <arg name="manager_name" default="point_cloud_generator" />
+
+    <arg name="TOPIC_DEPTH_FRONT_RIGHT" default="/spot/depth_registered/frontright"/>
+    <arg name="TOPIC_DEPTH_FRONT_LEFT" default="/spot/depth_registered/frontleft"/>
+    <arg name="TOPIC_DEPTH_RIGHT" default="/spot/depth_registered/right"/>
+    <arg name="TOPIC_DEPTH_LEFT" default="/spot/depth_registered/left"/>
+    <arg name="TOPIC_DEPTH_BACK" default="/spot/depth_registered/back"/>
+    <arg name="TOPIC_DEPTH_HAND" default="/spot/camera/hand_depth_in_hand_color_frame"/>
+
+    <arg name="TOPIC_CAMERA_FRONT_RIGHT" default="/spot/camera/frontright"/>
+    <arg name="TOPIC_CAMERA_FRONT_LEFT" default="/spot/camera/frontleft"/>
+    <arg name="TOPIC_CAMERA_RIGHT" default="/spot/camera/right"/>
+    <arg name="TOPIC_CAMERA_LEFT" default="/spot/camera/left"/>
+    <arg name="TOPIC_CAMERA_BACK" default="/spot/camera/back"/>
+    <arg name="TOPIC_CAMERA_HAND" default="/spot/camera/hand_color"/>
+
+    <node pkg="nodelet" type="nodelet" name="$(arg manager_name)" args="manager"/>
+
+    <!-- depth_image_proc -->
+    <!-- front right -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="front_right_depth_image_proc"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg manager_name)"
+        >
+    <remap from="rgb/camera_info" to="$(arg TOPIC_CAMERA_FRONT_RIGHT)/camera_info"/>
+    <remap from="rgb/image_rect_color" to="$(arg TOPIC_CAMERA_FRONT_RIGHT)/image"/>
+    <remap from="depth_registered/image_rect" to="$(arg TOPIC_DEPTH_FRONT_RIGHT)/image"/>
+    <remap from="depth_registered/points" to="$(arg TOPIC_DEPTH_FRONT_RIGHT)/points"/>
+    </node>
+
+    <!-- front left -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="front_left_depth_image_proc"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg manager_name)"
+        >
+    <remap from="rgb/camera_info" to="$(arg TOPIC_CAMERA_FRONT_LEFT)/camera_info"/>
+    <remap from="rgb/image_rect_color" to="$(arg TOPIC_CAMERA_FRONT_LEFT)/image"/>
+    <remap from="depth_registered/image_rect" to="$(arg TOPIC_DEPTH_FRONT_LEFT)/image"/>
+    <remap from="depth_registered/points" to="$(arg TOPIC_DEPTH_FRONT_LEFT)/points"/>
+    </node>
+
+    <!-- right -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="right_depth_image_proc"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg manager_name)"
+        >
+    <remap from="rgb/camera_info" to="$(arg TOPIC_CAMERA_RIGHT)/camera_info"/>
+    <remap from="rgb/image_rect_color" to="$(arg TOPIC_CAMERA_RIGHT)/image"/>
+    <remap from="depth_registered/image_rect" to="$(arg TOPIC_DEPTH_RIGHT)/image"/>
+    <remap from="depth_registered/points" to="$(arg TOPIC_DEPTH_RIGHT)/points"/>
+    </node>
+
+    <!-- left -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="left_depth_image_proc"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg manager_name)"
+        >
+    <remap from="rgb/camera_info" to="$(arg TOPIC_CAMERA_LEFT)/camera_info"/>
+    <remap from="rgb/image_rect_color" to="$(arg TOPIC_CAMERA_LEFT)/image"/>
+    <remap from="depth_registered/image_rect" to="$(arg TOPIC_DEPTH_LEFT)/image"/>
+    <remap from="depth_registered/points" to="$(arg TOPIC_DEPTH_LEFT)/points"/>
+    </node>
+
+    <!-- back -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="back_depth_image_proc"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg manager_name)"
+        >
+    <remap from="rgb/camera_info" to="$(arg TOPIC_CAMERA_BACK)/camera_info"/>
+    <remap from="rgb/image_rect_color" to="$(arg TOPIC_CAMERA_BACK)/image"/>
+    <remap from="depth_registered/image_rect" to="$(arg TOPIC_DEPTH_BACK)/image"/>
+    <remap from="depth_registered/points" to="$(arg TOPIC_DEPTH_BACK)/points"/>
+    </node>
+
+    <!-- hand -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="hand_depth_image_proc"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg manager_name)"
+        >
+    <remap from="rgb/camera_info" to="$(arg TOPIC_CAMERA_HAND)/camera_info"/>
+    <remap from="rgb/image_rect_color" to="$(arg TOPIC_CAMERA_HAND)/image"/>
+    <remap from="depth_registered/image_rect" to="$(arg TOPIC_DEPTH_HAND)/image"/>
+    <remap from="depth_registered/points" to="$(arg TOPIC_DEPTH_HAND)/points"/>
+    </node>
+
+    <!-- Concatenate pointclouds -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="elevator_detection_concatenate_pointcloud"
+        args="standalone pcl/PointCloudConcatenateDataSynchronizer"
+        >
+        <remap from="~output" to="/spot/depth/points" />
+        <rosparam subst_value="true">
+          approximate_sync: true
+          output_frame: odom
+          input_topics:
+            - $(arg TOPIC_DEPTH_FRONT_RIGHT)/points
+            - $(arg TOPIC_DEPTH_FRONT_LEFT)/points
+            - $(arg TOPIC_DEPTH_RIGHT)/points
+            - $(arg TOPIC_DEPTH_LEFT)/points
+            - $(arg TOPIC_DEPTH_BACK)/points
+        </rosparam>
+    </node>
+</launch>
