@@ -69,7 +69,7 @@
       pkg="image_transport"
       type="republish"
       name="hand_depth_in_hand_color_frame_compress_internal_node"
-      args="raw in:=/spot/camera/hand_depth_in_hand_color_frame/image compressed out:=/spot/camera/hand_depth_in_hand_color_frame/image"
+      args="raw in:=/spot/camera/hand_depth_in_hand_color_frame/image compressedDepth out:=/spot/camera/hand_depth_in_hand_color_frame/image"
       />
   <!-- Image compression nodes for Insta 360 Air camera -->
   <node
