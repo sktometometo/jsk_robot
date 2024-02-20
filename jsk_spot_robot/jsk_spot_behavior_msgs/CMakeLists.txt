@@ -3,6 +3,11 @@ project(jsk_spot_behavior_msgs)
 
 find_package(catkin REQUIRED COMPONENTS genmsg actionlib actionlib_msgs)
 
+add_message_files(
+    DIRECTORY msg
+    FILES Graph.msg GraphEdge.msg GraphNode.msg
+)
+
 add_action_files(
     DIRECTORY action
     FILES Navigation.action
