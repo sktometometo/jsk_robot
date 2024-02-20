@@ -1,2 +1,2 @@
 string node_id
-string args
+string properties

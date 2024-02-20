@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from token import OP
+from typing import Dict, List, Optional, Tuple
 
 import networkx as nx
 
@@ -18,26 +19,27 @@ class GraphEdge:
 
     @classmethod
     def from_config(cls, config: Dict):
+        properties = config.get("properties", config.get("args", {}))
         return cls(
             config["from"],
             config["to"],
             config["behavior_type"],
             int(config["cost"]) if "cost" in config else 1,
-            config["args"] if "args" in config else {},
+            properties,
         )
 
     @classmethod
     def from_rosmsg(cls, msg: jsk_spot_behavior_msgs.msg.GraphEdge):
         try:
-            args = eval(msg.args)
+            properties = eval(msg.properties)
         except Exception:
-            args = {}
+            properties = {}
         return cls(
             msg.node_id_from,
             msg.node_id_to,
             msg.behavior_type,
             msg.cost,
-            args,
+            properties,
         )
 
     def to_config(self):
@@ -46,7 +48,7 @@ class GraphEdge:
             "to": self.node_id_to,
             "behavior_type": self.behavior_type,
             "cost": self.cost,
-            "args": self.properties,
+            "properties": self.properties,
         }
 
     def to_rosmsg(self):
@@ -55,7 +57,7 @@ class GraphEdge:
             node_id_to=self.node_id_to,
             behavior_type=self.behavior_type,
             cost=self.cost,
-            args=str(self.properties),
+            properties=str(self.properties),
         )
 
 
@@ -64,8 +66,47 @@ class GraphNode:
     node_id: str
     properties: Dict
 
+    @classmethod
+    def from_rosmsg(cls, msg: jsk_spot_behavior_msgs.msg.GraphNode):
+        try:
+            properties = eval(msg.properties)
+        except Exception:
+            properties = {}
+        return cls(msg.node_id, properties)
 
-class BehaviorGraph:
+    def to_rosmsg(self):
+        return jsk_spot_behavior_msgs.msg.GraphNode(
+            node_id=self.node_id, properties=str(self.properties)
+        )
+
+
+class BehaviorGraphBase:
+    def calc_path(self, node_id_from: str, node_id_to: str) -> Optional[str]:
+        raise NotImplementedError
+
+    def add_node(self, node: GraphNode):
+        raise NotImplementedError
+
+    def remove_node(self, node_id: str):
+        raise NotImplementedError
+
+    def add_edge(self, edge: GraphEdge):
+        raise NotImplementedError
+
+    def remove_edge(self, node_id_from: str, node_id_to: str):
+        raise NotImplementedError
+
+    def get_node(self, node_id) -> Optional[GraphNode]:
+        raise NotImplementedError
+
+    def get_edge(self, node_id_from: str, node_id_to: str) -> Optional[GraphEdge]:
+        raise NotImplementedError
+
+    def list_nodes(self) -> List[GraphNode]:
+        raise NotImplementedError
+
+
+class BehaviorGraph(BehaviorGraphBase):
     # 現在の BehaviorGraph の仕様
     #   重み付きの有向グラフ
     #   あるノードからあるノードまでのエッジの数は 0 or 1
@@ -79,7 +120,18 @@ class BehaviorGraph:
             self.add_edge(GraphEdge.from_config(raw_edge))
 
         for key, raw_node in raw_nodes.items():
-            self.add_node(GraphNode(key, raw_node))
+            self.add_node(GraphNode(node_id=key, properties=raw_node))
+
+    def clear_graph(self):
+        self.edges = {}
+        self.nodes = {}
+        self.network = nx.DiGraph()
+
+    def load_graph(self, nodes: List[GraphNode], edges: List[GraphEdge]):
+        for node in nodes:
+            self.add_node(node)
+        for edge in edges:
+            self.add_edge(edge)
 
     def calc_path(self, node_id_from: str, node_id_to: str):
         try:
@@ -87,8 +139,11 @@ class BehaviorGraph:
         except nx.NetworkXNoPath:
             return None
         path = []
+        path.append(node_id_from)
         for index in range(len(node_id_list) - 1):
-            path.append(self.edges[node_id_list[index], node_id_list[index + 1]])
+            path.append(
+                self.edges[node_id_list[index], node_id_list[index + 1]].node_id_to
+            )
         return path
 
     def add_node(self, node: GraphNode):
@@ -105,8 +160,17 @@ class BehaviorGraph:
         del self.edges[node_id_from, node_id_to]
         self.network.remove_edge(node_id_from, node_id_to)
 
-    def get_node(self, node_id) -> GraphNode:
-        return self.nodes[node_id]
+    def get_node(self, node_id) -> Optional[GraphNode]:
+        try:
+            return self.nodes[node_id]
+        except KeyError:
+            return None
 
-    def get_edge(self, node_id_from: str, node_id_to: str) -> GraphEdge:
-        return self.edges[node_id_from, node_id_to]
+    def get_edge(self, node_id_from: str, node_id_to: str) -> Optional[GraphEdge]:
+        try:
+            return self.edges[node_id_from, node_id_to]
+        except KeyError:
+            return None
+
+    def list_nodes(self) -> List[GraphNode]:
+        return list(self.nodes.values())

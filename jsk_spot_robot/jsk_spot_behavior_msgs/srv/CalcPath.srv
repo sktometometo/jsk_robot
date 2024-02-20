@@ -1,0 +1,6 @@
+string node_id_from
+string node_id_to
+---
+bool success
+string message
+string[] path
