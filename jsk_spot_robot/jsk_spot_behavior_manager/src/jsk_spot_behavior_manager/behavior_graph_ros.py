@@ -10,7 +10,13 @@ from jsk_spot_behavior_manager.behavior_graph import (
     GraphNode,
 )
 from jsk_spot_behavior_msgs.msg import Graph
-from jsk_spot_behavior_msgs.srv import CalcPath, CalcPathRequest, CalcPathResponse
+from jsk_spot_behavior_msgs.srv import (
+    CalcPath,
+    CalcPathRequest,
+    CalcPathResponse,
+    SaveGraph,
+    SaveGraphResponse,
+)
 
 
 class BehaviorGraphNode(object):
@@ -22,6 +28,9 @@ class BehaviorGraphNode(object):
         self.pub_graph = rospy.Publisher("/behavior_graph", Graph, queue_size=1)
         self.srv_calc_path = rospy.Service(
             "/behavior_graph_calc_path", CalcPath, self.handler_calc_path
+        )
+        self.srv_save_graph = rospy.Service(
+            "/behavior_graph_save_graph", SaveGraph, self.handler_save_graph
         )
 
     def publish_graph(self):
@@ -38,6 +47,14 @@ class BehaviorGraphNode(object):
             return CalcPathResponse(success=False, message="No path found", path=[])
         else:
             return CalcPathResponse(success=True, message="Path found", path=path)
+
+    def handler_save_graph(self, req):
+        with self.lock_for_graph:
+            try:
+                self.graph.save_graph(req.filename)
+                return SaveGraphResponse(success=True, message="Graph saved")
+            except Exception as e:
+                return SaveGraphResponse(success=False, message=str(e))
 
     def spin(self, publish_rate: float = 5.0):
         rate = rospy.Rate(publish_rate)
@@ -69,6 +86,10 @@ class BehaviorGraphClient(BehaviorGraphBase):
                 nodes=[GraphNode.from_rosmsg(node) for node in msg.nodes],
                 edges=[GraphEdge.from_rosmsg(edge) for edge in msg.edges],
             )
+
+    def save_graph(self, filename: str):
+        with self.lock_for_graph:
+            self.graph.save_graph(filename)
 
     def calc_path(self, node_id_from: str, node_id_to: str) -> Optional[str]:
         req = CalcPathRequest(node_id_from=node_id_from, node_id_to=node_id_to)

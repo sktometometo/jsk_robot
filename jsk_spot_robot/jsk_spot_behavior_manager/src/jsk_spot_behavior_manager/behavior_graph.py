@@ -5,6 +5,7 @@ from token import OP
 from typing import Dict, List, Optional, Tuple
 
 import networkx as nx
+import yaml
 
 import jsk_spot_behavior_msgs.msg
 
@@ -132,6 +133,15 @@ class BehaviorGraph(BehaviorGraphBase):
             self.add_node(node)
         for edge in edges:
             self.add_edge(edge)
+
+    def save_graph(self, filename: str):
+        data = {"nodes": {}, "edges": []}
+        for node in self.nodes.values():
+            data["nodes"][node.node_id] = node.properties
+        for edge in self.edges.values():
+            data["edges"].append(edge.to_config())
+        with open(filename, "w") as f:
+            yaml.dump(data, f)
 
     def calc_path(self, node_id_from: str, node_id_to: str):
         try:

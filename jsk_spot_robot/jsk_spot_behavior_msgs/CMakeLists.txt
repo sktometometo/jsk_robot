@@ -15,7 +15,7 @@ add_action_files(
 
 add_service_files(
     DIRECTORY srv
-    FILES ResetCurrentNode.srv CalcPath.srv
+    FILES ResetCurrentNode.srv CalcPath.srv SaveGraph.srv
 )
 
 generate_messages(DEPENDENCIES actionlib_msgs)
