@@ -8,17 +8,17 @@ import actionlib
 import PyKDL
 import roslaunch
 import rospy
+from sound_play.libsoundplay import SoundClient
+from std_msgs.msg import String
+
+from jsk_spot_behavior_manager.base_behavior import BaseBehavior, load_behavior_class
+from jsk_spot_behavior_manager.behavior_graph_ros import BehaviorGraphClient
 from jsk_spot_behavior_msgs.msg import (
     NavigationAction,
     NavigationActionFeedback,
     NavigationFeedback,
     NavigationResult,
 )
-from sound_play.libsoundplay import SoundClient
-from std_msgs.msg import String
-
-from jsk_spot_behavior_manager.base_behavior import BaseBehavior, load_behavior_class
-from jsk_spot_behavior_manager.behavior_graph import BehaviorGraph
 from jsk_spot_behavior_msgs.srv import ResetCurrentNode, ResetCurrentNodeResponse
 from spot_ros_client.libspotros import SpotRosClient
 
@@ -26,9 +26,7 @@ from spot_ros_client.libspotros import SpotRosClient
 class BehaviorManagerNode(object):
     def __init__(self):
         # navigation dictonary
-        raw_edges = rospy.get_param("~map/edges")
-        raw_nodes = rospy.get_param("~map/nodes")
-        self.graph = BehaviorGraph(raw_edges, raw_nodes)
+        self.graph = BehaviorGraphClient()
         self.current_node_id = rospy.get_param("~initial_node_id")
         self.pre_edge = None
         self.anchor_pose = None
@@ -135,69 +133,79 @@ class BehaviorManagerNode(object):
 
     def handler_execute_behaviors(self, goal):
         rospy.loginfo("Behavior Action started. goal: {}".format(goal))
-
-        current_graph = copy.deepcopy(self.graph)
+        target_nodes = goal.waypoints + [goal.target_node_id]
+        current_graph = copy.deepcopy(self.graph.graph)
         while True:
             # path calculation
-            path = current_graph.calc_path(self.current_node_id, goal.target_node_id)
-            if path is None:
-                rospy.logerr(
-                    "No path from {} to {}".format(
-                        self.current_node_id, goal.target_node_id
+            path = []
+            temp_graph = copy.deepcopy(current_graph)
+            start_node = self.current_node_id
+            for target in target_nodes:
+                tpath = temp_graph.calc_path(start_node, target)
+                start_node = target
+                if path is None:
+                    rospy.logerr(
+                        "No path from {} to {}".format(
+                            self.current_node_id, goal.target_node_id
+                        )
                     )
-                )
-                self.say("パスが見つかりませんでした")
-                result = NavigationResult(success=False, message="No path found")
-                self.server_execute_behaviors.set_aborted(result)
-                return
-            else:
-                # navigation of edges in the path
-                self.say("目的地に向かいます", blocking=True)
-                self.go_back_to_anchor_pose()
-                success_navigation = True
-                for edge in path:
-                    rospy.loginfo("Navigating Edge {}...".format(edge))
-                    try:
-                        if self.navigate_edge(edge):
-                            rospy.loginfo("Edge {} succeeded.".format(edge))
-                            self.current_node_id = edge.node_id_to
-                            self.server_execute_behaviors.publish_feedback(
-                                NavigationFeedback(current_node_id=self.current_node_id)
-                            )
-                            self.pre_edge = edge
-                            self.set_anchor_pose()
-                        else:
-                            rospy.logwarn("Edge {} failed".format(edge))
-                            self.say("移動に失敗しました。経路を探索し直します。", blocking=True)
-                            self.server_execute_behaviors.publish_feedback(
-                                NavigationFeedback(current_node_id=self.current_node_id)
-                            )
-                            current_graph.remove_edge(
-                                edge.node_id_from, edge.node_id_to
-                            )
-                            success_navigation = False
-                            break
-                    except Exception as e:
-                        rospy.logerr(
-                            "Got an error while navigating edge {}: {}".format(
-                                edge, sys.exc_info()
-                            )
-                        )
-                        traceback.print_exc()
-                        self.say("エラーが発生しました", blocking=True)
-                        self.pre_edge = None
-                        result = NavigationResult(
-                            success=False,
-                            message="Got an error while navigating edge {}: {}".format(
-                                edge, e
-                            ),
-                        )
-                        self.server_execute_behaviors.set_aborted(result)
-                        self.anchor_pose = None
-                        return
+                    self.say("パスが見つかりませんでした")
+                    result = NavigationResult(success=False, message="No path found")
+                    self.server_execute_behaviors.set_aborted(result)
+                    return
+                if goal.unidirection:
+                    temp_graph.remove_edge(start_node, tpath[0])
+                    for i in range(len(tpath) - 1):
+                        temp_graph.remove_edge(tpath[i], tpath[i + 1])
+                path.append(tpath)
 
-                if success_navigation:
-                    break
+            # navigation of edges in the path
+            self.say("目的地に向かいます", blocking=True)
+            self.go_back_to_anchor_pose()
+            success_navigation = True
+            for edge in path:
+                rospy.loginfo("Navigating Edge {}...".format(edge))
+                try:
+                    if self.navigate_edge(edge):
+                        rospy.loginfo("Edge {} succeeded.".format(edge))
+                        self.current_node_id = edge.node_id_to
+                        self.server_execute_behaviors.publish_feedback(
+                            NavigationFeedback(
+                                current_node_id=self.current_node_id, path=path
+                            )
+                        )
+                        self.pre_edge = edge
+                        self.set_anchor_pose()
+                    else:
+                        rospy.logwarn("Edge {} failed".format(edge))
+                        self.say("移動に失敗しました。経路を探索し直します。", blocking=True)
+                        self.server_execute_behaviors.publish_feedback(
+                            NavigationFeedback(current_node_id=self.current_node_id)
+                        )
+                        current_graph.remove_edge(edge.node_id_from, edge.node_id_to)
+                        success_navigation = False
+                        break
+                except Exception as e:
+                    rospy.logerr(
+                        "Got an error while navigating edge {}: {}".format(
+                            edge, sys.exc_info()
+                        )
+                    )
+                    traceback.print_exc()
+                    self.say("エラーが発生しました", blocking=True)
+                    self.pre_edge = None
+                    result = NavigationResult(
+                        success=False,
+                        message="Got an error while navigating edge {}: {}".format(
+                            edge, e
+                        ),
+                    )
+                    self.server_execute_behaviors.set_aborted(result)
+                    self.anchor_pose = None
+                    return
+
+            if success_navigation:
+                break
 
         rospy.loginfo("Goal Reached!")
         self.say("目的地に到着しました.", blocking=True)

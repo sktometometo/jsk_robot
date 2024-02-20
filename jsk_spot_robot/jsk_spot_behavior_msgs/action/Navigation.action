@@ -1,5 +1,6 @@
 string target_node_id
 string[] waypoints
+bool unidirection
 ---
 bool success
 string message

@@ -149,7 +149,6 @@ class BehaviorGraph(BehaviorGraphBase):
         except nx.NetworkXNoPath:
             return None
         path = []
-        path.append(node_id_from)
         for index in range(len(node_id_list) - 1):
             path.append(
                 self.edges[node_id_list[index], node_id_list[index + 1]].node_id_to
