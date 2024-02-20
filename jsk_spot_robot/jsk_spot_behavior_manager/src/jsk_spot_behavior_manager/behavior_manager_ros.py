@@ -133,17 +133,41 @@ class BehaviorManagerNode(object):
 
     def handler_execute_behaviors(self, goal):
         rospy.loginfo("Behavior Action started. goal: {}".format(goal))
-        target_nodes = goal.waypoints + [goal.target_node_id]
+        target_nodes = [wp for wp in goal.waypoints if len(wp) > 0] + [
+            goal.target_node_id
+        ]
+        if goal.target_node_id == self.current_node_id:
+            rospy.loginfo("Already at the target node")
+            self.server_execute_behaviors.set_succeeded(
+                NavigationResult(success=True, message="Already at the target node")
+            )
+            return
+        for node_name in target_nodes:
+            if self.graph.get_node(node_name) is None:
+                rospy.logerr("Node {} does not exist in the graph".format(node_name))
+                self.say("ノードが見つかりませんでした")
+                result = NavigationResult(
+                    success=False,
+                    message='Node "{}" does not exist in the graph'.format(node_name),
+                )
+                self.server_execute_behaviors.set_aborted(result)
+                return
         current_graph = copy.deepcopy(self.graph.graph)
+        print("current_graph: ", current_graph)
+        print("list_nodes: ", current_graph.list_nodes())
+        print("network ", current_graph.network.edges)
         while True:
             # path calculation
             path = []
             temp_graph = copy.deepcopy(current_graph)
+            print("temp_graph: ", temp_graph)
+            print("list_nodes: ", temp_graph.list_nodes())
+            print("network ", temp_graph.network.edges)
             start_node = self.current_node_id
             for target in target_nodes:
                 tpath = temp_graph.calc_path(start_node, target)
-                start_node = target
-                if path is None:
+                print("tpath: ", tpath)
+                if tpath is None:
                     rospy.logerr(
                         "No path from {} to {}".format(
                             self.current_node_id, goal.target_node_id
@@ -157,14 +181,20 @@ class BehaviorManagerNode(object):
                     temp_graph.remove_edge(start_node, tpath[0])
                     for i in range(len(tpath) - 1):
                         temp_graph.remove_edge(tpath[i], tpath[i + 1])
-                path.append(tpath)
+                start_node = target
+                path += tpath
 
             # navigation of edges in the path
             self.say("目的地に向かいます", blocking=True)
             self.go_back_to_anchor_pose()
             success_navigation = True
-            for edge in path:
-                rospy.loginfo("Navigating Edge {}...".format(edge))
+            for target_node in path:
+                rospy.loginfo(
+                    "Navigating Edge from {} to {}...".format(
+                        self.current_node_id, target_node
+                    )
+                )
+                edge = current_graph.edges[self.current_node_id, target_node]
                 try:
                     if self.navigate_edge(edge):
                         rospy.loginfo("Edge {} succeeded.".format(edge))
@@ -239,8 +269,8 @@ class BehaviorManagerNode(object):
             self.pre_edge = None
             return False
 
-        node_from = self.graph.nodes[edge.node_id_from]
-        node_to = self.graph.nodes[edge.node_id_to]
+        node_from = self.graph.get_node(edge.node_id_from)
+        node_to = self.graph.get_node(edge.node_id_to)
 
         # Exception from behavior will be caught in handler
         rospy.loginfo("Running run_initial...")
