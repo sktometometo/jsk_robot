@@ -1,6 +1,27 @@
 <launch>
     <arg name="rosbag" doc="rosbag file path" />
-    <arg name="use_compress" default="true" />
+
+    <include file="$(find jsk_spot_startup)/launch/generate_point_cloud.launch" />
+
+    <node
+        pkg="jsk_topic_tools"
+        type="lightweight_throttle"
+        name="depth_points_throttler"
+    >
+        <remap from="from" to="/spot/depth/points" />
+        <remap from="to" to="/spot/depth/points/throttled" />
+        <param name="update_rate" value="1" />
+    </node>
+
+    <node
+        pkg="jsk_topic_tools"
+        type="lightweight_throttle"
+        name="lidar_points_throttler"
+    >
+        <remap from="from" to="/spot/lidar/points" />
+        <remap from="to" to="/spot/lidar/points/throttled" />
+        <param name="update_rate" value="1" />
+    </node>
 
     <!-- rosbag recording with compressed images -->
     <node name="rosbag_record" pkg="rosbag" type="record" if="$(arg use_compress)"
@@ -12,27 +33,9 @@
             /tf_static
             /dual_fisheye_to_panorama/output/compressed
             /spot/body_pose
-            /spot/camera/back/camera_info
-            /spot/camera/back/image/compressed
-            /spot/camera/frontleft/camera_info
-            /spot/camera/frontleft/image/compressed
-            /spot/camera/frontright/camera_info
-            /spot/camera/frontright/image/compressed
-            /spot/camera/left/camera_info
-            /spot/camera/left/image/compressed
-            /spot/camera/right/camera_info
-            /spot/camera/right/image/compressed
             /spot/cmd_vel
-            /spot/depth_registered/back/camera_info
-            /spot/depth_registered/back/image/compressedDepth
-            /spot/depth_registered/frontleft/camera_info
-            /spot/depth_registered/frontleft/image/compressedDepth
-            /spot/depth_registered/frontright/camera_info
-            /spot/depth_registered/frontright/image/compressedDepth
-            /spot/depth_registered/left/camera_info
-            /spot/depth_registered/left/image/compressedDepth
-            /spot/depth_registered/right/camera_info
-            /spot/depth_registered/right/image/compressedDepth
+            /spot/depth/points/throttled
+            /spot/lidar/points/throttled
             /spot/camera/hand_color/camera_info
             /spot/camera/hand_color/image/compressed
             /spot/camera/hand_depth_in_hand_color_frame/camera_info
@@ -50,7 +53,7 @@
             /spot/status/feedback
             /spot/status/feet
             /spot/status/leases
-	    /spot/status/manipulator_state
+    	    /spot/status/manipulator_state
             /spot/status/metrics
             /spot/status/power_state
             /spot/status/system_faults
@@ -74,6 +77,7 @@
             /robotsound/result
             /robotsound/status
             /robotsound_jp
+    
             /robotsound_jp/cancel
             /robotsound_jp/feedback
             /robotsound_jp/goal
@@ -98,8 +102,27 @@
             "
         output="screen" />
 
-    <group if="$(arg use_compress)">
-      <include file="$(find jsk_spot_startup)/launch/include/compression.launch"/>
-    </group>
+    <!--
+    /spot/camera/back/camera_info
+    /spot/camera/back/image/compressed
+    /spot/camera/frontleft/camera_info
+    /spot/camera/frontleft/image/compressed
+    /spot/camera/frontright/camera_info
+    /spot/camera/frontright/image/compressed
+    /spot/camera/left/camera_info
+    /spot/camera/left/image/compressed
+    /spot/camera/right/camera_info
+    /spot/camera/right/image/compressed
+    /spot/depth_registered/back/camera_info
+    /spot/depth_registered/back/image/compressedDepth
+    /spot/depth_registered/frontleft/camera_info
+    /spot/depth_registered/frontleft/image/compressedDepth
+    /spot/depth_registered/frontright/camera_info
+    /spot/depth_registered/frontright/image/compressedDepth
+    /spot/depth_registered/left/camera_info
+    /spot/depth_registered/left/image/compressedDepth
+    /spot/depth_registered/right/camera_info
+    /spot/depth_registered/right/image/compressedDepth
+    -->
 
 </launch>
