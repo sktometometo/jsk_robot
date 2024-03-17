@@ -117,38 +117,4 @@
         </rosparam>
     </node>
 
-    <node
-        pkg="jsk_topic_tools"
-        type="lightweight_throttle"
-        name="hand_points_throttler"
-        output="screen"
-    >
-        <remap from="~input" to="$(arg TOPIC_DEPTH_HAND)/points" />
-        <remap from="~output" to="$(arg TOPIC_DEPTH_HAND)/points/throttled" />
-        <param name="update_rate" value="0.5" />
-    </node>
-
-    <node
-        pkg="jsk_topic_tools"
-        type="lightweight_throttle"
-        name="depth_points_throttler"
-        output="screen"
-    >
-        <remap from="~input" to="/spot/depth/points" />
-        <remap from="~output" to="/spot/depth/points/throttled" />
-        <param name="update_rate" value="0.5" />
-    </node>
-
-    <node
-        pkg="jsk_topic_tools"
-        type="lightweight_throttle"
-        name="lidar_points_throttler"
-        output="screen"
-    >
-        <remap from="~input" to="/spot/lidar/points" />
-        <remap from="~output" to="/spot/lidar/points/throttled" />
-        <param name="update_rate" value="0.5" />
-    </node>
-
-
 </launch>

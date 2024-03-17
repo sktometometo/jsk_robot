@@ -3,7 +3,80 @@
     <arg name="rosbag_option" default="-b 0 --split --size=1024 --lz4" />
     <arg name="additional_topics" default="" doc="additional topics to record" />
 
-    <include file="$(find jsk_spot_startup)/launch/generate_point_cloud.launch" />
+    <arg name="record_as_points" default="true" />
+    <arg name="camera_topics" if="$(arg record_as_points)"
+        default="
+        /spot/camera/hand_depth_in_hand_color_frame/points/throttled
+        /spot/depth/points/throttled
+        " />
+    <arg name="camera_topics" unless="$(arg record_as_points)"
+        default="
+        /spot/camera/back/image/theora
+        /spot/camera/back/camera_info
+        /spot/camera/frontleft/image/theora
+        /spot/camera/frontleft/camera_info
+        /spot/camera/frontright/image/theora
+        /spot/camera/frontright/camera_info
+        /spot/camera/left/image/theora
+        /spot/camera/left/camera_info
+        /spot/camera/right/image/theora
+        /spot/camera/right/camera_info
+        /spot/depth_registered/back/image/zdepth
+        /spot/depth_registered/back/camera_info
+        /spot/depth_registered/frontleft/image/zdepth
+        /spot/depth_registered/frontleft/camera_info
+        /spot/depth_registered/frontright/image/zdepth
+        /spot/depth_registered/frontright/camera_info
+        /spot/depth_registered/left/image/zdepth
+        /spot/depth_registered/left/camera_info
+        /spot/depth_registered/right/image/zdepth
+        /spot/depth_registered/right/camera_info
+        /spot/camera/hand_color/image/theora
+        /spot/camera/hand_color/camera_info
+        /spot/camera/hand_depth_in_hand_color_frame/image/zdepth
+        /spot/camera/hand_depth_in_hand_color_frame/camera_info
+        " />
+
+    <group if="$(arg record_as_points)" >
+        <include file="$(find jsk_spot_startup)/launch/generate_point_cloud.launch" />
+
+        <node
+            pkg="jsk_topic_tools"
+            type="lightweight_throttle"
+            name="hand_points_throttler"
+            output="screen"
+        >
+            <remap from="~input" to="/spot/camera/hand_depth_in_hand_color_frame/points" />
+            <remap from="~output" to="/spot/camera/hand_depth_in_hand_color_frame/points/throttled" />
+            <param name="update_rate" value="0.5" />
+        </node>
+
+        <node
+            pkg="jsk_topic_tools"
+            type="lightweight_throttle"
+            name="depth_points_throttler"
+            output="screen"
+        >
+            <remap from="~input" to="/spot/depth/points" />
+            <remap from="~output" to="/spot/depth/points/throttled" />
+            <param name="update_rate" value="0.5" />
+        </node>
+    </group>
+
+    <group unless="$(arg record_as_points)" >
+        <include file="$(find jsk_spot_startup)/launch/include/compression.launch"/>
+    </group>
+
+    <node
+        pkg="jsk_topic_tools"
+        type="lightweight_throttle"
+        name="lidar_points_throttler"
+        output="screen"
+    >
+        <remap from="~input" to="/spot/lidar/points" />
+        <remap from="~output" to="/spot/lidar/points/throttled" />
+        <param name="update_rate" value="0.5" />
+    </node>
 
     <!-- rosbag recording with compressed images -->
     <node name="rosbag_record" pkg="rosbag" type="record"
@@ -13,11 +86,10 @@
             /diagnostics
             /tf
             /tf_static
-            /dual_fisheye_to_panorama/output/compressed
+            /dual_fisheye_to_panorama/output/theora
             /spot/body_pose
             /spot/cmd_vel
-            /spot/camera/hand_depth_in_hand_color_frame/points/throttled
-            /spot/depth/points/throttled
+            $(arg camera_topics)
             /spot/lidar/points/throttled
             /spot/navigate_to/cancel
             /spot/navigate_to/feedback
@@ -70,8 +142,6 @@
             /spot_recognition/bbox_array
             /spot_recognition/class
             /spot_recognition/rects
-            /spot_recognition/object_detection_image/compressed
-            /spot_recognition/tracking_labels
             /ublox/fix
             /ublox/fix_velocity
             /smart_device_protocol/recv
@@ -82,28 +152,5 @@
             $(arg additional_topics)
             "
         output="screen" />
-
-    <!--
-    /spot/camera/back/camera_info
-    /spot/camera/back/image/compressed
-    /spot/camera/frontleft/camera_info
-    /spot/camera/frontleft/image/compressed
-    /spot/camera/frontright/camera_info
-    /spot/camera/frontright/image/compressed
-    /spot/camera/left/camera_info
-    /spot/camera/left/image/compressed
-    /spot/camera/right/camera_info
-    /spot/camera/right/image/compressed
-    /spot/depth_registered/back/camera_info
-    /spot/depth_registered/back/image/compressedDepth
-    /spot/depth_registered/frontleft/camera_info
-    /spot/depth_registered/frontleft/image/compressedDepth
-    /spot/depth_registered/frontright/camera_info
-    /spot/depth_registered/frontright/image/compressedDepth
-    /spot/depth_registered/left/camera_info
-    /spot/depth_registered/left/image/compressedDepth
-    /spot/depth_registered/right/camera_info
-    /spot/depth_registered/right/image/compressedDepth
-    -->
 
 </launch>

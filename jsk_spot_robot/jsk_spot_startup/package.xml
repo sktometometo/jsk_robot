@@ -48,6 +48,8 @@
   <exec_depend>voice_text</exec_depend>
   <exec_depend>xacro</exec_depend>
   <exec_depend>xterm</exec_depend>
+  <exec_depend>zdepth_image_transport</exec_depend>
+  <exec_depend>theora_image_transport</exec_depend>
 
   <exec_depend>jsk_spot_behavior_manager</exec_depend>
   <exec_depend>spot_basic_behaviors</exec_depend>
