@@ -99,7 +99,7 @@ class SpotBatteryNotifier(object):
         try:
             trigger = rospy.ServiceProxy('/spot/estop/gentle', Trigger)
             ret = trigger()
-            rospy.loginfo('Call %s and received %s(%s)'%(trigger.resolved_name, ret.sucess, ret.message))
+            rospy.loginfo('Call %s and received %s(%s)'%(trigger.resolved_name, ret.success, ret.message))
         except rospy.ServiceException as e:
             rospy.logerr('Service call failed: %s'%e)
 
@@ -108,7 +108,7 @@ class SpotBatteryNotifier(object):
         try:
             trigger = rospy.ServiceProxy('/spot/estop/hard', Trigger)
             ret = trigger()
-            rospy.loginfo('Call %s and received %s(%s)'%(trigger.resolved_name, ret.sucess, ret.message))
+            rospy.loginfo('Call %s and received %s(%s)'%(trigger.resolved_name, ret.success, ret.message))
         except rospy.ServiceException as e:
             rospy.logerr('Service call failed: %s'%e)
 
@@ -117,7 +117,7 @@ class SpotBatteryNotifier(object):
         try:
             trigger = rospy.ServiceProxy('/spot/dock_fixed_id', Trigger)
             ret = trigger()
-            rospy.loginfo('Call %s and received %s(%s)'%(trigger.resolved_name, ret.sucess, ret.message))
+            rospy.loginfo('Call %s and received %s(%s)'%(trigger.resolved_name, ret.success, ret.message))
         except rospy.ServiceException as e:
             rospy.logerr('Service call failed: %s'%e)
 
