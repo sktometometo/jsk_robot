@@ -6,13 +6,14 @@
     <arg name="TOPIC_DEPTH_RIGHT" default="/spot/depth_registered/right"/>
     <arg name="TOPIC_DEPTH_LEFT" default="/spot/depth_registered/left"/>
     <arg name="TOPIC_DEPTH_BACK" default="/spot/depth_registered/back"/>
-    <arg name="TOPIC_DEPTH_HAND" default="/spot/camera/hand_depth_in_hand_color_frame"/>
 
     <arg name="TOPIC_CAMERA_FRONT_RIGHT" default="/spot/camera/frontright"/>
     <arg name="TOPIC_CAMERA_FRONT_LEFT" default="/spot/camera/frontleft"/>
     <arg name="TOPIC_CAMERA_RIGHT" default="/spot/camera/right"/>
     <arg name="TOPIC_CAMERA_LEFT" default="/spot/camera/left"/>
     <arg name="TOPIC_CAMERA_BACK" default="/spot/camera/back"/>
+
+    <arg name="TOPIC_DEPTH_HAND" default="/spot/camera/hand_depth_in_hand_color_frame"/>
     <arg name="TOPIC_CAMERA_HAND" default="/spot/camera/hand_color"/>
 
     <node pkg="nodelet" type="nodelet" name="$(arg manager_name)" args="manager"/>
@@ -115,4 +116,39 @@
             - $(arg TOPIC_DEPTH_BACK)/points
         </rosparam>
     </node>
+
+    <node
+        pkg="jsk_topic_tools"
+        type="lightweight_throttle"
+        name="hand_points_throttler"
+        output="screen"
+    >
+        <remap from="~input" to="$(arg TOPIC_DEPTH_HAND)/points" />
+        <remap from="~output" to="$(arg TOPIC_DEPTH_HAND)/points/throttled" />
+        <param name="update_rate" value="0.5" />
+    </node>
+
+    <node
+        pkg="jsk_topic_tools"
+        type="lightweight_throttle"
+        name="depth_points_throttler"
+        output="screen"
+    >
+        <remap from="~input" to="/spot/depth/points" />
+        <remap from="~output" to="/spot/depth/points/throttled" />
+        <param name="update_rate" value="0.5" />
+    </node>
+
+    <node
+        pkg="jsk_topic_tools"
+        type="lightweight_throttle"
+        name="lidar_points_throttler"
+        output="screen"
+    >
+        <remap from="~input" to="/spot/lidar/points" />
+        <remap from="~output" to="/spot/lidar/points/throttled" />
+        <param name="update_rate" value="0.5" />
+    </node>
+
+
 </launch>

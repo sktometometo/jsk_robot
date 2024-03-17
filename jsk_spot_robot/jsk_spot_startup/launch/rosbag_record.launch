@@ -1,32 +1,13 @@
 <launch>
     <arg name="rosbag" doc="rosbag file path" />
+    <arg name="rosbag_option" default="-b 0 --split --size=1024 --lz4" />
     <arg name="additional_topics" default="" doc="additional topics to record" />
 
     <include file="$(find jsk_spot_startup)/launch/generate_point_cloud.launch" />
 
-    <node
-        pkg="jsk_topic_tools"
-        type="lightweight_throttle"
-        name="depth_points_throttler"
-    >
-        <remap from="from" to="/spot/depth/points" />
-        <remap from="to" to="/spot/depth/points/throttled" />
-        <param name="update_rate" value="0.5" />
-    </node>
-
-    <node
-        pkg="jsk_topic_tools"
-        type="lightweight_throttle"
-        name="lidar_points_throttler"
-    >
-        <remap from="from" to="/spot/lidar/points" />
-        <remap from="to" to="/spot/lidar/points/throttled" />
-        <param name="update_rate" value="0.5" />
-    </node>
-
     <!-- rosbag recording with compressed images -->
-    <node name="rosbag_record" pkg="rosbag" type="record" if="$(arg use_compress)"
-        args="-o $(arg rosbag) -b 0
+    <node name="rosbag_record" pkg="rosbag" type="record"
+        args="-o $(arg rosbag) $(arg rosbag_option)
             /rosout
             /rosout_agg
             /diagnostics
@@ -35,12 +16,9 @@
             /dual_fisheye_to_panorama/output/compressed
             /spot/body_pose
             /spot/cmd_vel
+            /spot/camera/hand_depth_in_hand_color_frame/points/throttled
             /spot/depth/points/throttled
             /spot/lidar/points/throttled
-            /spot/camera/hand_color/camera_info
-            /spot/camera/hand_color/image/compressed
-            /spot/camera/hand_depth_in_hand_color_frame/camera_info
-            /spot/camera/hand_depth_in_hand_color_frame/image/compressedDepth
             /spot/navigate_to/cancel
             /spot/navigate_to/feedback
             /spot/navigate_to/goal
@@ -54,7 +32,7 @@
             /spot/status/feedback
             /spot/status/feet
             /spot/status/leases
-    	    /spot/status/manipulator_state
+            /spot/status/manipulator_state
             /spot/status/metrics
             /spot/status/power_state
             /spot/status/system_faults
