@@ -1,0 +1,81 @@
+<launch>
+
+
+    <!-- 
+        TF frames for hongo each elements
+    -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="$(anon yasuda)"
+        args="0 0 0 0 0 0 /world /yasuda" />
+
+    <node pkg="gps_map_visualizer" type="static_lon_lat_transform_publisher.py"
+        name="$(anon tf_hongo_main_gate)">
+        <rosparam>
+            reference_frame_id: yasuda
+            reference_latitude: 35.713537979438996
+            reference_longitude: 139.762305151285
+            reference_direction: 0.0
+            target_frame_id: hongo_main_gate
+            target_latitude: 35.712995049681204
+            target_longitude: 139.75967053364684
+            target_direction: 0.0
+        </rosparam>
+    </node>
+
+    <node pkg="gps_map_visualizer" type="static_lon_lat_transform_publisher.py"
+        name="$(anon eng2_tfA_raw)">
+        <rosparam>
+            reference_frame_id: yasuda
+            reference_latitude: 35.713537979438996
+            reference_longitude: 139.762305151285
+            reference_direction: 0.0
+            target_frame_id: eng2
+            target_latitude: 35.71443022192967
+            target_longitude: 139.7615547854118
+            target_direction: 0.0
+        </rosparam>
+    </node>
+
+    <node pkg="gps_map_visualizer" type="static_lon_lat_transform_publisher.py"
+        name="$(anon eng8_tfA_raw)">
+        <rosparam>
+            reference_frame_id: yasuda
+            reference_latitude: 35.713537979438996
+            reference_longitude: 139.762305151285
+            reference_direction: 0.0
+            target_frame_id: eng8
+            target_latitude: 35.71470007319424
+            target_longitude: 139.760512685666
+            target_direction: 0.0
+        </rosparam>
+    </node>
+
+    <!--
+        Map image publisher
+    -->
+    <node pkg="gps_map_visualizer" type="static_map_publisher.py" name="static_map_publisher"
+        output="screen">
+        <remap from="/map" to="/static_map/map" />
+        <remap from="/map_meta_data" to="/static_map/map_meta_data" />
+
+        <!-- parameters with dynamics reconfigure -->
+        <rosparam>
+            center_latitude: 35.713537979438996
+            center_longitude: 139.762305151285
+            zoom_level: 18
+        </rosparam>
+
+        <!-- parameters with rosparam -->
+        <rosparam>
+            initial_latitude: 35.713537979438996
+            initial_longitude: 139.762305151285
+            map_size: 1500
+            map_type: osm
+            initial_frame: yasuda
+            static_map_frame: static_map_frame
+        </rosparam>
+    </node>
+
+    <node pkg="rviz" type="rviz" name="$(anon rviz)" output="log" required="true"
+        args="-d $(find gps_map_visualizer)/rviz/gps_map_visualizer.rviz" />
+
+</launch>
