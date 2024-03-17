@@ -1,5 +1,6 @@
 <launch>
     <arg name="rosbag" doc="rosbag file path" />
+    <arg name="additional_topics" default="" doc="additional topics to record" />
 
     <include file="$(find jsk_spot_startup)/launch/generate_point_cloud.launch" />
 
@@ -10,7 +11,7 @@
     >
         <remap from="from" to="/spot/depth/points" />
         <remap from="to" to="/spot/depth/points/throttled" />
-        <param name="update_rate" value="1" />
+        <param name="update_rate" value="0.5" />
     </node>
 
     <node
@@ -20,7 +21,7 @@
     >
         <remap from="from" to="/spot/lidar/points" />
         <remap from="to" to="/spot/lidar/points/throttled" />
-        <param name="update_rate" value="1" />
+        <param name="update_rate" value="0.5" />
     </node>
 
     <!-- rosbag recording with compressed images -->
@@ -76,8 +77,7 @@
             /robotsound/goal
             /robotsound/result
             /robotsound/status
-            /robotsound_jp
-    
+            /robotsound_jp    
             /robotsound_jp/cancel
             /robotsound_jp/feedback
             /robotsound_jp/goal
@@ -99,6 +99,7 @@
             /smart_device_protocol/recv
             /smart_device_protocol/send
             /smart_device_protocol/uwb
+            $(arg additional_topics)
             "
         output="screen" />
 
