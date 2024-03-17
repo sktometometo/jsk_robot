@@ -3,37 +3,37 @@
         pkg="image_transport"
         type="republish"
         name="panorama_decompress"
-        args="theora in:=/dual_fisheye_to_panorama/output raw out:=/dual_fisheye_to_panorama/output"
+        args="compressed in:=/dual_fisheye_to_panorama/output raw out:=/dual_fisheye_to_panorama/output"
         />
     <node
         pkg="image_transport"
         type="republish"
         name="back_camera_decompress"
-        args="theora in:=/spot/camera/back/image raw out:=/spot/camera/back/image"
+        args="compressed in:=/spot/camera/back/image raw out:=/spot/camera/back/image"
         />
     <node
         pkg="image_transport"
         type="republish"
         name="frontleft_camera_decompress"
-        args="theora in:=/spot/camera/frontleft/image raw out:=/spot/camera/frontleft/image"
+        args="compressed in:=/spot/camera/frontleft/image raw out:=/spot/camera/frontleft/image"
         />
     <node
         pkg="image_transport"
         type="republish"
         name="frontright_camera_decompress"
-        args="theora in:=/spot/camera/frontright/image raw out:=/spot/camera/frontright/image"
+        args="compressed in:=/spot/camera/frontright/image raw out:=/spot/camera/frontright/image"
         />
     <node
         pkg="image_transport"
         type="republish"
         name="left_camera_decompress"
-        args="theora in:=/spot/camera/left/image raw out:=/spot/camera/left/image"
+        args="compressed in:=/spot/camera/left/image raw out:=/spot/camera/left/image"
         />
     <node
         pkg="image_transport"
         type="republish"
         name="right_camera_decompress"
-        args="theora in:=/spot/camera/right/image raw out:=/spot/camera/right/image"
+        args="compressed in:=/spot/camera/right/image raw out:=/spot/camera/right/image"
         />
     <node
         pkg="image_transport"
@@ -69,7 +69,7 @@
         pkg="image_transport"
         type="republish"
         name="hand_color_decompress"
-        args="theora in:=/spot/camera/hand_color/image raw out:=/spot/camera/hand_color/image"
+        args="compressed in:=/spot/camera/hand_color/image raw out:=/spot/camera/hand_color/image"
         />
     <node
         pkg="image_transport"

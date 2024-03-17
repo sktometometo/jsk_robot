@@ -11,15 +11,15 @@
         " />
     <arg name="camera_topics" unless="$(arg record_as_points)"
         default="
-        /spot/camera/back/image/theora
+        /spot/camera/back/image/compressed
         /spot/camera/back/camera_info
-        /spot/camera/frontleft/image/theora
+        /spot/camera/frontleft/image/compressed
         /spot/camera/frontleft/camera_info
-        /spot/camera/frontright/image/theora
+        /spot/camera/frontright/image/compressed
         /spot/camera/frontright/camera_info
-        /spot/camera/left/image/theora
+        /spot/camera/left/image/compressed
         /spot/camera/left/camera_info
-        /spot/camera/right/image/theora
+        /spot/camera/right/image/compressed
         /spot/camera/right/camera_info
         /spot/depth_registered/back/image/zdepth
         /spot/depth_registered/back/camera_info
@@ -31,7 +31,7 @@
         /spot/depth_registered/left/camera_info
         /spot/depth_registered/right/image/zdepth
         /spot/depth_registered/right/camera_info
-        /spot/camera/hand_color/image/theora
+        /spot/camera/hand_color/image/compressed
         /spot/camera/hand_color/camera_info
         /spot/camera/hand_depth_in_hand_color_frame/image/zdepth
         /spot/camera/hand_depth_in_hand_color_frame/camera_info
@@ -86,7 +86,7 @@
             /diagnostics
             /tf
             /tf_static
-            /dual_fisheye_to_panorama/output/theora
+            /dual_fisheye_to_panorama/output/compressed
             /spot/body_pose
             /spot/cmd_vel
             $(arg camera_topics)

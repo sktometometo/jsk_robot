@@ -3,31 +3,31 @@
       pkg="image_transport"
       type="republish"
       name="back_camera_compress_internal_node"
-      args="raw in:=/spot/camera/back/image theora out:=/spot/camera/back/image"
+      args="raw in:=/spot/camera/back/image compressed out:=/spot/camera/back/image"
       />
   <node
       pkg="image_transport"
       type="republish"
       name="frontleft_camera_compress_internal_node"
-      args="raw in:=/spot/camera/frontleft/image theora out:=/spot/camera/frontleft/image"
+      args="raw in:=/spot/camera/frontleft/image compressed out:=/spot/camera/frontleft/image"
       />
   <node
       pkg="image_transport"
       type="republish"
       name="frontright_camera_compress_internal_node"
-      args="raw in:=/spot/camera/frontright/image theora out:=/spot/camera/frontright/image"
+      args="raw in:=/spot/camera/frontright/image compressed out:=/spot/camera/frontright/image"
       />
   <node
       pkg="image_transport"
       type="republish"
       name="left_camera_compress_internal_node"
-      args="raw in:=/spot/camera/left/image theora out:=/spot/camera/left/image"
+      args="raw in:=/spot/camera/left/image compressed out:=/spot/camera/left/image"
       />
   <node
       pkg="image_transport"
       type="republish"
       name="right_camera_compress_internal_node"
-      args="raw in:=/spot/camera/right/image theora out:=/spot/camera/right/image"
+      args="raw in:=/spot/camera/right/image compressed out:=/spot/camera/right/image"
       />
   <node
       pkg="image_transport"
@@ -63,7 +63,7 @@
       pkg="image_transport"
       type="republish"
       name="hand_color_compress_internal_node"
-      args="raw in:=/spot/camera/hand_color/image theora out:=/spot/camera/hand_color/image"
+      args="raw in:=/spot/camera/hand_color/image compressed out:=/spot/camera/hand_color/image"
       />
   <node
       pkg="image_transport"
@@ -76,6 +76,6 @@
       pkg="image_transport"
       type="republish"
       name="panorama_compress_internal_node"
-      args="raw in:=/dual_fisheye_to_panorama/output theora out:=/dual_fisheye_to_panorama/output"
+      args="raw in:=/dual_fisheye_to_panorama/output compressed out:=/dual_fisheye_to_panorama/output"
       />
 </launch>
