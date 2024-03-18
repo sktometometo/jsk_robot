@@ -10,6 +10,8 @@
     <arg name="duration" default="--duration $(arg duration_time)" if="$(eval duration_time != 0)" />
     <arg name="duration" default="" if="$(eval duration_time == 0)" />
 
+    <arg name="skip_rosbag" default="false" />
+
     <include
         file="$(find jsk_spot_startup)/launch/rviz.launch"
         if="$(arg gui)"
@@ -33,6 +35,7 @@
         name="$(anon rosbag)"
         args="$(arg rosbag) $(arg loop_flag) --clock --start $(arg start_time) $(arg duration)"
         launch-prefix="xterm -e"
+        unless="$(arg skip_rosbag)"
         />
     <node
         pkg="jsk_spot_startup"
