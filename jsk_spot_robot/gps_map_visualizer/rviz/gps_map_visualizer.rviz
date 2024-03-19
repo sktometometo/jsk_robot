@@ -5,7 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Map1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 719
   - Class: rviz/Selection
@@ -57,17 +57,19 @@ Visualization Manager:
       Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         eng2:
+          Value: true
+        eng2_map:
           Value: true
         eng8:
           Value: true
+        eng8_map:
+          Value: true
         hongo_main_gate:
           Value: true
-        static_map_frame:
-          Value: true
         world:
-          Value: true
+          Value: false
         yasuda:
           Value: true
       Marker Alpha: 1
@@ -81,21 +83,23 @@ Visualization Manager:
           yasuda:
             eng2:
               {}
+            eng2_map:
+              {}
             eng8:
+              {}
+            eng8_map:
               {}
             hongo_main_gate:
               {}
-            static_map_frame:
-              {}
       Update Interval: 0
       Value: true
-    - Alpha: 0.699999988079071
+    - Alpha: 1
       Class: rviz/Map
       Color Scheme: raw
       Draw Behind: false
       Enabled: true
-      Name: Map
-      Topic: /static_map/map
+      Name: Eng2Map
+      Topic: /eng2_map/map
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -127,7 +131,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 380.2952880859375
+      Distance: 476.140380859375
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -143,9 +147,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6503979563713074
+      Pitch: 1.1503974199295044
       Target Frame: <Fixed Frame>
-      Yaw: 5.038586616516113
+      Yaw: 4.868593215942383
     Saved: ~
 Window Geometry:
   Displays:

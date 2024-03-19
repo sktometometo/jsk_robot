@@ -1,67 +1,9 @@
 # -*- encoding: utf-8 -*-
 import math
+from typing import Tuple
 
-
-# Copied from https://github.com/komoot/staticmap/blob/master/staticmap/staticmap.py
-# original code is distributed with Apache 2.0
-def lon_to_x(lon, zoom_level):
-    """
-    transform longitude to tile number
-    :type lon: float
-    :type zoom_level: int
-    :rtype: float
-    """
-    if not (-180 <= lon <= 180):
-        lon = (lon + 180) % 360 - 180
-
-    return ((lon + 180.0) / 360) * pow(2, zoom_level)
-
-
-def x_to_lon(x, zoom_level):
-    """
-    transform tile number to longitude
-    :type x: float
-    :type zoom_level: int
-    :rtype: float
-    """
-    return x / pow(2, zoom_level) * 360.0 - 180.0
-
-
-# Copied from https://github.com/komoot/staticmap/blob/master/staticmap/staticmap.py
-# original code is distributed with Apache 2.0
-def lat_to_y(lat, zoom_level):
-    """
-    transform latitude to tile number
-    :type lat: float
-    :type zoom_level: int
-    :rtype: float
-    """
-    if not (-90 <= lat <= 90):
-        lat = (lat + 90) % 180 - 90
-
-    return (
-        (
-            1
-            - math.log(
-                math.tan(lat * math.pi / 180) + 1 / math.cos(lat * math.pi / 180)
-            )
-            / math.pi
-        )
-        / 2
-        * pow(2, zoom_level)
-    )
-
-
-def y_to_lat(y, zoom_level):
-    """
-    transform tile number to latitude
-    :type y: float
-    :type zoom_level: int
-    :rtype: float
-    """
-    return (
-        math.atan(math.sinh(math.pi * (1 - 2 * y / pow(2, zoom_level)))) * 180 / math.pi
-    )
+from geopy import distance
+from geopy.point import Point
 
 
 # See https://wiki.openstreetmap.org/wiki/Zoom_levels
@@ -72,38 +14,62 @@ def calc_meters_per_pixel(latitude, zoom_level, earth_radius=6378137.000):
     )
 
 
-def calc_transform_from_lon_lat(
-    from_longitude,
-    from_latitude,
-    to_longitude,
-    to_latitude,
-    zoom_level=18,
-    tile_size=256,
-):
-    resolution = calc_meters_per_pixel(from_latitude, zoom_level)
-    from_x_meter = lon_to_x(from_longitude, zoom_level) * tile_size * resolution
-    from_y_meter = lat_to_y(-from_latitude, zoom_level) * tile_size * resolution
-    to_x_meter = lon_to_x(to_longitude, zoom_level) * tile_size * resolution
-    to_y_meter = lat_to_y(-to_latitude, zoom_level) * tile_size * resolution
-    diff_x_meter = to_x_meter - from_x_meter
-    diff_y_meter = to_y_meter - from_y_meter
+def calc_transform_from_geographic_coords(
+    reference_longitude: float,
+    reference_latitude: float,
+    target_longitude: float,
+    target_latitude: float,
+) -> Tuple[float, float]:
+    """
+    Calculate the difference in meters from the reference point to the target point
+
+    Args:
+        reference_longitude (float): longitude of the reference point
+        reference_latitude (float): latitude of the reference point
+        target_longitude (float): longitude of the target point
+        target_latitude (float): latitude of the target point
+
+    Returns:
+        Tuple[float, float]: (diff_x, diff_y)
+            diff_x: difference in meters in x direction (East is positive)
+            diff_y: difference in meters in y direction (North is positive)
+    """
+    distance_x_meter = distance.great_circle(
+        Point(longitude=reference_longitude, latitude=reference_latitude),
+        Point(longitude=target_longitude, latitude=reference_latitude),
+    ).meters
+    distance_y_meter = distance.great_circle(
+        Point(longitude=reference_longitude, latitude=reference_latitude),
+        Point(longitude=reference_longitude, latitude=target_latitude),
+    ).meters
+    diff_x_meter = (
+        distance_x_meter
+        if target_longitude >= reference_longitude
+        else -distance_x_meter
+    )
+    diff_y_meter = (
+        distance_y_meter if target_latitude >= reference_latitude else -distance_y_meter
+    )
     return diff_x_meter, diff_y_meter
 
 
-def calc_lon_lat_from_diff(
-    from_longitude,
-    from_latitude,
-    diff_x_meter,
-    diff_y_meter,
-    zoom_level=18,
-    tile_size=256,
-):
-    resolution = calc_meters_per_pixel(from_latitude, zoom_level)
-    from_x_meter = lon_to_x(from_longitude, zoom_level) * tile_size * resolution
-    from_y_meter = lat_to_y(-from_latitude, zoom_level) * tile_size * resolution
-    to_x_meter = from_x_meter + diff_x_meter
-    to_y_meter = from_y_meter + diff_y_meter
-    to_longitude = x_to_lon(to_x_meter / resolution / tile_size, zoom_level)
-    to_latitude = -y_to_lat(to_y_meter / resolution / tile_size, zoom_level)
-    return to_longitude, to_latitude
-)
+def calc_geographic_coords_from_cartesian_difference(
+    reference_longitude: float, reference_latitude: float, diff_x: float, diff_y: float
+) -> Tuple[float, float]:
+    """
+    Calculate the longitude and latitude from the reference point and the difference in meters
+
+    Args:
+        reference_longitude (float): longitude of the reference point
+        reference_latitude (float): latitude of the reference point
+        diff_x (float): difference in meters in x direction (East is positive)
+        diff_y (float): difference in meters in y direction (North is positive)
+
+    Returns:
+        Tuple[float, float]: (longitude, latitude)
+    """
+    initial_point = Point(longitude=reference_longitude, latitude=reference_latitude)
+    d = distance.distance(meters=math.sqrt(diff_x**2 + diff_y**2))
+    bearing = math.degrees(math.atan2(diff_x, diff_y))
+    destination = d.destination(initial_point, bearing=bearing)
+    return destination.longitude, destination.latitude
