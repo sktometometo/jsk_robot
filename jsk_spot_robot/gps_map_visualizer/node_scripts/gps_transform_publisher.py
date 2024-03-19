@@ -26,8 +26,6 @@ class GpsBasedTransformPublisher:
         )
 
     def nav_sat_fix_callback(self, msg: NavSatFix):
-        if msg.status.status == NavSatStatus.STATUS_NO_FIX:
-            return
 
         diff_x, diff_y = calc_transform_from_geographic_coords(
             self.reference_longitude,
@@ -38,6 +36,7 @@ class GpsBasedTransformPublisher:
 
         transform = TransformStamped()
         transform.header.frame_id = self.reference_frame_id
+        transform.header.stamp = msg.header.stamp
         transform.child_frame_id = self.gps_frame_id
         transform.transform.translation.x = diff_x
         transform.transform.translation.y = diff_y
