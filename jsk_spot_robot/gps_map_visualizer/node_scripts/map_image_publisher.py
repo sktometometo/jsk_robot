@@ -82,7 +82,6 @@ class MapImagePublisher:
                     self.anchor_latitude,
                 )
             )
-            rospy.logwarn(f"lon, lat: {center_longitude, center_latitude}")
 
             map_meta_data, occ_grid = self.render_map_to_rosmsg(
                 center_longitude, center_latitude, self.zoom_level, self.map_size
