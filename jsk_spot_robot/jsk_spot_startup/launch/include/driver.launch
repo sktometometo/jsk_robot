@@ -191,32 +191,11 @@
   </group>
 
   <!-- gps -->
-  <node
-      pkg="ublox_gps"
-      type="ublox_gps"
-      name="ublox"
-      output="screen"
-      clear_params="true"
-      if="$(arg use_gps)" 
-      respawn="false"
-      respawn_delay="30">
-    <rosparam subst_value="true">
-        device: $(arg device_ublox)
-        frame_id: gps
-        uart1:
-          baudrate: 38400
-        config_on_startup: true
-
-        rate: 0.016
-        # TMODE3 Config
-        tmode3: 1                   # Survey-In Mode
-        sv_in:
-          reset: false              # True: disables and re-enables survey-in (resets)
-                                    # False: Disables survey-in only if TMODE3 is
-                                    # disabled
-          min_dur: 300              # Survey-In Minimum Duration [s]
-          acc_lim: 3.0              # Survey-In Accuracy Limit [m]
-    </rosparam>
-  </node>
+  <include
+      file="$(find jsk_spot_startup)/launch/include/ublox_driver.launch"
+      if="$(arg use_gps)"
+      >
+      <arg name="device_ublox" value="$(arg device_ublox)" />
+  </include>
 
 </launch>

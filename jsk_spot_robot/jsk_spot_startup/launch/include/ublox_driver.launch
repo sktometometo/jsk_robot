@@ -1,0 +1,19 @@
+<launch>
+  <arg name="device_ublox" default="/dev/ublox_device" />
+
+  <!-- gps -->
+  <node
+      pkg="ublox_gps"
+      type="ublox_gps"
+      name="ublox"
+      output="screen"
+      clear_params="true"
+      respawn="false"
+      respawn_delay="30">
+    <rosparam subst_value="true">
+        device: $(arg device_ublox)
+        frame_id: gps
+    </rosparam>
+    <rosparam command="load" file="$(find jsk_spot_startup)/config/ublox_config.yaml"/>
+  </node>
+</launch>
