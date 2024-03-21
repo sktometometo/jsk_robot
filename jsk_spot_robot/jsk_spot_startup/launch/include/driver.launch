@@ -198,4 +198,12 @@
       <arg name="device_ublox" value="$(arg device_ublox)" />
   </include>
 
+  <!-- ros_lock -->
+  <node
+      pkg="ros_lock"
+      type="lock_manager_node.py"
+      name="lock_manager"
+      output="screen"
+      />
+
 </launch>
