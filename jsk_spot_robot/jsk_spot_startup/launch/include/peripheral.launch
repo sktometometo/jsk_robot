@@ -1,6 +1,6 @@
 <launch>
     <arg name="port_enr" default="/dev/esp_now_ros_interface"/>
-    <arg name="throttled_rate" default="1.0"/>
+    <arg name="throttled_rate" default="5.0"/>
 
     <include file="$(find smart_device_protocol)/launch/demo.launch">
         <arg name="port" value="$(arg port_enr)"/>
