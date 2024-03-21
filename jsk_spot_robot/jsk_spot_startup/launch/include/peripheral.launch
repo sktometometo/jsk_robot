@@ -7,6 +7,24 @@
         <arg name="tag_id" value="9"/>
     </include>
 
+    <node
+        pkg="uwb_localization"
+        type="device_localization_node.py"
+        name="device_localization_node"
+        output="screen"
+        >
+        <rosparam subst_value="true">
+            frame_id_fixed: odom
+            frame_id_uwb_tag: insta360_link
+            history_timeout: 600
+            thershold_num_history: 4
+            threshold_hessian_eigen: 0.001
+            threshold_postion_distance: 0.3
+            range_distance_min: 0.1
+            range_distance_max: 30.0
+        </rosparam>
+    </node>
+
     <include file="$(find jsk_perception)/sample/sample_insta360_air.launch">
         <arg name="width" value="2176"/>
         <arg name="height" value="1088"/>
