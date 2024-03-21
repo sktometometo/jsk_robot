@@ -487,7 +487,7 @@
       (setq r (ros::service-call srvname
                                  (instance spot_msgs::UploadGraphRequest :init :upload_filepath path)))
       (ros::ros-info "Call \"~A\" returns .. \"~A\"" srvname (send r :message))
-      (if initial-localization-fiducial (send self :initial-localization-fiducial))
+      (if initial-localization-fiducial (send self :set-localization-fiducial))
       (send r :success)))
   (:download-graph
     (path &key (wait nil))
@@ -532,7 +532,7 @@
 		      -1)
 		    (length ids)
 		    initial-localization-waypoint)
-     (ros::ros-info "   goal waypoit ~3D/~3D ~A"
+     (ros::ros-info "goal waypoit ~3D/~3D ~A"
 		    (position navigate-to ids :test #'string=) (length ids) navigate-to)
      (setq goal (instance spot_msgs::NavigateToActionGoal :init))
      (send goal :goal :id_navigate_to navigate-to)
