@@ -1,7 +1,15 @@
 <launch>
+    <arg name="launch_device_driver" default="true" />
     <arg name="device_type" default="nmea" />
 
-    <include file="$(find ublox_gps)/launch/ublox_device.launch">
+    <arg name="nav_sat_fix_topic" default="/ublox/fix" />
+
+    <arg name="gui" default="true" />
+
+    <include
+        file="$(find ublox_gps)/launch/ublox_device.launch"
+        if="$(arg launch_device_driver)"
+        >
         <arg name="param_file_name" value="$(arg device_type)" />
     </include>
 
@@ -10,12 +18,14 @@
         type="gps_transform_publisher.py"
         name="gps_transform_publisher"
     >
-        <remap from="~nav_sat_fix" to="/ublox/fix" />
+        <remap from="~nav_sat_fix" to="$(arg nav_sat_fix_topic)" />
 
         <rosparam>
             reference_world_frame_id: yasuda
             reference_latitude: 35.713537979438996
             reference_longitude: 139.762305151285
+            initial_latitude: 35.71443022192967
+            initial_longitude: 139.7615547854118
         </rosparam>
     </node>
 
@@ -69,38 +79,24 @@
         Map image publisher
     -->
     <node
-        pkg="gps_map_visualizer" type="map_image_publisher.py" name="map_image_publisher_on_eng2"
+        pkg="gps_map_visualizer" type="map_image_publisher.py" name="map_image_publisher_on_gps"
         output="screen">
-        <remap from="/map" to="/eng2_map/map" />
-        <remap from="/map_meta_data" to="/eng2_map/map_meta_data" />
+        <remap from="/map" to="/gps_map/map" />
+        <remap from="/map_meta_data" to="/gps_map/map_meta_data" />
 
         <rosparam>
             anchor_world_frame: yasuda
             anchor_latitude: 35.713537979438996
             anchor_longitude: 139.762305151285
-            target_frame: eng2
-            map_image_frame: eng2_map
-        </rosparam>
-    </node>
-
-    <node
-        pkg="gps_map_visualizer" type="map_image_publisher.py" name="map_image_publisher_on_eng8"
-        output="screen">
-        <remap from="/map" to="/eng8_map/map" />
-        <remap from="/map_meta_data" to="/eng8_map/map_meta_data" />
-
-        <rosparam>
-            anchor_world_frame: yasuda
-            anchor_latitude: 35.713537979438996
-            anchor_longitude: 139.762305151285
-            target_frame: eng8
-            map_image_frame: eng8_map
+            target_frame: gps
+            map_image_frame: gps_map
         </rosparam>
     </node>
 
     <!-- GUI -->
     <node
         pkg="rviz" type="rviz" name="$(anon rviz)" output="log" required="true"
+        if="$(arg gui)"
         args="-d $(find gps_map_visualizer)/rviz/gps_map_visualizer.rviz" />
 
 </launch>
