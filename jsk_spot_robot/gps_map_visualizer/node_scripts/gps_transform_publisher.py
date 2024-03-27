@@ -5,6 +5,7 @@ import rospy
 import PyKDL
 import traceback
 import tf2_ros
+import tf2_geometry_msgs
 from geometry_msgs.msg import TransformStamped
 from sensor_msgs.msg import NavSatFix, NavSatStatus
 
@@ -62,10 +63,12 @@ class GpsBasedTransformPublisher:
                 transform_child_frame_id = self.gps_frame_id
             else:
                 try:
-                    transform_gps_parent_to_gps = self.tf_buffer.lookup_transform(
-                            self.gps_frame_id,
-                            self.parent_of_gps_frame_id,
-                            rospy.Time(0)
+                    transform_gps_parent_to_gps = tf2_geometry_msgs.transform_to_kdl(
+                            self.tf_buffer.lookup_transform(
+                                self.gps_frame_id,
+                                self.parent_of_gps_frame_id,
+                                rospy.Time(0)
+                                )
                             )
                 except Exception as e:
                     rospy.logerr(e)

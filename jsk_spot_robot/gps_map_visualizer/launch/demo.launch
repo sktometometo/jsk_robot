@@ -7,7 +7,7 @@
     <arg name="gui" default="true" />
 
     <arg name="target_gps_frame" default="gps" />
-    <arg name="parent_of_gps_frame_id" defalut="None" />
+    <arg name="parent_of_gps_frame_id" default="None" />
 
     <include
         file="$(find ublox_gps)/launch/ublox_device.launch"
