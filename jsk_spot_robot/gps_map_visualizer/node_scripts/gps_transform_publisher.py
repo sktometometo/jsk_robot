@@ -2,6 +2,7 @@
 
 
 import threading
+import time
 from typing import Optional
 
 import message_filters
@@ -30,6 +31,9 @@ class GpsBasedTransformPublisher:
         self.base_frame_id = rospy.get_param("~base_frame_id", "gps")
         self.odom_frame_id = rospy.get_param("~odom_frame_id", None)
 
+        sub_nav_sat_fix = message_filters.Subscriber("~nav_sat_fix", NavSatFix)
+        sub_odom = message_filters.Subscriber("~odom", Odometry)
+
         self.transform_reference_to_odom: Optional[TransformStamped] = None
 
         self.lock_history = threading.Lock()
@@ -38,8 +42,6 @@ class GpsBasedTransformPublisher:
 
         self.tf_br = tf2_ros.TransformBroadcaster()
 
-        sub_nav_sat_fix = message_filters.Subscriber("~nav_sat_fix", NavSatFix)
-        sub_odom = message_filters.Subscriber("~odom", Odometry)
         self.ts = message_filters.ApproximateTimeSynchronizer(
             [sub_nav_sat_fix, sub_odom], 10, 0.1
         )
@@ -47,6 +49,7 @@ class GpsBasedTransformPublisher:
 
     def spin(self):
         while not rospy.is_shutdown():
+            time.sleep(1.0)
             with self.lock_history:
                 if len(self.history_reference_points) > 4:
                     rot, rssd, sens = Rotation.align_vectors(
@@ -63,8 +66,10 @@ class GpsBasedTransformPublisher:
                     rospy.loginfo(f"Rotation: {rot}")
                     rospy.loginfo(f"RSSD: {rssd}, SENS: {sens}")
                     rospy.loginfo(f"Translation: {translation}")
+                else:
+                    rospy.logwarn("Not enough data to calculate transform")
 
-    def calback(self, msg_nav_sat_fix: NavSatFix, msg_odom: Odometry):
+    def callback(self, msg_nav_sat_fix: NavSatFix, msg_odom: Odometry):
         if msg_nav_sat_fix.status.status != NavSatStatus.STATUS_NO_FIX:
             diff_x, diff_y = calc_transform_from_geographic_coords(
                 self.reference_longitude,
@@ -75,6 +80,7 @@ class GpsBasedTransformPublisher:
             diff_z = msg_nav_sat_fix.altitude
 
             with self.lock_history:
+                rospy.logwarn("Storing history")
                 self.history_reference_points.append(np.array([diff_x, diff_y, diff_z]))
                 self.history_odom_points.append(
                     np.array(

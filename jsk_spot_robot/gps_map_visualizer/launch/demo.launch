@@ -3,10 +3,13 @@
     <arg name="device_type" default="nmea" />
 
     <arg name="nav_sat_fix_topic" default="/ublox/fix" />
+    <arg name="odom_topic" default="/odom" />
 
     <arg name="gui" default="true" />
 
-    <arg name="target_gps_frame" default="gps" />
+    <arg name="publish_map" default="true" />
+
+    <arg name="base_frame_id" default="gps" />
     <arg name="parent_of_gps_frame_id" default="None" />
 
     <include
@@ -23,28 +26,69 @@
         output="screen"
     >
         <remap from="~nav_sat_fix" to="$(arg nav_sat_fix_topic)" />
+        <remap from="~odom" to="$(arg odom_topic)" />
 
         <rosparam subst_value="true">
             reference_world_frame_id: yasuda
             reference_latitude: 35.713537979438996
             reference_longitude: 139.762305151285
-            initial_latitude: 35.71443022192967
-            initial_longitude: 139.7615547854118
-            gps_frame_id: $(arg target_gps_frame)
-            parent_of_gps_frame_id: $(arg parent_of_gps_frame_id)
         </rosparam>
     </node>
 
     <!-- 
         TF frames for hongo each elements
     -->
+    <node pkg="tf2_ros" type="static_transform_publisher"
+        name="$(anon yasuda)"
+        args="0 0 0 0 0 0 /world /yasuda" />
+
+    <node pkg="gps_map_visualizer"
+        type="geographic_static_transform_publisher.py"
+        name="$(anon tf_hongo_main_gate)">
+        <rosparam subst_value="true">
+            reference_world_frame_id: yasuda
+            reference_latitude: 35.713537979438996
+            reference_longitude: 139.762305151285
+            target_world_frame_id: hongo_main_gate
+            target_latitude: 35.712995049681204
+            target_longitude: 139.75967053364684
+        </rosparam>
+    </node>
+
+    <node
+        pkg="gps_map_visualizer" type="geographic_static_transform_publisher.py"
+        name="$(anon eng2_tfA_raw)">
+        <rosparam subst_value="true">
+            reference_world_frame_id: yasuda
+            reference_latitude: 35.713537979438996
+            reference_longitude: 139.762305151285
+            target_world_frame_id: eng2
+            target_latitude: 35.71443022192967
+            target_longitude: 139.7615547854118
+        </rosparam>
+    </node>
+
+    <node
+        pkg="gps_map_visualizer" type="geographic_static_transform_publisher.py"
+        name="$(anon eng8_tfA_raw)">
+        <rosparam subst_value="true">
+            reference_world_frame_id: yasuda
+            reference_latitude: 35.713537979438996
+            reference_longitude: 139.762305151285
+            target_world_frame_id: eng8
+            target_latitude: 35.71470007319424
+            target_longitude: 139.760512685666
+        </rosparam>
+    </node>
 
     <!--
         Map image publisher
     -->
     <node
         pkg="gps_map_visualizer" type="map_image_publisher.py" name="map_image_publisher_on_gps"
-        output="screen">
+        output="screen"
+        if="$(arg publish_map)"
+    >
         <remap from="/map" to="/gps_map/map" />
         <remap from="/map_meta_data" to="/gps_map/map_meta_data" />
 
@@ -52,8 +96,8 @@
             anchor_world_frame: yasuda
             anchor_latitude: 35.713537979438996
             anchor_longitude: 139.762305151285
-            target_frame: $(arg target_gps_frame)
-            map_image_frame: $(arg target_gps_frame)_map
+            target_frame: $(arg base_frame_id)
+            map_image_frame: $(arg base_frame_id)_map
         </rosparam>
     </node>
 
