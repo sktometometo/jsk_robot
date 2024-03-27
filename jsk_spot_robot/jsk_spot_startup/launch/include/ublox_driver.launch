@@ -18,11 +18,11 @@
   </node>
 
   <include
-      file="$(arg gps_map_visualizer)/launch/demo.launch"
+      file="$(find gps_map_visualizer)/launch/demo.launch"
       >
       <arg name="launch_device_driver" value="false" />
       <arg name="nav_sat_fix_topic" value="/ublox/fix" />
-      <arg name="gui" value-"false" />
+      <arg name="gui" value="false" />
       <arg name="target_gps_frame" value="body" />
       <arg name="parent_of_gps_frame_id" value="vision" />
   </include>
