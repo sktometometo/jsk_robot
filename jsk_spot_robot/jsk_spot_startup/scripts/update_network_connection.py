@@ -47,7 +47,7 @@ def set_profile_metric(profile: Optional[str], metric: int) -> bool:
         logger.info(f"Set metric {metric} to profile {profile} and device {device}")
         return True
     else:
-        logger.warning(f"Failed to set metric {metric} to profile {profile} and device {device}. ret={ret_nm}, {ret_ifmetric")
+        logger.warning(f"Failed to set metric {metric} to profile {profile} and device {device}. ret={ret_nm}, {ret_ifmetric}")
         return False
 
 
