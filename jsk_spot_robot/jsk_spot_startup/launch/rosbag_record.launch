@@ -144,6 +144,11 @@
             /spot_recognition/rects
             /ublox/fix
             /ublox/fix_velocity
+            /gps_map/map
+            /gps_map/map_meta_data
+            /history_marker
+            /sdpuwb_devices
+            /sdpuwb_marker
             /smart_device_protocol/recv
             /smart_device_protocol/send
             /smart_device_protocol/uwb
