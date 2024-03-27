@@ -29,9 +29,7 @@ def get_interface_from_profile(profile: str) -> Optional[str]:
     Returns:
         Optional[str]: The network interface name. If the profile is not found, return None.
     """
-    ret = os.popen(
-        f"nmcli connection show {profile} | grep connection.interface-name"
-    ).read()
+    ret = os.popen(f"nmcli connection show {profile} | grep GENERAL.DEVICES").read()
     if not ret or len(ret) == 0:
         return None
     return ret.replace("\n", "").split()[1]
@@ -47,7 +45,9 @@ def set_profile_metric(profile: Optional[str], metric: int) -> bool:
         logger.info(f"Set metric {metric} to profile {profile} and device {device}")
         return True
     else:
-        logger.warning(f"Failed to set metric {metric} to profile {profile} and device {device}. ret={ret_nm}, {ret_ifmetric}")
+        logger.warning(
+            f"Failed to set metric {metric} to profile {profile} and device {device}. ret={ret_nm}, {ret_ifmetric}"
+        )
         return False
 
 
@@ -169,7 +169,9 @@ class NetworkConnectionManager:
                 )
                 continue
             else:
-                logger.error(f"Network connection with {default_route_interface} is down.")
+                logger.error(
+                    f"Network connection with {default_route_interface} is down."
+                )
                 if default_route_interface == self.ethernet_device:
                     self.initialize_connection(initialize_ethernet=False)
                 elif default_route_interface == self.wifi_device:
