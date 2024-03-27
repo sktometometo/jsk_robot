@@ -12,7 +12,12 @@ logger = logging.getLogger(__name__)
 def restart_profile(profile: str) -> bool:
     os.system(f"nmcli c down {profile}")
     ret = os.system(f"nmcli c up {profile}")
-    return ret == 0
+    if ret == 0:
+        logger.info(f"Restarted profile {profile}")
+        return True
+    else:
+        logger.warning(f"Failed to restart profile {profile}. ret={ret}")
+        return False
 
 
 def get_interface_from_profile(profile: str) -> Optional[str]:
@@ -35,10 +40,14 @@ def get_interface_from_profile(profile: str) -> Optional[str]:
 def set_profile_metric(profile: Optional[str], metric: int) -> bool:
     if profile is None:
         return False
-    ret = os.system(f"nmcli connection modify {profile} ipv4.route-metric {metric}")
-    if ret == 0:
-        return restart_profile(profile)
+    device = get_interface_from_profile(profile)
+    ret_nm = os.system(f"nmcli connection modify {profile} ipv4.route-metric {metric}")
+    ret_ifmetric = os.system(f"ifmetric {device} {metric}")
+    if ret_nm == 0 and ret_ifmetric == 0:
+        logger.info(f"Set metric {metric} to profile {profile} and device {device}")
+        return True
     else:
+        logger.warning(f"Failed to set metric {metric} to profile {profile} and device {device}. ret={ret_nm}, {ret_ifmetric")
         return False
 
 
@@ -142,7 +151,12 @@ class NetworkConnectionManager:
         set_profile_metric(self.wifi_profile, 600)
         set_profile_metric(self.lte_profile, 90)
 
-    def spin(self, interval: float = 5.0):
+    def spin(
+        self,
+        interval: float = 5.0,
+        interval_for_wifi_check: float = 10.0,
+        interval_for_ethernet_check: float = 20.0,
+    ):
 
         while True:
             time.sleep(interval)
@@ -150,17 +164,20 @@ class NetworkConnectionManager:
                 get_default_route_interface()
             )
             if check_network_connection_with_interface(default_route_interface):
-                logger.debug(f"Network connection with {default_route_interface} is valid.")
+                logger.debug(
+                    f"Network connection with {default_route_interface} is valid."
+                )
                 continue
-            logger.error(f"Network connection with {default_route_interface} is down.")
-            if default_route_interface == self.ethernet_device:
-                self.initialize_connection(initialize_ethernet=False)
-            elif default_route_interface == self.wifi_device:
-                self.initialize_connection(initialize_wifi=False)
-            elif default_route_interface == self.lte_device:
-                self.initialize_connection(initialize_lte=False)
             else:
-                self.initialize_connection()
+                logger.error(f"Network connection with {default_route_interface} is down.")
+                if default_route_interface == self.ethernet_device:
+                    self.initialize_connection(initialize_ethernet=False)
+                elif default_route_interface == self.wifi_device:
+                    self.initialize_connection(initialize_wifi=False)
+                elif default_route_interface == self.lte_device:
+                    self.initialize_connection(initialize_lte=False)
+                else:
+                    self.initialize_connection()
 
 
 if __name__ == "__main__":
