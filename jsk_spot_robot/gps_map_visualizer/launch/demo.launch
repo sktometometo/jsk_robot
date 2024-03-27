@@ -12,7 +12,7 @@
     <include
         file="$(find ublox_gps)/launch/ublox_device.launch"
         if="$(arg launch_device_driver)"
-        >
+    >
         <arg name="param_file_name" value="$(arg device_type)" />
     </include>
 
@@ -20,6 +20,7 @@
         pkg="gps_map_visualizer"
         type="gps_transform_publisher.py"
         name="gps_transform_publisher"
+        output="screen"
     >
         <remap from="~nav_sat_fix" to="$(arg nav_sat_fix_topic)" />
 
@@ -37,48 +38,6 @@
     <!-- 
         TF frames for hongo each elements
     -->
-    <node pkg="tf2_ros" type="static_transform_publisher"
-        name="$(anon yasuda)"
-        args="0 0 0 0 0 0 /world /yasuda" />
-
-    <node pkg="gps_map_visualizer"
-        type="geographic_static_transform_publisher.py"
-        name="$(anon tf_hongo_main_gate)">
-        <rosparam subst_value="true">
-            reference_world_frame_id: yasuda
-            reference_latitude: 35.713537979438996
-            reference_longitude: 139.762305151285
-            target_world_frame_id: hongo_main_gate
-            target_latitude: 35.712995049681204
-            target_longitude: 139.75967053364684
-        </rosparam>
-    </node>
-
-    <node
-        pkg="gps_map_visualizer" type="geographic_static_transform_publisher.py"
-        name="$(anon eng2_tfA_raw)">
-        <rosparam subst_value="true">
-            reference_world_frame_id: yasuda
-            reference_latitude: 35.713537979438996
-            reference_longitude: 139.762305151285
-            target_world_frame_id: eng2
-            target_latitude: 35.71443022192967
-            target_longitude: 139.7615547854118
-        </rosparam>
-    </node>
-
-    <node
-        pkg="gps_map_visualizer" type="geographic_static_transform_publisher.py"
-        name="$(anon eng8_tfA_raw)">
-        <rosparam subst_value="true">
-            reference_world_frame_id: yasuda
-            reference_latitude: 35.713537979438996
-            reference_longitude: 139.762305151285
-            target_world_frame_id: eng8
-            target_latitude: 35.71470007319424
-            target_longitude: 139.760512685666
-        </rosparam>
-    </node>
 
     <!--
         Map image publisher

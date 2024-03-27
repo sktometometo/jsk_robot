@@ -3,21 +3,21 @@
 
   <!-- gps -->
   <node
-      pkg="ublox_gps"
-      type="ublox_gps"
-      name="ublox"
-      output="screen"
-      clear_params="true"
-      respawn="false"
-      respawn_delay="30">
+    pkg="ublox_gps"
+    type="ublox_gps"
+    name="ublox"
+    output="screen"
+    clear_params="true"
+    respawn="false"
+    respawn_delay="30">
     <rosparam subst_value="true">
-        device: $(arg device_ublox)
-        frame_id: gps
+      device: $(arg device_ublox)
+      frame_id: gps
     </rosparam>
-    <rosparam command="load" file="$(find jsk_spot_startup)/config/ublox_config.yaml"/>
+    <rosparam command="load" file="$(find jsk_spot_startup)/config/ublox_config.yaml" />
   </node>
 
-  <include
+  <!-- <include
       file="$(find gps_map_visualizer)/launch/demo.launch"
       >
       <arg name="launch_device_driver" value="false" />
@@ -25,5 +25,5 @@
       <arg name="gui" value="false" />
       <arg name="target_gps_frame" value="body" />
       <arg name="parent_of_gps_frame_id" value="vision" />
-  </include>
+  </include> -->
 </launch>

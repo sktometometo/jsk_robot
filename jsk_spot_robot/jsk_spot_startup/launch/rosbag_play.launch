@@ -15,19 +15,20 @@
     <include
         file="$(find jsk_spot_startup)/launch/rviz.launch"
         if="$(arg gui)"
-        />
+    />
 
     <param name="/use_sim_time" value="true" />
 
     <param
         name="robot_description"
         command="$(find xacro)/xacro $(find spot_description)/urdf/spot.urdf.xacro --inorder"
-        />
-    <node
+    />
+
+    <!-- <node
         name="robot_state_publisher"
         pkg="robot_state_publisher"
         type="robot_state_publisher"
-        />
+        /> -->
 
     <node
         pkg="rosbag"
@@ -36,26 +37,26 @@
         args="$(arg rosbag) $(arg loop_flag) --clock --start $(arg start_time) $(arg duration)"
         launch-prefix="xterm -e"
         unless="$(arg skip_rosbag)"
-        />
+    />
     <node
         pkg="jsk_spot_startup"
         type="static_tf_republisher.py"
         name="static_tf_republisher"
         args="$(arg rosbag)"
-        />
+    />
 
     <!-- image decompression -->
     <include
-	file="$(find jsk_spot_startup)/launch/include/decompression.launch"
-	if="$(arg use_decompress)"
-	/>
+        file="$(find jsk_spot_startup)/launch/include/decompression.launch"
+        if="$(arg use_decompress)"
+    />
 
     <!-- Create object detection visuzaliation image and comress it -->
     <node
         pkg="jsk_perception"
         type="draw_rects"
         name="object_detection_visualizer"
-        >
+    >
         <remap from="~input" to="/dual_fisheye_to_panorama/output" />
         <remap from="~input/rects" to="/spot_recognition/rects" />
         <remap from="~input/class" to="/spot_recognition/class" />
@@ -66,5 +67,5 @@
         type="republish"
         name="detection_visualization_compress"
         args="raw in:=/spot_recognition/object_detection_image compressed out:=/spot_recognition/object_detection_image"
-        />
+    />
 </launch>
