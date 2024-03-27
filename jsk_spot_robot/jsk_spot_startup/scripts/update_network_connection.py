@@ -184,7 +184,7 @@ class NetworkConnectionManager:
 
     def spin(
         self,
-        interval: float = 5.0,
+        interval: float = 1.0,
         interval_for_wifi_check: float = 10.0,
         interval_for_ethernet_check: float = 10.0,
     ):
@@ -213,10 +213,13 @@ class NetworkConnectionManager:
                         and default_route_interface != self.wifi_device
                     )
                     and (
-                        self.ethernet_profile is not None
-                        and self.ethernet_device is not None
-                        and exist_interface(self.ethernet_device)
-                        and default_route_interface != self.ethernet_device
+                        self.ethernet_profile is None
+                        or (
+                            self.ethernet_profile is not None
+                            and self.ethernet_device is not None
+                            and exist_interface(self.ethernet_device)
+                            and default_route_interface != self.ethernet_device
+                        )
                     )
                 ):
                     logger.error(
@@ -225,8 +228,7 @@ class NetworkConnectionManager:
                     last_time_wifi_checked = time.time()
                     if not self.connect_to_wifi():
                         self.connect_to_lte()
-
-                if (
+                elif (
                     time.time()
                     > last_time_ethernet_checked + interval_for_ethernet_check
                     and self.ethernet_profile is not None
@@ -242,6 +244,10 @@ class NetworkConnectionManager:
                         last_time_wifi_checked = time.time()
                         if not self.connect_to_wifi():
                             self.connect_to_lte()
+                else:
+                    logger.info("running. current interface: {}".format(default_route_interface))
+                    logger.info("last_time_wifi_checked: {}".format(last_time_wifi_checked))
+                    logger.info("last_time_ethernet_checked: {}".format(last_time_ethernet_checked))
 
 
 if __name__ == "__main__":
