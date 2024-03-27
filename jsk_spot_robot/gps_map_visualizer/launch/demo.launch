@@ -29,7 +29,7 @@
             reference_longitude: 139.762305151285
             initial_latitude: 35.71443022192967
             initial_longitude: 139.7615547854118
-            gps_frame_id: $(arg gps_frame_id)
+            gps_frame_id: $(arg target_gps_frame)
             parent_of_gps_frame_id: $(arg parent_of_gps_frame_id)
         </rosparam>
     </node>
