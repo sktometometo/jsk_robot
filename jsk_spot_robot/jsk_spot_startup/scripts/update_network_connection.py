@@ -222,9 +222,8 @@ class NetworkConnectionManager:
                     logger.error(
                         "Default connection is not Wi-Fi (nor ethernet). Retrying Wi-Fi connection..."
                     )
-                    if self.connect_to_wifi():
-                        last_time_wifi_checked = time.time()
-                    else:
+                    last_time_wifi_checked = time.time()
+                    if not self.connect_to_wifi():
                         self.connect_to_lte()
 
                 if (
@@ -238,12 +237,10 @@ class NetworkConnectionManager:
                     logger.error(
                         "Default connection is not Ethernet. Retrying Ethernet connection..."
                     )
-                    if self.connect_to_ethernet():
-                        last_time_ethernet_checked = time.time()
-                    else:
-                        if self.connect_to_wifi():
-                            last_time_wifi_checked = time.time()
-                        else:
+                    last_time_ethernet_checked = time.time()
+                    if not self.connect_to_ethernet():
+                        last_time_wifi_checked = time.time()
+                        if not self.connect_to_wifi():
                             self.connect_to_lte()
 
 
