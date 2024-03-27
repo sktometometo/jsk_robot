@@ -9,6 +9,11 @@ from typing import Optional, Tuple
 logger = logging.getLogger(__name__)
 
 
+def exist_interface(interface: str) -> bool:
+    ret = os.system(f"nmcli d show {interface} > /dev/null 2>&1")
+    return ret == 0
+
+
 def restart_profile(profile: str) -> bool:
     os.system(f"nmcli c down {profile}")
     ret = os.system(f"nmcli c up {profile}")
@@ -122,64 +127,124 @@ class NetworkConnectionManager:
         initialize_lte: bool = True,
     ):
         if initialize_lte and self.lte_profile is not None:
-            if restart_profile(self.lte_profile):
-                if check_network_connection_with_profile(self.lte_profile):
-                    self.connect_to_lte()
+            if not self.connect_to_lte():
+                logger.error("Failed to connect to LTE.")
+                logger.error("Please check the LTE connection.")
+                return
 
         if initialize_wifi and self.wifi_profile is not None:
-            if restart_profile(self.wifi_profile):
-                if check_network_connection_with_profile(self.wifi_profile):
-                    self.connect_to_wifi()
+            if not self.connect_to_wifi():
+                logger.error("Failed to connect to Wi-Fi.")
+                logger.error("Please check the Wi-Fi connection.")
+                self.connect_to_lte()
+                return
 
         if initialize_ethernet and self.ethernet_profile is not None:
-            if restart_profile(self.ethernet_profile):
-                if check_network_connection_with_profile(self.ethernet_profile):
-                    self.connect_to_ethernet()
+            if not self.connect_to_ethernet():
+                logger.error("Failed to connect to Ethernet.")
+                logger.error("Please check the Ethernet connection.")
+                self.connect_to_wifi()
+                return
 
-    def connect_to_ethernet(self):
+    def connect_to_ethernet(self) -> bool:
+        if self.ethernet_profile is None:
+            return False
         set_profile_metric(self.ethernet_profile, 90)
         set_profile_metric(self.wifi_profile, 600)
         set_profile_metric(self.lte_profile, 600)
+        restart_profile(self.ethernet_profile)
+        if check_network_connection_with_profile(self.ethernet_profile):
+            return True
+        else:
+            return False
 
-    def connect_to_wifi(self):
+    def connect_to_wifi(self) -> bool:
+        if self.wifi_profile is None:
+            return False
         set_profile_metric(self.ethernet_profile, 600)
         set_profile_metric(self.wifi_profile, 90)
         set_profile_metric(self.lte_profile, 600)
+        restart_profile(self.wifi_profile)
+        if check_network_connection_with_profile(self.wifi_profile):
+            return True
+        else:
+            return False
 
-    def connect_to_lte(self):
+    def connect_to_lte(self) -> bool:
+        if self.lte_profile is None:
+            return False
         set_profile_metric(self.ethernet_profile, 600)
         set_profile_metric(self.wifi_profile, 600)
         set_profile_metric(self.lte_profile, 90)
+        restart_profile(self.lte_profile)
+        if check_network_connection_with_profile(self.lte_profile):
+            return True
+        else:
+            return False
 
     def spin(
         self,
         interval: float = 5.0,
         interval_for_wifi_check: float = 10.0,
-        interval_for_ethernet_check: float = 20.0,
+        interval_for_ethernet_check: float = 10.0,
     ):
 
+        last_time_wifi_checked = time.time()
+        last_time_ethernet_checked = time.time()
         while True:
             time.sleep(interval)
             default_route_interface, default_route_metric = (
                 get_default_route_interface()
             )
-            if check_network_connection_with_interface(default_route_interface):
-                logger.debug(
-                    f"Network connection with {default_route_interface} is valid."
-                )
-                continue
-            else:
+            if not check_network_connection_with_interface(default_route_interface):
                 logger.error(
                     f"Network connection with {default_route_interface} is down."
                 )
-                if default_route_interface == self.ethernet_device:
-                    self.initialize_connection(initialize_ethernet=False)
-                elif default_route_interface == self.wifi_device:
-                    self.initialize_connection(initialize_wifi=False)
-                elif default_route_interface == self.lte_device:
-                    self.initialize_connection(initialize_lte=False)
-                else:
-                    self.initialize_connection()
+                self.initialize_connection()
+                last_time_wifi_checked = time.time()
+                last_time_ethernet_checked = time.time()
+                continue
+            else:
+                if time.time() > last_time_wifi_checked + interval_for_wifi_check and (
+                    (
+                        self.wifi_profile is not None
+                        and self.wifi_device is not None
+                        and exist_interface(self.wifi_device)
+                        and default_route_interface != self.wifi_device
+                    )
+                    and (
+                        self.ethernet_profile is not None
+                        and self.ethernet_device is not None
+                        and exist_interface(self.ethernet_device)
+                        and default_route_interface != self.ethernet_device
+                    )
+                ):
+                    logger.error(
+                        "Default connection is not Wi-Fi (nor ethernet). Retrying Wi-Fi connection..."
+                    )
+                    if self.connect_to_wifi():
+                        last_time_wifi_checked = time.time()
+                    else:
+                        self.connect_to_lte()
+
+                if (
+                    time.time()
+                    > last_time_ethernet_checked + interval_for_ethernet_check
+                    and self.ethernet_profile is not None
+                    and self.ethernet_device is not None
+                    and exist_interface(self.ethernet_device)
+                    and default_route_interface != self.ethernet_device
+                ):
+                    logger.error(
+                        "Default connection is not Ethernet. Retrying Ethernet connection..."
+                    )
+                    if self.connect_to_ethernet():
+                        last_time_ethernet_checked = time.time()
+                    else:
+                        if self.connect_to_wifi():
+                            last_time_wifi_checked = time.time()
+                        else:
+                            self.connect_to_lte()
 
 
 if __name__ == "__main__":
