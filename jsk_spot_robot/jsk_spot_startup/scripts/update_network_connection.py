@@ -246,8 +246,6 @@ class NetworkConnectionManager:
                             self.connect_to_lte()
                 else:
                     logger.info("running. current interface: {}".format(default_route_interface))
-                    logger.info("last_time_wifi_checked: {}".format(last_time_wifi_checked))
-                    logger.info("last_time_ethernet_checked: {}".format(last_time_ethernet_checked))
 
 
 if __name__ == "__main__":
