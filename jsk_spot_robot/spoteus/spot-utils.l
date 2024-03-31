@@ -149,4 +149,24 @@ Example:
             :root-link-virtual-joint-weight root-link-virtual-joint-weight
             args)
         (send body_lk :dissoc body-coords))))
+  (:convert-odom-coords
+    (coords-on-robot)
+    (let ((coords-from-odom-robot (ros::tf-pose->coords
+                                    (send (send *ri* :state :odom) :pose)))
+          )
+      (transform-coords
+        coords-from-odom-robot
+        coords-on-robot
+        )
+      ))
+  (:convert-robot-coords
+    (coords-on-odom)
+    (let ((coords-from-odom-robot (ros::tf-pose->coords
+                                    (send (send *ri* :state :odom) :pose)))
+          )
+      (transform-coords
+        (send coords-from-odom-robot :inverse-transformation)
+        coords-on-odom
+        )
+      ))
   )
