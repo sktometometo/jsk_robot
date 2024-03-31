@@ -55,27 +55,36 @@
    (&rest args)
    (unless args (setq args (list nil)))
    (case (car args)
-	 (:end-coords
-	  (user::forward-message-to (send self :get :head-end-coords) (cdr args)))
-	 (:look-at
-	  (let ((target-coords
-		 (orient-coords-to-axis ;; orient target-coords to look-at direction
-		  (make-coords :pos (cadr args))
-		  (v- (cadr args) (send self :head :end-coords :worldpos))))
-		(head-coords (send self :head :end-coords :copy-worldcoords)))
-	    ;; align target-coords x (image-y) direction to head direction
-	    (send target-coords :rotate
-		  (acos (v. (send target-coords :axis :x)
-			    (send head-coords :axis :x))) :z)
-	    (send* self :head :inverse-kinematics target-coords
-		   :move-target (send self :head :end-coords)
-		   :rotation-axis t
-		   :translation-axis nil
-		   :target-coords target-coords ;; for debug-view
-		   (cddr args))))
-	  ;;(send* self :inverse-kinematics-loop-for-look-at :head (cdr args)))
-	 (t
-	  (send* self :limb :arm args))))
+     (:end-coords
+      (user::forward-message-to (send self :get :head-end-coords) (cdr args)))
+     (:look-at
+      (let* (target-coords
+             (target-pos (cadr args))
+             (head-coords (send self :head :end-coords :copy-worldcoords))
+             (target-z-axis
+              (v- target-pos (send head-coords :worldpos)))
+             (target-y-axis
+              (v* target-z-axis #f(0 0 -1)))
+             )
+        (setq target-coords
+              (orient-coords-to-axis
+               (make-coords :pos target-pos)
+               target-z-axis
+               :z))
+        (setq target-coords
+              (orient-coords-to-axis
+               target-coords
+               target-y-axis
+               :y))
+        (send* self :head :inverse-kinematics target-coords
+               :move-target (send self :head :end-coords)
+               :rotation-axis t
+               :translation-axis :z
+               :target-coords target-coords ;; for debug-view
+               (cddr args))))
+     ;;(send* self :inverse-kinematics-loop-for-look-at :head (cdr args)))
+     (t
+      (send* self :limb :arm args))))
   (:legs ;; support legs for all limbs
    (&rest args)
    (case (car args)
