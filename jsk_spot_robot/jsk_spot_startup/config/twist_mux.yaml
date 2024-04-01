@@ -10,4 +10,8 @@ topics:
   topic   : joy_head/cmd_vel
   timeout : 0.5
   priority: 7
+- name    : demo
+  topic   : demo_input/cmd_vel
+  timeout : 0.5
+  priority: 5
 locks: []

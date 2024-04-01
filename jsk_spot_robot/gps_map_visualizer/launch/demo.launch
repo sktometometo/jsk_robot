@@ -2,6 +2,8 @@
     <arg name="launch_device_driver" default="true" />
     <arg name="device_type" default="nmea" />
 
+    <arg name="use_odom" default="false" />
+
     <arg name="nav_sat_fix_topic" default="/ublox/fix" />
     <arg name="odom_topic" default="/odom" />
 
@@ -10,7 +12,7 @@
     <arg name="publish_map" default="true" />
 
     <arg name="base_frame_id" default="gps" />
-    <arg name="parent_of_gps_frame_id" default="None" />
+    <arg name="odom_frame_id" default="vision" />
 
     <include
         file="$(find ublox_gps)/launch/ublox_device.launch"
@@ -24,6 +26,25 @@
         type="gps_transform_publisher.py"
         name="gps_transform_publisher"
         output="screen"
+        unless="$(arg use_odom)"
+    >
+        <remap from="~nav_sat_fix" to="$(arg nav_sat_fix_topic)" />
+
+        <rosparam subst_value="true">
+            reference_world_frame_id: yasuda
+            reference_latitude: 35.713537979438996
+            reference_longitude: 139.762305151285
+            reference_altitude: 17.2
+            base_frame_id: $(arg base_frame_id)
+        </rosparam>
+    </node>
+
+    <node
+        pkg="gps_map_visualizer"
+        type="gps_odom_alignment.py"
+        name="gps_odom_alignment"
+        output="screen"
+        if="$(arg use_odom)"
     >
         <remap from="~nav_sat_fix" to="$(arg nav_sat_fix_topic)" />
         <remap from="~odom" to="$(arg odom_topic)" />
@@ -32,6 +53,9 @@
             reference_world_frame_id: yasuda
             reference_latitude: 35.713537979438996
             reference_longitude: 139.762305151285
+            reference_altitude: 17.2
+            base_frame_id: $(arg base_frame_id)
+            odom_frame_id: $(arg odom_frame_id)
         </rosparam>
     </node>
 
@@ -49,9 +73,11 @@
             reference_world_frame_id: yasuda
             reference_latitude: 35.713537979438996
             reference_longitude: 139.762305151285
+            reference_altitude: 17.2
             target_world_frame_id: hongo_main_gate
             target_latitude: 35.712995049681204
             target_longitude: 139.75967053364684
+            target_altitude: 23.2
         </rosparam>
     </node>
 
@@ -62,9 +88,11 @@
             reference_world_frame_id: yasuda
             reference_latitude: 35.713537979438996
             reference_longitude: 139.762305151285
+            reference_altitude: 17.2
             target_world_frame_id: eng2
             target_latitude: 35.71443022192967
             target_longitude: 139.7615547854118
+            target_altitude: 19.5
         </rosparam>
     </node>
 
@@ -75,9 +103,11 @@
             reference_world_frame_id: yasuda
             reference_latitude: 35.713537979438996
             reference_longitude: 139.762305151285
+            reference_altitude: 17.2
             target_world_frame_id: eng8
             target_latitude: 35.71470007319424
             target_longitude: 139.760512685666
+            target_altitude: 23.5
         </rosparam>
     </node>
 
@@ -96,8 +126,9 @@
             anchor_world_frame: yasuda
             anchor_latitude: 35.713537979438996
             anchor_longitude: 139.762305151285
-            target_frame: $(arg base_frame_id)
-            map_image_frame: $(arg base_frame_id)_map
+            anchor_altitude: 17.2
+            target_frame: yasuda
+            map_image_frame: yasuda_map
         </rosparam>
     </node>
 
