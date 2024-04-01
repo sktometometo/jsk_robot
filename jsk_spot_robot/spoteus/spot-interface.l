@@ -61,7 +61,7 @@
   (:init
    (&rest args &key (trajectory-cmd-action-name "/spot/trajectory") &allow-other-keys)
    (prog1
-       (send-super* :init :robot spot-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
+       (send-super* :init :robot spot-robot :base-frame-id "base_link" :odom-topic "/spot/odometry" :base-controller-action-name nil args)
      ;; check if spot_ros/driver.launch started
      (unless (or (send self :simulation-modep) (ros::wait-for-service "/spot/claim" 5))
        (ros::ros-error "could not communicate with robot, may be forget to roslaunch spot_driver driver.launch, or did not power on the robot"))
