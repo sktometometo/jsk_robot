@@ -16,6 +16,8 @@
   <build_depend>roslint</build_depend>
 
   <exec_depend>app_manager</exec_depend>
+  <exec_depend>actionlib_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>app_scheduler</exec_depend>
   <exec_depend>aques_talk</exec_depend>
   <exec_depend>audio_capture</exec_depend>

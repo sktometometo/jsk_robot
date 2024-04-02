@@ -1,7 +1,25 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_spot_startup)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+    genmsg
+    actionlib_msgs
+    geometry_msgs
+)
+
+
+catkin_python_setup()
+
+
+add_action_files(DIRECTORY action
+    FILES
+    LookAt.action
+)
+
+generate_messages(DEPENDENCIES
+    actionlib_msgs
+    geometry_msgs
+)
 
 
 ###################################
