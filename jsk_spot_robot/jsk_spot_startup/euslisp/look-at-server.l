@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env roseus
 
 (load "package://spoteus/spot-interface.l")
 (load "package://ros_lock/euslisp/ros_lock.l")
@@ -7,7 +7,7 @@
 
 
 (setq *odom-coords-to-body* nil)
-(setq *odom-frame-id* nil
+(setq *odom-frame-id* nil)
 
 
 (defun callback-odom (msg)
@@ -27,7 +27,8 @@
       (ros::ros-error "Odom not initialized")
       (return-from execute-cb nil))
       )
-  (let* ((target-frame-id (send goal :goal :target_point :header :frame_id))
+  (let* (ret
+         (target-frame-id (send goal :goal :target_point :header :frame_id))
          (coords-from-odom-to-goal-frame
            (send *tfl* :lookup-transform
                  *odom-frame-id*
@@ -42,11 +43,26 @@
                :pos (ros::tf-point->pos (send goal :goal :target_point :point)))))
          msg-result)
     (send *spot* :angle-vector (send *ri* :state :potentio-vector))
-    (send *spot* :head :look-at target-coords-from-robot)
-    (send *ri* :angle-vector (send *spot* :angle-vector 1000))
-    (send *ri* :wait-interpolation)
-    (setq msg-result (send server :result))
-    (send server :set-succeeded msg-result)
+    (send *spot* :reset-pose)
+    (send *spot* :arm :inverse-kinematics
+          (send (send (send *spot* :arm :end-coords) :copy-worldcoords) :translate #f(0 0 200)))
+    (if (send *spot* :head :look-at (send target-coords-from-robot :pos))
+      (setq ret t)
+      (setq ret nil))
+    (if ret
+      (progn
+        (send *ri* :angle-vector (send *spot* :angle-vector) 1000)
+        (send *ri* :wait-interpolation)
+        (setq msg-result (send server :result))
+        (send msg-result :result :success t)
+        (send server :set-succeeded msg-result)
+        )
+      (progn
+        (ros::ros-error "IK Failed....")
+        (setq msg-result (send server :result))
+        (send msg-result :result :success nil)
+        (send server :set-succeeded msg-result)
+        ))
     ))
 
 (defun main ()
