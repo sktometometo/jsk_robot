@@ -558,18 +558,21 @@
      (instance geometry_msgs::quaternion :init :x qx :y qy :z qz :w qw)))
   )
 
-(defun spot-init (&optional (create-viewer))
+(defun spot-init (&optional (create-viewer) &key (auto-start t))
   (unless (boundp '*spot*) (spot) (send *spot* :reset-pose))
   (unless (ros::ok) (ros::roseus "spot_eus_interface"))
   (unless (boundp '*ri*) (setq *ri* (instance spot-interface :init)))
 
   (ros::spin-once)
   (send *ri* :spin-once)
-  (send *ri* :claim)
-  (while (member (send *ri* :state :power-state-motor-power-state) (list 'off nil))
-    (unix::sleep 1)
-    (ros::ros-info "powering on...")
-    (send *ri* :power-on))
+  (if auto-start
+    (progn
+      (send *ri* :claim)
+      (while (member (send *ri* :state :power-state-motor-power-state) (list 'off nil))
+        (unix::sleep 1)
+        (ros::ros-info "powering on...")
+        (send *ri* :power-on))
+      ))
   ;;
   (unless (every #'(lambda (x) (eq x 'made)) (mapcar #'(lambda (x) (cdr (assoc :contact x))) (send *ri* :state :feet)))
       (ros::ros-info "run (send *ri* :stand) to stand the robot"))
