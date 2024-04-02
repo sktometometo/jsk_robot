@@ -558,7 +558,7 @@
      (instance geometry_msgs::quaternion :init :x qx :y qy :z qz :w qw)))
   )
 
-(defun spot-init (&optional (create-viewer) &key (auto-start t))
+(defun spot-init (&key (create-viewer nil) (auto-start t))
   (unless (boundp '*spot*) (spot) (send *spot* :reset-pose))
   (unless (ros::ok) (ros::roseus "spot_eus_interface"))
   (unless (boundp '*ri*) (setq *ri* (instance spot-interface :init)))
