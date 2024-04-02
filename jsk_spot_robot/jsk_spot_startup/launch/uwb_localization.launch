@@ -6,6 +6,8 @@
         name="device_localization_node"
         output="screen"
         >
+        <remap from="markers_history" to="markers_history_2" />
+        <remap from="markers_devices" to="markers_devices_2" />
         <rosparam subst_value="true">
             frame_id_fixed: $(arg frame_id_fixed)
             frame_id_uwb_tag: insta360_link
