@@ -5,22 +5,28 @@ from typing import Union, List, Tuple, Optional
 import numpy as np
 
 from jsk_spot_startup.msg import LookAtAction, LookAtGoal
-from geometry_msgs.msg import PointStamped
+from geometry_msgs.msg import PointStamped, Point
 
 
 class SpotLookAtClient:
 
-     def __init__(self):
+    def __init__(self):
 
-         self._ac = actionlib.SimpleActionClient(
+        self._ac = actionlib.SimpleActionClient(
                  "/spot_look_at",
-                 LookAtGoal)
+                 LookAtAction,
+                 )
 
     def look_at(self,
                 target_point: Union[PointStamped, Point, List, np.ndarray],
                 target_frame_id: str = "body",
-                timeout: Optional[float] = None
+                timeout: Optional[float] = None,
                 ):
+        """Look at
+
+        Args:
+            target_point: unit is meter
+        """
 
         if isinstance(target_point, PointStamped):
             goal = LookAtGoal()
