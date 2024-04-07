@@ -148,6 +148,8 @@ class SpotRosClient:
                  servicename_dock='/spot/dock',
                  servicename_undock='/spot/undock',
                  servicename_reset_current_node='/spot_behavior_manager_server/reset_current_node_id',
+                 servicename_stow_arm='/spot/stow_arm',
+                 servicename_unstow_arm='/spot/unstow_arm',
                  actionname_navigate_to='/spot/navigate_to',
                  actionname_trajectory='/spot/trajectory',
                  actionname_execute_behaviors='/spot_behavior_manager_server/execute_behaviors',
@@ -198,6 +200,8 @@ class SpotRosClient:
             rospy.wait_for_service(servicename_dock, rospy.Duration(5))
             rospy.wait_for_service(servicename_undock, rospy.Duration(5))
             rospy.wait_for_service(servicename_reset_current_node, rospy.Duration(5))
+            rospy.wait_for_service(servicename_stow_arm, rospy.Duration(5))
+            rospy.wait_for_service(servicename_unstow_arm, rospy.Duration(5))
         except rospy.ROSException as e:
             rospy.logerr('Service unavaliable: {}'.format(e))
 
@@ -277,6 +281,14 @@ class SpotRosClient:
         self._srv_client_reset_current_node = rospy.ServiceProxy(
             servicename_reset_current_node,
             ResetCurrentNode
+        )
+        self._srv_client_stow = rospy.ServiceProxy(
+            servicename_stow_arm,
+            Trigger
+        )
+        self._srv_client_unstow = rospy.ServiceProxy(
+            servicename_unstow_arm,
+            Trigger
         )
 
         rospy.loginfo("Service initialization done.")
@@ -566,6 +578,16 @@ class SpotRosClient:
         req = ResetCurrentNodeRequest()
         req.current_node_id = node
         res = self._srv_client_reset_current_node(req)
+        return res.success
+
+    def stow_arm(self):
+        req = TriggerRequest()
+        res = self._srv_client_stow(req)
+        return res.success
+
+    def unstow_arm(self):
+        req = TriggerRequest()
+        res = self._srv_client_unstow(req)
         return res.success
 
     def list_nodes(self):
