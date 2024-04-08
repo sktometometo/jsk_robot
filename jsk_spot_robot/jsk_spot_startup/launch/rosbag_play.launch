@@ -24,12 +24,6 @@
         command="$(find xacro)/xacro $(find spot_description)/urdf/spot.urdf.xacro --inorder"
     />
 
-    <!-- <node
-        name="robot_state_publisher"
-        pkg="robot_state_publisher"
-        type="robot_state_publisher"
-        /> -->
-
     <node
         pkg="rosbag"
         type="play"
@@ -41,7 +35,7 @@
     <node
         pkg="jsk_spot_startup"
         type="static_tf_republisher.py"
-        name="static_tf_republisher"
+        name="$(anon static_tf_republisher)"
         args="$(arg rosbag)"
     />
 
@@ -62,10 +56,4 @@
         <remap from="~input/class" to="/spot_recognition/class" />
         <remap from="~output" to="/spot_recognition/object_detection_image" />
     </node>
-    <node
-        pkg="image_transport"
-        type="republish"
-        name="detection_visualization_compress"
-        args="raw in:=/spot_recognition/object_detection_image compressed out:=/spot_recognition/object_detection_image"
-    />
 </launch>

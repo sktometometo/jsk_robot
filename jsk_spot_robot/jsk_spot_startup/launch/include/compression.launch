@@ -2,80 +2,86 @@
   <node
       pkg="image_transport"
       type="republish"
-      name="back_camera_compress_internal_node"
+      name="$(anon back_camera_compress_internal_node)"
       args="raw in:=/spot/camera/back/image compressed out:=/spot/camera/back/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="frontleft_camera_compress_internal_node"
+      name="$(anon frontleft_camera_compress_internal_node)"
       args="raw in:=/spot/camera/frontleft/image compressed out:=/spot/camera/frontleft/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="frontright_camera_compress_internal_node"
+      name="$(anon frontright_camera_compress_internal_node)"
       args="raw in:=/spot/camera/frontright/image compressed out:=/spot/camera/frontright/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="left_camera_compress_internal_node"
+      name="$(anon left_camera_compress_internal_node)"
       args="raw in:=/spot/camera/left/image compressed out:=/spot/camera/left/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="right_camera_compress_internal_node"
+      name="$(anon right_camera_compress_internal_node)"
       args="raw in:=/spot/camera/right/image compressed out:=/spot/camera/right/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="back_depth_compress_internal_node"
+      name="$(anon back_depth_compress_internal_node)"
       args="raw in:=/spot/depth_registered/back/image zdepth out:=/spot/depth_registered/back/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="frontleft_depth_compress_internal_node"
+      name="$(anon frontleft_depth_compress_internal_node)"
       args="raw in:=/spot/depth_registered/frontleft/image zdepth out:=/spot/depth_registered/frontleft/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="frontright_depth_compress_internal_node"
+      name="$(anon frontright_depth_compress_internal_node)"
       args="raw in:=/spot/depth_registered/frontright/image zdepth out:=/spot/depth_registered/frontright/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="left_depth_compress_internal_node"
+      name="$(anon left_depth_compress_internal_node)"
       args="raw in:=/spot/depth_registered/left/image zdepth out:=/spot/depth_registered/left/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="right_depth_compress_internal_node"
+      name="$(anon right_depth_compress_internal_node)"
       args="raw in:=/spot/depth_registered/right/image zdepth out:=/spot/depth_registered/right/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="hand_color_compress_internal_node"
+      name="$(anon hand_color_compress_internal_node)"
       args="raw in:=/spot/camera/hand_color/image compressed out:=/spot/camera/hand_color/image"
       />
   <node
       pkg="image_transport"
       type="republish"
-      name="hand_depth_in_hand_color_frame_compress_internal_node"
+      name="$(anon hand_depth_in_hand_color_frame_compress_internal_node)"
       args="raw in:=/spot/camera/hand_depth_in_hand_color_frame/image zdepth out:=/spot/camera/hand_depth_in_hand_color_frame/image"
       />
   <!-- Image compression nodes for Insta 360 Air camera -->
   <node
+      pkg="topic_tools"
+      type="relay"
+      name="$(anon panorana_info_relay)"
+      args="/dual_fisheye_to_panorama/panorama_info /spot_panorama/panorama_info"
+      />
+  <node
       pkg="image_transport"
       type="republish"
-      name="panorama_compress_internal_node"
-      args="raw in:=/dual_fisheye_to_panorama/output compressed out:=/dual_fisheye_to_panorama/output"
+      name="$(anon panorama_compress_internal_node)"
+      args="raw in:=/dual_fisheye_to_panorama/output compressed out:=/spot_panorama/panorama_image"
       />
 </launch>

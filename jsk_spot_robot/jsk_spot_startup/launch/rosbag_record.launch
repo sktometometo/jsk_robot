@@ -43,7 +43,7 @@
         <node
             pkg="jsk_topic_tools"
             type="lightweight_throttle"
-            name="hand_points_throttler"
+            name="$(anon hand_points_throttler)"
             output="screen"
         >
             <remap from="~input" to="/spot/camera/hand_depth_in_hand_color_frame/points" />
@@ -54,7 +54,7 @@
         <node
             pkg="jsk_topic_tools"
             type="lightweight_throttle"
-            name="depth_points_throttler"
+            name="$(anon depth_points_throttler)"
             output="screen"
         >
             <remap from="~input" to="/spot/depth/points" />
@@ -70,7 +70,7 @@
     <node
         pkg="jsk_topic_tools"
         type="lightweight_throttle"
-        name="lidar_points_throttler"
+        name="$(anon lidar_points_throttler)"
         output="screen"
     >
         <remap from="~input" to="/spot/lidar/points" />
@@ -79,15 +79,15 @@
     </node>
 
     <!-- rosbag recording with compressed images -->
-    <node name="rosbag_record" pkg="rosbag" type="record"
+    <node name="$(anon rosbag_record)" pkg="rosbag" type="record"
         args="-o $(arg rosbag) $(arg rosbag_option)
             /rosout
             /rosout_agg
             /diagnostics
             /tf
             /tf_static
-            /dual_fisheye_to_panorama/output/compressed
-            /dual_fisheye_to_panorama/panorama_info
+            /spot_panorama/panorama_image/compressed
+            /spot_panorama/panorama_info
             /spot/body_pose
             /spot/cmd_vel
             $(arg camera_topics)
@@ -150,6 +150,8 @@
             /sdpuwb_devices
             /markers_devices
             /markers_history
+            /markers_devices_2
+            /markers_history_2
             /smart_device_protocol/recv
             /smart_device_protocol/send
             /smart_device_protocol/uwb
