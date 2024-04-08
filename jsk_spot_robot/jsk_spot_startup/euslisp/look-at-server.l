@@ -27,6 +27,7 @@
       (ros::ros-error "Odom not initialized")
       (return-from execute-cb nil))
       )
+  (ros::ros-info (format nil "goal: ~A" goal))
   (let* (ret
          (target-frame-id (send goal :goal :target_point :header :frame_id))
          (coords-from-odom-to-goal-frame
