@@ -115,6 +115,11 @@
             /spot/trajectory/goal
             /spot/trajectory/result
             /spot/trajectory/status
+            /spot/tracked_world_objects
+            /spot/tracked_world_objects_detection
+            /spot/navigate_to/feedback
+            /spot/graph_nav_graph
+            /spot/graph_nav_localization_state
             /audio
             /bluetooth_teleop/cmd_vel
             /develop_input/cmd_vel
@@ -155,8 +160,6 @@
             /smart_device_protocol/recv
             /smart_device_protocol/send
             /smart_device_protocol/uwb
-            /spot/tracked_world_objects
-            /spot/tracked_world_objects_detection
             $(arg additional_topics)
             "
         output="screen" />
