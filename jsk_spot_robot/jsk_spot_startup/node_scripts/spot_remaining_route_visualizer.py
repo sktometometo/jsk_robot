@@ -4,9 +4,10 @@ import message_filters
 import PyKDL
 import rospy
 import tf2_ros
-from geometry_msgs.msg import Point, Transform, TransformStamped
-from nav_msgs.msg import Odometry
-from spot_msgs.msg import GraphNavGraph, GraphNavLocalization, NavigateToActionFeedback
+from geometry_msgs.msg import Point, PoseStamped, Transform, TransformStamped
+from nav_msgs.msg import Odometry, Path
+from spot_msgs.msg import (GraphNavGraph, GraphNavLocalization,
+                           NavigateToActionFeedback)
 from visualization_msgs.msg import Marker, MarkerArray
 
 
@@ -19,6 +20,9 @@ class RouteVisualizer:
         )
         self.pub_markers = rospy.Publisher(
             "/spot_graph_nav/remaining_route_markers", MarkerArray, queue_size=1
+        )
+        self.pub_path = rospy.Publisher(
+            "/spot_graph_nav/remaining_route_path", Path, queue_size=1
         )
 
         sub_graph = message_filters.Subscriber("/spot/graph_nav_graph", GraphNavGraph)
@@ -34,12 +38,34 @@ class RouteVisualizer:
         self, msg_graph: GraphNavGraph, msg_feedback: NavigateToActionFeedback
     ):
         msg_marker_array = MarkerArray()
+        msg_path = Path()
         frames = {
             anchor.id: anchor.seed_tform_waypoint
             for anchor in msg_graph.anchoring.anchors
         }
         stamp = rospy.Time.now()
+        msg_path.header.frame_id = self.frame_id_graph_reference
+        msg_path.header.stamp = stamp
         for index, edge_id in enumerate(msg_feedback.feedback.remaining_route.edge_id):
+            if index == 0:
+                pose_stamped = PoseStamped()
+                pose_stamped.header = msg_path.header
+                pose_stamped.pose.position.x = frames[edge_id.from_waypoint].p[0]
+                pose_stamped.pose.position.y = frames[edge_id.from_waypoint].p[1]
+                pose_stamped.pose.position.z = frames[edge_id.from_waypoint].p[2]
+                pose_stamped.pose.orientation.x = frames[
+                    edge_id.from_waypoint
+                ].M.GetQuaternion()[0]
+                pose_stamped.pose.orientation.y = frames[
+                    edge_id.from_waypoint
+                ].M.GetQuaternion()[1]
+                pose_stamped.pose.orientation.z = frames[
+                    edge_id.from_waypoint
+                ].M.GetQuaternion()[2]
+                pose_stamped.pose.orientation.w = frames[
+                    edge_id.from_waypoint
+                ].M.GetQuaternion()[3]
+                msg_path.poses.append(pose_stamped)
             marker = Marker()
             marker.header.frame_id = self.frame_id_graph_reference
             marker.header.stamp = stamp
@@ -67,7 +93,19 @@ class RouteVisualizer:
             marker.color.g = 1.0
             marker.color.b = 0.0
             msg_marker_array.markers.append(marker)
+            #
+            pose_stamped = PoseStamped()
+            pose_stamped.header = msg_path.header
+            pose_stamped.pose.position.x = frames[edge_id.to_waypoint].p[0]
+            pose_stamped.pose.position.y = frames[edge_id.to_waypoint].p[1]
+            pose_stamped.pose.position.z = frames[edge_id.to_waypoint].p[2]
+            pose_stamped.pose.orientation.x = frames[edge_id.to_waypoint].M.GetQuaternion()[0]
+            pose_stamped.pose.orientation.y = frames[edge_id.to_waypoint].M.GetQuaternion()[1]
+            pose_stamped.pose.orientation.z = frames[edge_id.to_waypoint].M.GetQuaternion()[2]
+            pose_stamped.pose.orientation.w = frames[edge_id.to_waypoint].M.GetQuaternion()[3]
+            msg_path.poses.append(pose_stamped)
         self.pub_markers.publish(msg_marker_array)
+        self.pub_path.publish(msg_path)
 
 
 if __name__ == "__main__":
