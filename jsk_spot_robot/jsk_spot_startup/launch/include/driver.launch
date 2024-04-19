@@ -29,6 +29,15 @@
   </node>
 
   <node
+      pkg="spot_driver"
+      type="graph_publisher.py"
+      name="graph_publisher"
+      output="screen"
+      respawn="true"
+      >
+  </node>
+
+  <node
     pkg="tf"
     type="static_transform_publisher"
     name="insta360_link_publisher"
