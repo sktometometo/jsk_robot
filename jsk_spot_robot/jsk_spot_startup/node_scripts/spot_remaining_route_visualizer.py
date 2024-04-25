@@ -35,6 +35,15 @@ class RouteVisualizer:
     def callback(
         self, msg_graph: GraphNavGraph, msg_feedback: NavigateToActionFeedback
     ):
+        msg = Marker()
+        msg.header.frame_id = self.frame_id_graph_reference
+        msg.header.stamp = rospy.Time.now()
+        msg.ns = ""
+        msg.id = 0
+        msg.action = Marker.DELETEALL
+        msg.pose.orientation.w = 1.0
+        self.pub_markers.publish(MarkerArray([msg]))
+
         msg_marker_array = MarkerArray()
         msg_path = Path()
         frames = {
@@ -83,6 +92,7 @@ class RouteVisualizer:
             ]
             marker.type = Marker.ARROW
             marker.action = Marker.ADD
+            marker.pose.orientation.w = 1.0
             marker.scale.x = 0.1
             marker.scale.y = 0.2
             marker.scale.z = 0.5
