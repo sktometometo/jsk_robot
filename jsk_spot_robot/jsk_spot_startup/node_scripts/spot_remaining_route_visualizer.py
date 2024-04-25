@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
 import message_filters
-import PyKDL
 import rospy
 import tf2_ros
 from geometry_msgs.msg import Point, PoseStamped, Transform, TransformStamped
 from nav_msgs.msg import Odometry, Path
-from spot_msgs.msg import (GraphNavGraph, GraphNavLocalization,
-                           NavigateToActionFeedback)
+from spot_msgs.msg import GraphNavGraph, GraphNavLocalization, NavigateToActionFeedback
 from visualization_msgs.msg import Marker, MarkerArray
 
 
@@ -50,21 +48,21 @@ class RouteVisualizer:
             if index == 0:
                 pose_stamped = PoseStamped()
                 pose_stamped.header = msg_path.header
-                pose_stamped.pose.position.x = frames[edge_id.from_waypoint].p[0]
-                pose_stamped.pose.position.y = frames[edge_id.from_waypoint].p[1]
-                pose_stamped.pose.position.z = frames[edge_id.from_waypoint].p[2]
+                pose_stamped.pose.position.x = frames[edge_id.from_waypoint].position.x
+                pose_stamped.pose.position.y = frames[edge_id.from_waypoint].position.y
+                pose_stamped.pose.position.z = frames[edge_id.from_waypoint].position.z
                 pose_stamped.pose.orientation.x = frames[
                     edge_id.from_waypoint
-                ].M.GetQuaternion()[0]
+                ].orientation.x
                 pose_stamped.pose.orientation.y = frames[
                     edge_id.from_waypoint
-                ].M.GetQuaternion()[1]
+                ].orientation.y
                 pose_stamped.pose.orientation.z = frames[
                     edge_id.from_waypoint
-                ].M.GetQuaternion()[2]
+                ].orientation.z
                 pose_stamped.pose.orientation.w = frames[
                     edge_id.from_waypoint
-                ].M.GetQuaternion()[3]
+                ].orientation.w
                 msg_path.poses.append(pose_stamped)
             marker = Marker()
             marker.header.frame_id = self.frame_id_graph_reference
@@ -73,14 +71,14 @@ class RouteVisualizer:
             marker.id = index
             marker.points = [
                 Point(
-                    x=frames[edge_id.from_waypoint].p[0],
-                    y=frames[edge_id.from_waypoint].p[1],
-                    z=frames[edge_id.from_waypoint].p[2],
+                    x=frames[edge_id.from_waypoint].position.x,
+                    y=frames[edge_id.from_waypoint].position.y,
+                    z=frames[edge_id.from_waypoint].position.z,
                 ),
                 Point(
-                    x=frames[edge_id.to_waypoint].p[0],
-                    y=frames[edge_id.to_waypoint].p[1],
-                    z=frames[edge_id.to_waypoint].p[2],
+                    x=frames[edge_id.to_waypoint].position.x,
+                    y=frames[edge_id.to_waypoint].position.y,
+                    z=frames[edge_id.to_waypoint].position.z,
                 ),
             ]
             marker.type = Marker.ARROW
@@ -96,13 +94,13 @@ class RouteVisualizer:
             #
             pose_stamped = PoseStamped()
             pose_stamped.header = msg_path.header
-            pose_stamped.pose.position.x = frames[edge_id.to_waypoint].p[0]
-            pose_stamped.pose.position.y = frames[edge_id.to_waypoint].p[1]
-            pose_stamped.pose.position.z = frames[edge_id.to_waypoint].p[2]
-            pose_stamped.pose.orientation.x = frames[edge_id.to_waypoint].M.GetQuaternion()[0]
-            pose_stamped.pose.orientation.y = frames[edge_id.to_waypoint].M.GetQuaternion()[1]
-            pose_stamped.pose.orientation.z = frames[edge_id.to_waypoint].M.GetQuaternion()[2]
-            pose_stamped.pose.orientation.w = frames[edge_id.to_waypoint].M.GetQuaternion()[3]
+            pose_stamped.pose.position.x = frames[edge_id.to_waypoint].position.x
+            pose_stamped.pose.position.y = frames[edge_id.to_waypoint].position.y
+            pose_stamped.pose.position.z = frames[edge_id.to_waypoint].position.z
+            pose_stamped.pose.orientation.x = frames[edge_id.to_waypoint].orientation.x
+            pose_stamped.pose.orientation.y = frames[edge_id.to_waypoint].orientation.y
+            pose_stamped.pose.orientation.z = frames[edge_id.to_waypoint].orientation.z
+            pose_stamped.pose.orientation.w = frames[edge_id.to_waypoint].orientation.w
             msg_path.poses.append(pose_stamped)
         self.pub_markers.publish(msg_marker_array)
         self.pub_path.publish(msg_path)
