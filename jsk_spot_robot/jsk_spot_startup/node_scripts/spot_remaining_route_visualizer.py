@@ -1,12 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import message_filters
 import rospy
-import tf2_ros
 from geometry_msgs.msg import Point, PoseStamped, Transform, TransformStamped
 from nav_msgs.msg import Odometry, Path
-from spot_msgs.msg import GraphNavGraph, GraphNavLocalization, NavigateToActionFeedback
-from visualization_msgs.msg import Marker, MarkerArray
+from spot_msgs.msg import (GraphNavGraph, GraphNavLocalization,
+                           NavigateToActionFeedback)
 
 
 class RouteVisualizer:
@@ -15,9 +14,6 @@ class RouteVisualizer:
 
         self.frame_id_graph_reference = rospy.get_param(
             "~frame_id_graph_reference", "graph_reference"
-        )
-        self.pub_markers = rospy.Publisher(
-            "/spot_graph_nav/remaining_route_markers", MarkerArray, queue_size=1
         )
         self.pub_path = rospy.Publisher(
             "/spot_graph_nav/remaining_route_path", Path, queue_size=1
@@ -35,16 +31,6 @@ class RouteVisualizer:
     def callback(
         self, msg_graph: GraphNavGraph, msg_feedback: NavigateToActionFeedback
     ):
-        msg = Marker()
-        msg.header.frame_id = self.frame_id_graph_reference
-        msg.header.stamp = rospy.Time.now()
-        msg.ns = ""
-        msg.id = 0
-        msg.action = Marker.DELETEALL
-        msg.pose.orientation.w = 1.0
-        self.pub_markers.publish(MarkerArray([msg]))
-
-        msg_marker_array = MarkerArray()
         msg_path = Path()
         frames = {
             anchor.id: anchor.seed_tform_waypoint
@@ -73,34 +59,6 @@ class RouteVisualizer:
                     edge_id.from_waypoint
                 ].orientation.w
                 msg_path.poses.append(pose_stamped)
-            marker = Marker()
-            marker.header.frame_id = self.frame_id_graph_reference
-            marker.header.stamp = stamp
-            marker.ns = ""
-            marker.id = index
-            marker.points = [
-                Point(
-                    x=frames[edge_id.from_waypoint].position.x,
-                    y=frames[edge_id.from_waypoint].position.y,
-                    z=frames[edge_id.from_waypoint].position.z,
-                ),
-                Point(
-                    x=frames[edge_id.to_waypoint].position.x,
-                    y=frames[edge_id.to_waypoint].position.y,
-                    z=frames[edge_id.to_waypoint].position.z,
-                ),
-            ]
-            marker.type = Marker.ARROW
-            marker.action = Marker.ADD
-            marker.pose.orientation.w = 1.0
-            marker.scale.x = 0.1
-            marker.scale.y = 0.2
-            marker.scale.z = 0.5
-            marker.color.a = 1.0
-            marker.color.r = 0.0
-            marker.color.g = 1.0
-            marker.color.b = 0.0
-            msg_marker_array.markers.append(marker)
             #
             pose_stamped = PoseStamped()
             pose_stamped.header = msg_path.header
@@ -112,7 +70,6 @@ class RouteVisualizer:
             pose_stamped.pose.orientation.z = frames[edge_id.to_waypoint].orientation.z
             pose_stamped.pose.orientation.w = frames[edge_id.to_waypoint].orientation.w
             msg_path.poses.append(pose_stamped)
-        self.pub_markers.publish(msg_marker_array)
         self.pub_path.publish(msg_path)
 
 
