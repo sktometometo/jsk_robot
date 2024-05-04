@@ -138,6 +138,20 @@ If you want to simulate without real interface,
 (spotkinova)
 ```
 
+If you want to use without the real interface, use the following scripts.
+```
+(load "package://spotkinovaeus/spotkinova.l")
+(spotkinova)
+```
+
+To show the eus model on the screen,
+```
+(objects (list *spotkinova*))
+```
+
+There is the page to use only kinova, please see this [page](../jsk_kinova_robot).
+
+
 Below is a list of typical posture commands for kinova.
 `:kinova-rest-pose` is a good posture for Spot to adopt when moving or resting.  
 You should use `:kinova-rest-pose` when moving.
