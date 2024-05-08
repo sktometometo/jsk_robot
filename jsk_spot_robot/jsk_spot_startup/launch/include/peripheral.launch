@@ -1,6 +1,9 @@
 <launch>
+    <arg name="use_gps" default="true" />
+
     <arg name="port_enr" default="/dev/esp_now_ros_interface"/>
     <arg name="throttled_rate" default="1.0"/>
+    <arg name="device_ublox" default="/dev/ublox_device" />
 
     <include file="$(find smart_device_protocol)/launch/demo.launch">
         <arg name="port" value="$(arg port_enr)"/>
@@ -15,4 +18,13 @@
         <arg name="throttle" value="true"/>
         <arg name="throttled_rate" value="$(arg throttled_rate)"/>
     </include>
+
+  <!-- gps -->
+  <include
+    file="$(find jsk_spot_startup)/launch/include/ublox_driver.launch"
+    if="$(arg use_gps)"
+  >
+    <arg name="device_ublox" value="$(arg device_ublox)" />
+  </include>
+
 </launch>

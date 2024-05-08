@@ -1,18 +1,13 @@
 <launch>
   <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
   <arg name="launch_robot_state_publisher" default="true" />
-  <arg name="launch_sound_play" default="true" />
-
-  <arg name="use_voice_text" default="false" doc="voice_text needs license" />
-  <arg name="use_app_manager" default="true" />
-  <arg name="use_gps" default="false" />
-
-  <arg name="device_ublox" default="/dev/ublox_device" />
-
 
   <group if="$(arg launch_robot_state_publisher)">
     <include file="$(find spot_description)/launch/description.launch" />
   </group>
+
+  <param name="robot/type" value="spot" />
+  <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
 
   <node
     pkg="spot_driver"
@@ -114,66 +109,12 @@
     <remap from="~dock_id" to="/spot/spot_ros/dock_id" />
   </node>
 
-  <!-- Sound/Camera -->
-
-  <!-- republish compressed image -->
-  <!-- <include file="$(find jsk_spot_startup)/launch/include/compression.launch"/> -->
-
-  <!-- english speach node -->
-  <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
-  <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
-  <!--
-  <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
-        respawn="true" if="$(arg launch_sound_play)" >
-  </node>
-  -->
-
-
-  <!-- japanese speech node -->
-  <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
-    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
-    <arg name="sound_play_respawn" value="true" />
-  </include>
-  <!--
-  <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
-    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
-    <arg name="sound_play_respawn" value="true" />
-  </include>
-  k-okada 2023/12/13 -->
-  <!-- Notifier/Visualization -->
-
-  <!-- <node -->
-  <!--     pkg="laptop_battery_monitor" -->
-  <!--     type="laptop_battery.py" -->
-  <!--     name="laptop_battery" -->
-  <!--     > -->
-  <!-- </node> -->
-
-  <include
-    file="$(find switchbot_ros)/launch/switchbot.launch"
-  >
-    <arg name="token" value="/var/lib/robot/credentials/switchbot_token.txt" />
-  </include>
-
   <node
     pkg="topic_tools"
     type="transform"
     args="--wait-for-start /spot/status/battery_states /spot/status/battery_percentage std_msgs/Float32 'm.battery_states[0].charge_percentage'"
     name="battery_visualizer"
   />
-
-  <!-- <node -->
-  <!--     pkg="jsk_spot_startup" -->
-  <!--     type="laptop_battery_visualizer.py" -->
-  <!--     name="laptop_battery_visualizer" -->
-  <!--     /> -->
-
-  <node
-    pkg="jsk_spot_startup"
-    type="cable_connection_detector.py"
-    name="cable_connection_detector"
-  >
-  </node>
 
   <node
     pkg="jsk_spot_startup"
@@ -184,40 +125,13 @@
     <remap from="~start_app" to="/robot/start_app" />
   </node>
 
-  <!-- <node -->
-  <!--     pkg="jsk_spot_plug_server" -->
-  <!--     type="plug_server.py" -->
-  <!--     name="plug_server" -->
-  <!--     > -->
-  <!-- </node> -->
-
-  <!-- app manager -->
-  <group
-    if="$(arg use_app_manager)"
-  >
-    <include
-      file="$(find jsk_robot_startup)/lifelog/app_manager.launch"
+  <node
+    pkg="jsk_spot_startup"
+    type="faults_speaker.py"
+    name="faults_speaker"
+    respawn="true"
     >
-      <arg name="use_applist" value="false" />
-      <arg name="respawn" value="false" />
-    </include>
-
-    <!--
-    <include
-        file="$(find app_scheduler)/launch/app_scheduler.launch"
-        >
-        <arg name="yaml_path" value="/var/lib/robot/app_schedule.yaml" />
-    </include>
-    -->
-  </group>
-
-  <!-- gps -->
-  <include
-    file="$(find jsk_spot_startup)/launch/include/ublox_driver.launch"
-    if="$(arg use_gps)"
-  >
-    <arg name="device_ublox" value="$(arg device_ublox)" />
-  </include>
+  </node>
 
   <!-- ros_lock -->
   <node

@@ -1,47 +1,85 @@
 <launch>
   <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
-  <arg name="launch_robot_state_publisher" default="true" />
+  <arg name="launch_driver" default="true" />
   <arg name="launch_peripheral" default="true" />
+  <arg name="launch_sound" default="true" />
   <arg name="launch_interaction" default="false" />
   <arg name="launch_panorama_detection" default="true" />
-  <arg name="launch_lifelog" default="true" />
   <arg name="launch_behavior_manager" default="true" />
+  <arg name="launch_app_manager" default="true" />
+  <arg name="launch_switchbot_client" default="true" />
+  <arg name="launch_gdrive_server" default="true" />
+  <arg name="launch_lifelog" default="true" />
 
-  <arg name="use_driver" default="true" />
-  <arg name="use_app_manager" default="true" />
   <arg name="use_gps" default="true" />
 
-  <param name="robot/type" value="spot" />
-  <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
   <node pkg="jsk_spot_startup" type="start-spot.l" name="start_spot" />
 
   <!-- spot driver -->
   <include
       file="$(find jsk_spot_startup)/launch/include/driver.launch"
-      if="$(arg use_driver)"
-      pass_all_args="true" >
+      if="$(arg launch_driver)"
+      >
   </include>
 
   <!-- peripheral devices -->
-  <include file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
-	   if="$(arg launch_peripheral)" />
+  <include
+      file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
+      if="$(arg launch_peripheral)"
+      >
+        <arg name="use_gps" value="$(arg use_gps)"/>
+  </include>
+
+  <!-- launch sound -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/sound.launch"
+      if="$(arg launch_sound)"
+      >
+  </include>
 
   <!-- interaction nodes -->
-  <include file="$(find jsk_spot_startup)/launch/include/interaction.launch"
-	   if="$(arg launch_interaction)" />
+  <include
+      file="$(find jsk_spot_startup)/launch/include/interaction.launch"
+      if="$(arg launch_interaction)"
+      />
+
+  <!-- panorama object detection -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/panorama_detection.launch"
+      if="$(arg launch_panorama_detection)"
+      />
 
   <!-- behavior manager -->
-  <include file="$(find jsk_spot_behavior_manager)/launch/demo.launch"
-      if="$(arg launch_behavior_manager)" />
+  <include
+      file="$(find jsk_spot_behavior_manager)/launch/demo.launch"
+      if="$(arg launch_behavior_manager)"
+      />
 
-  <include file="$(find gdrive_ros)/launch/gdrive_server.launch">
+  <!-- app_manager -->
+  <include
+    file="$(find jsk_robot_startup)/lifelog/app_manager.launch"
+    if="$(arg launch_app_manager)"
+    >
+    <arg name="use_applist" value="false" />
+    <arg name="respawn" value="false" />
+  </include>
+
+  <!-- switchbot -->
+  <include
+    file="$(find switchbot_ros)/launch/switchbot.launch"
+    if="$(arg launch_switchbot_client)"
+    >
+    <arg name="token" value="/var/lib/robot/credentials/switchbot_token.txt" />
+  </include>
+
+  <!-- gdrive server -->
+  <include
+      file="$(find gdrive_ros)/launch/gdrive_server.launch"
+      if="$(arg launch_gdrive_server)"
+      >
       <arg name="settings_yaml" value="/var/lib/robot/gdrive/belka_pydrive_settings.yaml"/>
       <arg name="respawn" value="true"/>
   </include>
-
-  <!-- panorama object detection -->
-  <include file="$(find jsk_spot_startup)/launch/include/panorama_detection.launch"
-           if="$(arg launch_panorama_detection)" />
 
   <!-- lifelog -->
   <!--

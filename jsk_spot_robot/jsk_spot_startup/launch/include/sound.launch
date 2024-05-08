@@ -1,0 +1,11 @@
+<launch>
+    <include
+        file="$(find sound_play)/soundplay_node.launch"
+        />
+    <include
+        file="$(find aques_talk)/launch/aques_talk.launch"
+        />
+    <include
+        file="$(find silero_vad_ros)/launch/sample.launch"
+        />
+</launch>
