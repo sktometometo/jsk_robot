@@ -4,6 +4,8 @@ PACKAGE_PATH=$(rospack find jsk_spot_startup)
 SERVICE_SOURCE_PATH=$PACKAGE_PATH/services
 SERVICE_DESTINATION_PATH=/etc/systemd/system
 
+WORKSPACE_DIR=
+
 # install systemd unit files
 cd $SERVICE_SOURCE_PATH
 for service_file in $(ls ./*);

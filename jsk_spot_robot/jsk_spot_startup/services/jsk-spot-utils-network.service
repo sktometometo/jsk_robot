@@ -3,7 +3,7 @@ Description=JSK Network Service
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c ". /opt/ros/melodic/setup.bash && . /home/sktometometo/ros/ws_main_extend/devel/setup.bash && rosrun jsk_spot_startup update-network-connection.sh"
+ExecStart=/bin/bash -c ". /home/spot/spot_improved_ws/devel/setup.bash && roscd jsk_spot_startup && echo \"<sudo PW>\" | sudo -S ./scripts/update_network_connection.py --wifi-profile sanshiro --lte-profile LTE --debug"
 ExecStop=/bin/kill -WINCH ${MAINPID}
 KillMode=control-group
 KillSignal=SIGTERM
