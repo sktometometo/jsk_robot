@@ -1,8 +1,10 @@
 [Unit]
 Description=JSK Network Service
+After=network.target
 
 [Service]
 Type=simple
+User=spot
 ExecStart=/bin/bash -c ". WORKSPACE_DIR/devel/setup.bash && roscd jsk_spot_startup && echo \"USER_PASSWORD\" | sudo -S ./scripts/update_network_connection.py --wifi-profile sanshiro --lte-profile LTE --debug"
 ExecStop=/bin/kill -WINCH ${MAINPID}
 KillMode=control-group

@@ -57,6 +57,7 @@ def set_profile_metric(profile: Optional[str], metric: int) -> bool:
 
 
 def get_profile_metric(profile: str) -> Optional[int]:
+    """Get metric of the profile"""
     interface = get_interface_from_profile(profile)
     if interface is None:
         return None

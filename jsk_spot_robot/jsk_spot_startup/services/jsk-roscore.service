@@ -1,0 +1,16 @@
+[Unit]
+Description=JSK ROS Master
+After=network.target
+
+[Service]
+Type=simple
+User=spot
+ExecStart=/bin/bash -c "source /opt/ros/melodic/setup.bash && roscore"
+Restart=always
+RestartSec=5
+ExecStop=/bin/kill -s TERM $MAINPID
+KillMode=process
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

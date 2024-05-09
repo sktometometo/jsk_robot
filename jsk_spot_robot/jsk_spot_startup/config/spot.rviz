@@ -606,8 +606,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: -4.097906112670898
-        Min Value: -6.981664657592773
+        Max Value: 3.6610724925994873
+        Min Value: -1.2096211910247803
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -615,7 +615,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: AxisColor
       Decay Time: 0
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -630,7 +630,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -643,7 +643,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: RGB8
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -658,7 +658,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Class: jsk_rviz_plugin/OverlayImage
       Enabled: true
       Name: PanoramaImage
@@ -759,7 +759,7 @@ Visualization Manager:
           Marker Topic: /markers_history
           Name: SDPHistoryMarkerArray
           Namespaces:
-            "": true
+            {}
           Queue Size: 100
           Value: true
         - Class: rviz/MarkerArray
@@ -770,7 +770,7 @@ Visualization Manager:
             {}
           Queue Size: 100
           Value: true
-      Enabled: true
+      Enabled: false
       Name: SDPUWBLocalization
     - Alpha: 0.699999988079071
       Class: rviz/Map
@@ -827,7 +827,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 6.896687984466553
+      Distance: 18.762144088745117
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -843,9 +843,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4853985905647278
+      Pitch: 0.5203992128372192
       Target Frame: body
-      Yaw: 5.622230052947998
+      Yaw: 3.889092206954956
     Saved: ~
 Window Geometry:
   Displays:

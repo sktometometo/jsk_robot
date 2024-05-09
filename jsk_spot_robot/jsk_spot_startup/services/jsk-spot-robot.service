@@ -1,0 +1,16 @@
+[Unit]
+Description=JSK Spot Driver
+After=jsk-roscore.service
+
+[Service]
+Type=simple
+User=spot
+ExecStart=/bin/bash -c "source ~/spot_improved_ws/devel/setup.bash; roslaunch --wait jsk_spot_startup jsk_spot_bringup.launch use_gps:=false launch_peripheral:=false launch_sound:=false launch_interaction:=false launch_panorama_detection:=false launch_behavior_manager:=false launch_app_manager:=false launch_lifelog:=false"
+Restart=always
+RestartSec=5
+ExecStop=/bin/kill -WINCH ${MAINPID}
+KillMode=control-group
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target
