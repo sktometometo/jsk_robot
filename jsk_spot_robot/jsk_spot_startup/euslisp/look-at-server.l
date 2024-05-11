@@ -45,17 +45,18 @@
          msg-result)
     (send *spot* :angle-vector (send *ri* :state :potentio-vector))
     (if (> (norm (send (send (send *spot* :head :end-coords) :copy-worldcoords) :pos))
-            1000)
-        (send *spot* :reset-pose)
-        )
-    (send *spot* :arm :inverse-kinematics
-          (send (send (send *spot* :arm :end-coords) :copy-worldcoords) :translate #f(0 0 200)))
+            800)
+        (progn
+          (send *spot* :reset-pose)
+          (send *spot* :arm :inverse-kinematics
+                (send (send (send *spot* :arm :end-coords) :copy-worldcoords) :translate #f(0 0 200)))
+          ))
     (if (send *spot* :head :look-at (send target-coords-from-robot :pos))
       (setq ret t)
       (setq ret nil))
     (if ret
       (progn
-        (send *ri* :angle-vector (send *spot* :angle-vector) 1000)
+        (send *ri* :angle-vector (send *spot* :angle-vector) 2000)
         (send *ri* :wait-interpolation)
         (setq msg-result (send server :result))
         (send msg-result :result :success t)
