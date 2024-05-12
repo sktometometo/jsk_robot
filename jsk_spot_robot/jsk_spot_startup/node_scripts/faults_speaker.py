@@ -20,7 +20,7 @@ class FaultsSpeaker:
 
     def _cb(self, msg):
         for fault in msg.faults:
-            if fault.severity_level >= self._severity_level:
+            if fault.severity >= self._severity_level:
                 self.client.say(
                         "I have got an error {}.".format(fault.name) \
                                 + "{}".format(fault.error_message),
