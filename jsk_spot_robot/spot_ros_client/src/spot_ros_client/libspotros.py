@@ -147,6 +147,8 @@ class SpotRosClient:
                  servicename_set_localization_waypoint='/spot/set_localization_waypoint',
                  servicename_dock='/spot/dock',
                  servicename_undock='/spot/undock',
+                 servicename_start_recording='/spot/start_recording',
+                 servicename_stop_recording='/spot/stop_recording',
                  servicename_reset_current_node='/spot_behavior_manager_server/reset_current_node_id',
                  servicename_stow_arm='/spot/stow_arm',
                  servicename_unstow_arm='/spot/unstow_arm',
@@ -204,6 +206,8 @@ class SpotRosClient:
             rospy.wait_for_service(servicename_reset_current_node, rospy.Duration(5))
             rospy.wait_for_service(servicename_stow_arm, rospy.Duration(5))
             rospy.wait_for_service(servicename_unstow_arm, rospy.Duration(5))
+            rospy.wait_for_service(servicename_start_recording, rospy.Duration(5))
+            rospy.wait_for_service(servicename_stop_recording, rospy.Duration(5))
             rospy.wait_for_service(servicename_gripper_close, rospy.Duration(5))
             rospy.wait_for_service(servicename_gripper_open, rospy.Duration(5))
         except rospy.ROSException as e:
@@ -273,6 +277,14 @@ class SpotRosClient:
         self._srv_client_set_localization_waypoint = rospy.ServiceProxy(
             servicename_set_localization_waypoint,
             SetLocalizationWaypoint
+        )
+        self._srv_client_start_recording = rospy.ServiceProxy(
+            servicename_start_recording,
+            Trigger
+        )
+        self._srv_client_stop_recording = rospy.ServiceProxy(
+            servicename_stop_recording,
+            Trigger
         )
         self._srv_client_dock = rospy.ServiceProxy(
             servicename_dock,
