@@ -33,6 +33,8 @@ from std_srvs.srv import SetBool
 from std_srvs.srv import SetBoolRequest
 from spot_msgs.srv import ListGraph
 from spot_msgs.srv import ListGraphRequest
+from spot_msgs.srv import DownloadGraph
+from spot_msgs.srv import DownloadGraphRequest
 from spot_msgs.srv import SetLocalizationFiducial
 from spot_msgs.srv import SetLocalizationFiducialRequest
 from spot_msgs.srv import SetLocalizationWaypoint
@@ -47,6 +49,7 @@ from jsk_spot_behavior_msgs.srv import ResetCurrentNode, ResetCurrentNodeRequest
 # actions
 from jsk_spot_behavior_msgs.msg import NavigationAction
 from jsk_spot_behavior_msgs.msg import NavigationGoal
+from jsk_spot_startup.msg import LookAtAction, LookAtGoal
 from spot_msgs.msg import NavigateToAction
 from spot_msgs.msg import NavigateToGoal
 from spot_msgs.msg import TrajectoryAction
@@ -143,6 +146,7 @@ class SpotRosClient:
                  servicename_locomotion_mode='/spot/locomotion_mode',
                  servicename_upload_graph='/spot/upload_graph',
                  servicename_list_graph='/spot/list_graph',
+                 servicename_download_graph='/spot/download_graph',
                  servicename_set_localization_fiducial='/spot/set_localization_fiducial',
                  servicename_set_localization_waypoint='/spot/set_localization_waypoint',
                  servicename_dock='/spot/dock',
@@ -157,6 +161,7 @@ class SpotRosClient:
                  actionname_navigate_to='/spot/navigate_to',
                  actionname_trajectory='/spot/trajectory',
                  actionname_execute_behaviors='/spot_behavior_manager_server/execute_behaviors',
+                 actionname_look_at='/spot_look_at',
                  duration_timeout=0.05):
 
         self.topicname_cable_connected = topicname_cable_connected
@@ -197,6 +202,7 @@ class SpotRosClient:
                 servicename_locomotion_mode, rospy.Duration(5))
             rospy.wait_for_service(servicename_upload_graph, rospy.Duration(5))
             rospy.wait_for_service(servicename_list_graph, rospy.Duration(5))
+            rospy.wait_for_service(servicename_download_graph, rospy.Duration(5))
             rospy.wait_for_service(
                 servicename_set_localization_fiducial, rospy.Duration(5))
             rospy.wait_for_service(
@@ -270,6 +276,10 @@ class SpotRosClient:
             servicename_list_graph,
             ListGraph
         )
+        self._srv_client_download_graph = rospy.ServiceProxy(
+            servicename_download_graph,
+            DownloadGraph
+        )
         self._srv_client_set_localization_fiducial = rospy.ServiceProxy(
             servicename_set_localization_fiducial,
             SetLocalizationFiducial
@@ -329,6 +339,10 @@ class SpotRosClient:
         self._actionclient_execute_behaviors = actionlib.SimpleActionClient(
             actionname_execute_behaviors,
             NavigationAction
+        )
+        self._actionclient_look_at = actionlib.SimpleActionClient(
+            actionname_look_at,
+            LookAtAction
         )
 
         rospy.loginfo("Waiting actions available")
@@ -503,6 +517,11 @@ class SpotRosClient:
         res = self._srv_client_list_graph(ListGraphRequest())
         return res.waypoint_ids
 
+    def download_graph(self, download_filepath):
+        res = self._srv_client_download_graph(
+                DownloadGraphRequest(download_filepath=download_filepath))
+        return res.success, res.message
+
     def set_localization_fiducial(self):
         res = self._srv_client_set_localization_fiducial(
             SetLocalizationFiducialRequest())
@@ -511,6 +530,16 @@ class SpotRosClient:
     def set_localization_waypoint(self, waypoint_id):
         res = self._srv_client_set_localization_waypoint(
             SetLocalizationWaypointRequest(waypoint_id=waypoint_id))
+        return res.success, res.message
+
+    def start_recording(self):
+        res = self._srv_client_start_recording(
+                TriggerRequest())
+        return res.success, res.message
+
+    def stop_recording(self):
+        res = self._srv_client_stop_recording(
+                TriggerRequest())
         return res.success, res.message
 
     def dock(self, dock_id):
@@ -597,7 +626,18 @@ class SpotRosClient:
 
     def get_execute_behaviors_result(self):
         return self._actionclient_execute_behaviors.get_result()
-    
+
+    def look_at(self, target_point, blocking=False):
+        goal = LookAtGoal()
+        goal.target_point.header.frame_id = "body"
+        goal.target_point.point.x = target_point[0]
+        goal.target_point.point.y = target_point[1]
+        goal.target_point.point.z = target_point[2]
+        self._actionclient_look_at.send_goal(goal)
+        if blocking:
+            self._actionclient_look_at.wait_for_result()
+            return self._actionclient_look_at.get_result()
+
     def reset_current_node(self, node):
         req = ResetCurrentNodeRequest()
         req.current_node_id = node

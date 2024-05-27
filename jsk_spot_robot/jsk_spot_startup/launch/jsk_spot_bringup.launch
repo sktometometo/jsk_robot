@@ -65,12 +65,14 @@
   </include>
 
   <!-- switchbot -->
+  <!--
   <include
     file="$(find switchbot_ros)/launch/switchbot.launch"
     if="$(arg launch_switchbot_client)"
     >
     <arg name="token" value="/var/lib/robot/credentials/switchbot_token.txt" />
   </include>
+  -->
 
   <!-- gdrive server -->
   <include
