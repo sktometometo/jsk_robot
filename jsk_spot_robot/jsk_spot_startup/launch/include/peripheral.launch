@@ -1,31 +1,31 @@
 <launch>
-    <arg name="use_sdp" default="true" />
-    <arg name="use_insta360" default="true" />
-    <arg name="use_gps" default="true" />
+  <arg name="use_sdp" default="true" />
+  <arg name="use_insta360" default="true" />
+  <arg name="use_gps" default="true" />
 
-    <arg name="port_enr" default="/dev/esp_now_ros_interface"/>
-    <arg name="throttled_rate" default="1.0"/>
-    <arg name="device_ublox" default="/dev/ublox_device" />
+  <arg name="port_enr" default="/dev/esp_now_ros_interface" />
+  <arg name="throttled_rate" default="1.0" />
+  <arg name="device_ublox" default="/dev/ublox_device" />
 
-    <include
-        file="$(find smart_device_protocol)/launch/demo.launch"
-        if="$(arg use_sdp)"
-        >
-        <arg name="port" value="$(arg port_enr)"/>
-        <arg name="tag_id" value="9"/>
-    </include>
+  <include
+    file="$(find smart_device_protocol)/launch/demo.launch"
+    if="$(arg use_sdp)"
+  >
+    <arg name="port" value="$(arg port_enr)" />
+    <arg name="tag_id" value="9" />
+  </include>
 
-    <include
-        file="$(find jsk_perception)/sample/sample_insta360_air.launch"
-        if="$(arg use_insta360)"
-        >
-        <arg name="width" value="2176"/>
-        <arg name="height" value="1088"/>
-        <arg name="panorama_resolution_mode" value="low"/>
-        <arg name="gui" value="false"/>
-        <arg name="throttle" value="true"/>
-        <arg name="throttled_rate" value="$(arg throttled_rate)"/>
-    </include>
+  <include
+    file="$(find jsk_spot_startup)/launch/include/sample_insta360_air.launch"
+    if="$(arg use_insta360)"
+  >
+    <arg name="width" value="2176" />
+    <arg name="height" value="1088" />
+    <arg name="panorama_resolution_mode" value="low" />
+    <arg name="gui" value="false" />
+    <arg name="throttle" value="true" />
+    <arg name="throttled_rate" value="$(arg throttled_rate)" />
+  </include>
 
   <!-- gps -->
   <include
