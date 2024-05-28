@@ -109,7 +109,7 @@
         <arg name="image_transport" value="$(arg panorama_image_transport)" />
         <arg name="vital_rate" value="$(arg vital_rate)" />
         <arg name="launch_manager" value="true" />
-        <arg name="always_subscribe" value="$(arg always_subscribe)" />
+        <arg name="always_subscribe" value="true" />
     </include>
 
     <group if="$(arg gui)">
