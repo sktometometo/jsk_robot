@@ -3,7 +3,7 @@
     <arg name="rosbag_option" default="-b 0 --split --size=1024 --lz4" />
     <arg name="additional_topics" default="" doc="additional topics to record" />
 
-    <arg name="record_as_points" default="true" />
+    <arg name="record_as_points" default="false" />
     <arg name="camera_topics" if="$(arg record_as_points)"
         default="
         /spot/camera/hand_depth_in_hand_color_frame/points/throttled
@@ -37,7 +37,7 @@
         /spot/camera/hand_depth_in_hand_color_frame/camera_info
         " />
 
-    <group if="$(arg record_as_points)" >
+    <group if="$(arg record_as_points)">
         <include file="$(find jsk_spot_startup)/launch/generate_point_cloud.launch" />
 
         <node
@@ -63,8 +63,8 @@
         </node>
     </group>
 
-    <group unless="$(arg record_as_points)" >
-        <include file="$(find jsk_spot_startup)/launch/include/compression.launch"/>
+    <group unless="$(arg record_as_points)">
+        <include file="$(find jsk_spot_startup)/launch/include/compression.launch" />
     </group>
 
     <node
