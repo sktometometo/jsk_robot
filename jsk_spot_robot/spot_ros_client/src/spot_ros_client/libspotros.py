@@ -21,6 +21,7 @@ from std_msgs.msg import Float32
 from std_msgs.msg import String
 from spot_msgs.msg import Feedback
 from spot_msgs.msg import PowerState
+from spot_msgs.msg import GraphNavLocalization
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import PoseArray
 from geometry_msgs.msg import PoseStamped
@@ -532,6 +533,25 @@ class SpotRosClient:
             SetLocalizationWaypointRequest(waypoint_id=waypoint_id))
         return res.success, res.message
 
+    def get_graph_nav_localization(self):
+        try:
+            msg = rospy.wait_for_message(
+                    "/spot/graph_nav_localization_state",
+                    GraphNavLocalization,
+                    timeout=rospy.Duration(5.0),
+                    )
+            return msg
+        except rospy.ROSException as e:
+            return None
+
+    @property
+    def current_waypoint_id(self):
+        msg = self.get_graph_nav_localization()
+        if msg is None:
+            return ""
+        else:
+            return msg.waypoint_id
+
     def start_recording(self):
         res = self._srv_client_start_recording(
                 TriggerRequest())
@@ -589,14 +609,18 @@ class SpotRosClient:
         goal.velocity_limit.angular.z = float(velocity_limit[2])
         self._actionclient_navigate_to.send_goal(goal)
         if blocking:
-            self._actionclient_navigate_to.wait_for_result()
-            return self._actionclient_navigate_to.get_result()
+            self.wait_for_navigate_to_result()
+            return self.get_navigate_to_result()
 
     def wait_for_navigate_to_result(self, duration=rospy.Duration(0)):
         return self._actionclient_navigate_to.wait_for_result(duration)
 
     def get_navigate_to_result(self):
-        return self._actionclient_navigate_to.get_result()
+        result = self._actionclient_navigate_to.get_result()
+        if result is None:
+            return None, "No result"
+        else:
+            return result.success, result.message
 
     def cancel_navigate_to(self):
         self._actionclient_navigate_to.cancel_all_goals()
