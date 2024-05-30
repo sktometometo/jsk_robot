@@ -5,18 +5,17 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /TF1
         - /BodyCameraDepthClouds1/FrontLeftDepthCloud1
         - /BodyCameraDepthClouds1/FrontLeftDepthCloud1/Autocompute Value Bounds1
         - /BodyCameraDepthClouds1/FrontRightDepthCloud1/Autocompute Value Bounds1
         - /BodyCameraDepthClouds1/LeftDepthCloud1/Autocompute Value Bounds1
         - /BodyCameraDepthClouds1/RightDepthCloud1/Autocompute Value Bounds1
         - /BodyCameraDepthClouds1/RearDepthCloud1/Autocompute Value Bounds1
-        - /PanoramaImage1
-        - /SDPUWBLocalization1
         - /SDPUWBLocalization1/SDPHistoryMarkerArray1
         - /SDPUWBLocalization1/SDPDeviceMarkerArray1
       Splitter Ratio: 0.5
-    Tree Height: 441
+    Tree Height: 865
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -181,75 +180,75 @@ Visualization Manager:
       Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         arm0.link_el0:
-          Value: true
+          Value: false
         arm0.link_el1:
-          Value: true
+          Value: false
         arm0.link_fngr:
-          Value: true
+          Value: false
         arm0.link_hr0:
-          Value: true
+          Value: false
         arm0.link_sh0:
-          Value: true
+          Value: false
         arm0.link_sh1:
-          Value: true
+          Value: false
         arm0.link_wr0:
-          Value: true
+          Value: false
         arm0.link_wr1:
-          Value: true
+          Value: false
         back:
-          Value: true
+          Value: false
         back_fisheye:
-          Value: true
+          Value: false
         base_link:
-          Value: true
+          Value: false
         body:
-          Value: true
+          Value: false
         flat_body:
-          Value: true
+          Value: false
         front_left_hip:
-          Value: true
+          Value: false
         front_left_lower_leg:
-          Value: true
+          Value: false
         front_left_upper_leg:
-          Value: true
+          Value: false
         front_rail:
-          Value: true
+          Value: false
         front_right_hip:
-          Value: true
+          Value: false
         front_right_lower_leg:
-          Value: true
+          Value: false
         front_right_upper_leg:
-          Value: true
+          Value: false
         frontleft:
-          Value: true
+          Value: false
         frontleft_fisheye:
-          Value: true
+          Value: false
         frontright:
-          Value: true
+          Value: false
         frontright_fisheye:
-          Value: true
+          Value: false
         gpe:
-          Value: true
+          Value: false
         graph_reference:
           Value: true
         hand:
-          Value: true
+          Value: false
         hand_color_image_sensor:
-          Value: true
+          Value: false
         hand_depth_sensor:
-          Value: true
+          Value: false
         head:
-          Value: true
+          Value: false
         insta360_link:
-          Value: true
+          Value: false
         left:
-          Value: true
+          Value: false
         left_fisheye:
-          Value: true
+          Value: false
         link_wr1:
-          Value: true
+          Value: false
         object_200:
           Value: true
         object_218:
@@ -261,23 +260,23 @@ Visualization Manager:
         odom:
           Value: true
         rear_left_hip:
-          Value: true
+          Value: false
         rear_left_lower_leg:
-          Value: true
+          Value: false
         rear_left_upper_leg:
-          Value: true
+          Value: false
         rear_rail:
-          Value: true
+          Value: false
         rear_right_hip:
-          Value: true
+          Value: false
         rear_right_lower_leg:
-          Value: true
+          Value: false
         rear_right_upper_leg:
-          Value: true
+          Value: false
         right:
-          Value: true
+          Value: false
         right_fisheye:
-          Value: true
+          Value: false
         sensor:
           Value: true
         sensor_origin_velodyne-point-cloud:
@@ -304,11 +303,15 @@ Visualization Manager:
           Value: true
         waypoint_dank-buck-sRxmNcrlzklDgLjlqxq0tA==:
           Value: true
+        waypoint_dapper-jackal-qH7M5HUStbSL0s0EKr6nUw==:
+          Value: true
         waypoint_dormie-platypus-eRbOoq0pKwBELt4hqdkZ8A==:
           Value: true
         waypoint_doughy-wren-u90R2nChpx29UPfGkjAOgA==:
           Value: true
         waypoint_dreary-taipan-y1WPtsy64J+x2Rj22OW.jg==:
+          Value: true
+        waypoint_ended-marlin-UyrEkasMejnm6AmJzie24w==:
           Value: true
         waypoint_faced-larva-olGaSjYC334EG88ZHX4j9w==:
           Value: true
@@ -332,11 +335,19 @@ Visualization Manager:
           Value: true
         waypoint_jawed-pigeon-9xLW4VzxDmzeP6yWPYjBzw==:
           Value: true
+        waypoint_jinxed-redbug-P.V48Mok3KGmkiaZ9M9AFg==:
+          Value: true
         waypoint_key-trout-YTjivZ9DuPPrbs3TabZzpg==:
           Value: true
         waypoint_leafed-gnu-ZMct0zR8OTzXyQbC0RBKpw==:
           Value: true
+        waypoint_lilac-ibis-iMlKN8Hnq3se6cWyton93g==:
+          Value: true
         waypoint_mighty-mink-QqLb3VmqExS98NpirkP9wA==:
+          Value: true
+        waypoint_mono-pincer-TXzk5NokpniBg3Jr1U0a6w==:
+          Value: true
+        waypoint_morose-goby-KG4L1H8dkSSqEl0o5SZRIQ==:
           Value: true
         waypoint_mussy-rodent-yu6WUIh8.8HhMVd+K06gFA==:
           Value: true
@@ -352,6 +363,8 @@ Visualization Manager:
           Value: true
         waypoint_pearly-husky-IFVtZ3e.bP36mq8wJ80MUA==:
           Value: true
+        waypoint_perky-chetah-N2n+EJVE9RQXycoCyKJbWg==:
+          Value: true
         waypoint_ruled-pika-2vsscTva893ro6Z8tzgoFg==:
           Value: true
         waypoint_rushy-iguana-Mlv9sXSK+WxxmD1rn9r2tQ==:
@@ -359,6 +372,8 @@ Visualization Manager:
         waypoint_shirty-hogg-rOIYHFH75fFNPBslrtSHpg==:
           Value: true
         waypoint_stagey-cub-34kuCc8ty4.Csvhbb34jxA==:
+          Value: true
+        waypoint_sudden-rook-a88CxeUG38pvEQyTxEyeSg==:
           Value: true
         waypoint_swart-horse-AEcVeORBgQsiGwpw3So7HA==:
           Value: true
@@ -370,7 +385,11 @@ Visualization Manager:
           Value: true
         waypoint_tiring-ewe-lOGwAqKr8VX1y7z+SUJZ7A==:
           Value: true
+        waypoint_trusty-kelp-Ghnt4b8wvjyREEUoFc7VrQ==:
+          Value: true
         waypoint_tubby-redbug-QIyhUOTOmr74UfM59bZ2vA==:
+          Value: true
+        waypoint_uppity-canary-VeF1L3zjwWCbk6LBsJa8oQ==:
           Value: true
         waypoint_waking-rabbit-Ag8EjG.sDSRKAJkrR69SOg==:
           Value: true
@@ -379,9 +398,9 @@ Visualization Manager:
         waypoint_woozy-maggot-0qrSRQjUQkBataHn0snQIg==:
           Value: true
       Marker Alpha: 1
-      Marker Scale: 0.25
+      Marker Scale: 1
       Name: TF
-      Show Arrows: true
+      Show Arrows: false
       Show Axes: true
       Show Names: true
       Tree:
@@ -481,11 +500,15 @@ Visualization Manager:
               {}
             waypoint_dank-buck-sRxmNcrlzklDgLjlqxq0tA==:
               {}
+            waypoint_dapper-jackal-qH7M5HUStbSL0s0EKr6nUw==:
+              {}
             waypoint_dormie-platypus-eRbOoq0pKwBELt4hqdkZ8A==:
               {}
             waypoint_doughy-wren-u90R2nChpx29UPfGkjAOgA==:
               {}
             waypoint_dreary-taipan-y1WPtsy64J+x2Rj22OW.jg==:
+              {}
+            waypoint_ended-marlin-UyrEkasMejnm6AmJzie24w==:
               {}
             waypoint_faced-larva-olGaSjYC334EG88ZHX4j9w==:
               {}
@@ -509,11 +532,19 @@ Visualization Manager:
               {}
             waypoint_jawed-pigeon-9xLW4VzxDmzeP6yWPYjBzw==:
               {}
+            waypoint_jinxed-redbug-P.V48Mok3KGmkiaZ9M9AFg==:
+              {}
             waypoint_key-trout-YTjivZ9DuPPrbs3TabZzpg==:
               {}
             waypoint_leafed-gnu-ZMct0zR8OTzXyQbC0RBKpw==:
               {}
+            waypoint_lilac-ibis-iMlKN8Hnq3se6cWyton93g==:
+              {}
             waypoint_mighty-mink-QqLb3VmqExS98NpirkP9wA==:
+              {}
+            waypoint_mono-pincer-TXzk5NokpniBg3Jr1U0a6w==:
+              {}
+            waypoint_morose-goby-KG4L1H8dkSSqEl0o5SZRIQ==:
               {}
             waypoint_mussy-rodent-yu6WUIh8.8HhMVd+K06gFA==:
               {}
@@ -529,6 +560,8 @@ Visualization Manager:
               {}
             waypoint_pearly-husky-IFVtZ3e.bP36mq8wJ80MUA==:
               {}
+            waypoint_perky-chetah-N2n+EJVE9RQXycoCyKJbWg==:
+              {}
             waypoint_ruled-pika-2vsscTva893ro6Z8tzgoFg==:
               {}
             waypoint_rushy-iguana-Mlv9sXSK+WxxmD1rn9r2tQ==:
@@ -536,6 +569,8 @@ Visualization Manager:
             waypoint_shirty-hogg-rOIYHFH75fFNPBslrtSHpg==:
               {}
             waypoint_stagey-cub-34kuCc8ty4.Csvhbb34jxA==:
+              {}
+            waypoint_sudden-rook-a88CxeUG38pvEQyTxEyeSg==:
               {}
             waypoint_swart-horse-AEcVeORBgQsiGwpw3So7HA==:
               {}
@@ -547,7 +582,11 @@ Visualization Manager:
               {}
             waypoint_tiring-ewe-lOGwAqKr8VX1y7z+SUJZ7A==:
               {}
+            waypoint_trusty-kelp-Ghnt4b8wvjyREEUoFc7VrQ==:
+              {}
             waypoint_tubby-redbug-QIyhUOTOmr74UfM59bZ2vA==:
+              {}
+            waypoint_uppity-canary-VeF1L3zjwWCbk6LBsJa8oQ==:
               {}
             waypoint_waking-rabbit-Ag8EjG.sDSRKAJkrR69SOg==:
               {}
@@ -823,7 +862,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: RGB8
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -838,12 +877,12 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 2.352351665496826
-        Min Value: -0.7957525253295898
+        Max Value: 3.785229444503784
+        Min Value: -3.4026033878326416
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -870,7 +909,7 @@ Visualization Manager:
     - Class: jsk_rviz_plugin/OverlayImage
       Enabled: true
       Name: PanoramaImage
-      Topic: /spot_panorama/panorama_image
+      Topic: /dual_fisheye_to_panorama/output
       Value: true
       alpha: 0.800000011920929
       height: 128
@@ -878,7 +917,7 @@ Visualization Manager:
       left: 0
       overwrite alpha value: false
       top: 0
-      transport hint: raw
+      transport hint: compressed
       width: 700
     - Class: jsk_rviz_plugin/TFTrajectory
       Enabled: true
@@ -901,29 +940,6 @@ Visualization Manager:
       foreground alpha 2: 0.4000000059604645
       foreground color: 25; 255; 240
       left: 750
-      max color: 255; 0; 0
-      max color change threthold: 0
-      max value: 100
-      med color: 255; 0; 0
-      med color change threthold: 0
-      min value: 0
-      show caption: true
-      size: 128
-      text size: 10
-      top: 50
-    - Class: jsk_rviz_plugin/PieChart
-      Enabled: false
-      Name: LaptopBattery
-      Topic: /spot/status/laptop_battery_percentage
-      Value: false
-      auto color change: false
-      background color: 0; 0; 0
-      backround alpha: 0
-      clockwise rotate direction: false
-      foreground alpha: 0.699999988079071
-      foreground alpha 2: 0.4000000059604645
-      foreground color: 25; 255; 240
-      left: 900
       max color: 255; 0; 0
       max color change threthold: 0
       max value: 100
@@ -980,33 +996,6 @@ Visualization Manager:
           Value: true
       Enabled: true
       Name: SDPUWBLocalization
-    - Alpha: 0.699999988079071
-      Class: rviz/Map
-      Color Scheme: raw
-      Draw Behind: false
-      Enabled: true
-      Name: Map
-      Topic: /gps_map/map
-      Unreliable: false
-      Use Timestamp: false
-      Value: true
-    - Class: rviz/TF
-      Enabled: false
-      Filter (blacklist): ""
-      Filter (whitelist): ""
-      Frame Timeout: 15
-      Frames:
-        All Enabled: false
-      Marker Alpha: 1
-      Marker Scale: 100
-      Name: GPSTF
-      Show Arrows: true
-      Show Axes: true
-      Show Names: true
-      Tree:
-        {}
-      Update Interval: 0
-      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -1035,7 +1024,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 18.243759155273438
+      Distance: 13.15950870513916
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -1051,9 +1040,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7902032136917114
+      Pitch: 0.5602030158042908
       Target Frame: body
-      Yaw: 1.555910587310791
+      Yaw: 2.025911569595337
     Saved: ~
 Window Geometry:
   Displays:

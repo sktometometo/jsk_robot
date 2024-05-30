@@ -158,6 +158,7 @@
             /smart_device_protocol/recv
             /smart_device_protocol/send
             /smart_device_protocol/uwb
+            /spot/status/battery_percentage
             $(arg additional_topics)
             "
         output="screen" />
