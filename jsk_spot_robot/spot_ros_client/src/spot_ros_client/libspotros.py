@@ -209,7 +209,7 @@ class SpotRosClient:
                 servicename_set_localization_waypoint, rospy.Duration(5))
             rospy.wait_for_service(servicename_dock, rospy.Duration(5))
             rospy.wait_for_service(servicename_undock, rospy.Duration(5))
-            rospy.wait_for_service(servicename_reset_current_node, rospy.Duration(5))
+           # rospy.wait_for_service(servicename_reset_current_node, rospy.Duration(5))
             rospy.wait_for_service(servicename_stow_arm, rospy.Duration(5))
             rospy.wait_for_service(servicename_unstow_arm, rospy.Duration(5))
             rospy.wait_for_service(servicename_start_recording, rospy.Duration(5))
