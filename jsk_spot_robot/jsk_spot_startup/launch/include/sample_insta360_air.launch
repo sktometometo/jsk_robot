@@ -98,20 +98,6 @@
         </node>
     </group>
 
-    <include if="$(arg create_panorama)"
-        file="$(find jsk_perception)/sample/sample_dual_fisheye_to_panorama.launch">
-        <arg name="gui" value="false" />
-        <arg name="INPUT_IMAGE" value="$(arg dual_fisheye_image)" />
-        <arg name="fovd" value="210" />
-        <arg name="refine_align" value="$(arg refine_align)" />
-        <arg name="save_unwarped" value="$(arg save_unwarped)" />
-        <arg name="resolution_mode" value="$(arg panorama_resolution_mode)" />
-        <arg name="image_transport" value="$(arg panorama_image_transport)" />
-        <arg name="vital_rate" value="$(arg vital_rate)" />
-        <arg name="launch_manager" value="true" />
-        <arg name="always_subscribe" value="true" />
-    </include>
-
     <node name="dual_fisheye_to_panorama"
         pkg="nodelet" type="nodelet"
         args="standalone jsk_perception/DualFisheyeToPanorama"
