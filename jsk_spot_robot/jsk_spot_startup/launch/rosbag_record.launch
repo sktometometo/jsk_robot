@@ -86,8 +86,8 @@
             /diagnostics
             /tf
             /tf_static
-            /spot_panorama/panorama_image/compressed
-            /spot_panorama/panorama_info
+            /dual_fisheye_to_panorama/output/compressed
+            /dual_fisheye_to_panorama/panorama_info
             /spot/body_pose
             /spot/cmd_vel
             $(arg camera_topics)
@@ -155,8 +155,6 @@
             /sdpuwb_devices
             /markers_devices
             /markers_history
-            /markers_devices_2
-            /markers_history_2
             /smart_device_protocol/recv
             /smart_device_protocol/send
             /smart_device_protocol/uwb
