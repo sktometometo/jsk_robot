@@ -30,7 +30,7 @@ class FaultsSpeaker:
             with self.lock:
                 if len(self.queue) > 0:
                     message = self.queue.pop(0)
-                    self.client.say(message, blocking=False)
+                    self.client.say(message, blocking=True)
 
     def _cb(self, msg):
         for fault in msg.faults:
