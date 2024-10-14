@@ -6,6 +6,6 @@
         file="$(find aques_talk)/launch/aques_talk.launch"
         />
     <include
-        file="$(find silero_vad_ros)/launch/sample.launch"
+        file="$(find webrtcvad_ros)/launch/sample.launch"
         />
 </launch>

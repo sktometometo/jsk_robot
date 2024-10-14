@@ -23,8 +23,8 @@
             thershold_num_history: 4
             threshold_hessian_eigen: 0.001
             threshold_postion_distance: 0.3
-            range_distance_min: 0.1
-            range_distance_max: 30.0
+            range_distance_min: 1.0
+            range_distance_max: 10.0
         </rosparam>
     </node>
 </launch>
