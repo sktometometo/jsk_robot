@@ -131,6 +131,10 @@
     name="faults_speaker"
     respawn="true"
     >
+    <rosparam>
+        ignore_messages:
+          - "right camera not detected."
+    </rosparam>
   </node>
 
   <!-- ros_lock -->
